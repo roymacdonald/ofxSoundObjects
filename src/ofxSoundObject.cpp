@@ -88,8 +88,8 @@ void ofxSoundInput::audioIn(ofSoundBuffer &input) {
 	if(inputBuffer.size()!=input.size()) {
         ofLogVerbose("ofSoundinput::audioIn") << "input buffer size != output buffer size.";
 		inputBuffer.resize(input.size());
-        inputBuffer.setNumChannels(inputBuffer.getNumChannels());
-        inputBuffer.setSampleRate(inputBuffer.getSampleRate());
+        inputBuffer.setNumChannels(input.getNumChannels());
+        inputBuffer.setSampleRate(input.getSampleRate());
 	}
 	input.copyTo(inputBuffer);
 }
