@@ -32,6 +32,7 @@ public:
 				meshes.push_back(ofMesh());
 				meshes.back().setMode(OF_PRIMITIVE_LINE_STRIP);
 			}
+            
 			float h = this->height / float(chans);
 			float h2 = h * 0.5f;
             float factor= chans * float(this->width) / buffer.size();
