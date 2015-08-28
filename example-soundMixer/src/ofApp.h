@@ -32,5 +32,7 @@ public:
     ofxPanel gui;
     
     void updateVolume(ofAbstractParameter& p);
+    ofSoundStream stream;
+    
 
 };

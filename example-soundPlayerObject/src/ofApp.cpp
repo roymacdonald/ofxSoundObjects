@@ -7,14 +7,17 @@ void ofApp::setup(){
 	
 	ofFileDialogResult result = ofSystemLoadDialog();
 	if (result.bSuccess) {
-        ofxSoundStreamSetup(2, 0, this );
-
+        stream.setup(2, 0, 44100, 256, 1);
+        stream.setOutput(output);
+        
         player.load(result.getPath());
 		player.play();
 		
 		wave.setup(0, 0, ofGetWidth(), ofGetHeight());
         
-   		player.connectTo(wave).connectTo(ofGetSystemSoundMixer());
+        player.connectTo(wave).connectTo(output);
+        
+
         
 		ofBackground(0);
 	}

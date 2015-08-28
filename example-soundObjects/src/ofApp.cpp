@@ -6,13 +6,13 @@ void ofApp::setup(){
 
 	delay.setFeedback(0.8);
 	delay.setDelay(8192);
-	
-	// connect each object to the next in a chain, finishing with the global sound mixer.
-	noise.connectTo(filter).connectTo(delay).connectTo(ofGetSystemSoundMixer());
-
 	soundStream.setup(2, 0, 44100, 64, 1);
-	soundStream.setOutput(&ofGetSystemSoundMixer());
-	
+    soundStream.setOutput(output);
+    
+    // connect each object to the next in a chain, finishing with the output.
+    noise.connectTo(filter).connectTo(delay).connectTo(output);
+
+
 	font.load(OF_TTF_SANS, 12);
 	ofBackground(0);
 }

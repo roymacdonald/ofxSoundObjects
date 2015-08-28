@@ -5,7 +5,7 @@
 void ofApp::setup(){
     ofSetLogLevel(OF_LOG_VERBOSE);
     
-    ofxSoundStreamSetup(2, 0, this);
+    stream.setup(2, 0, 44100, 256, 1);
     
     players.resize(4);
     ofDirectory dir;
@@ -25,8 +25,7 @@ void ofApp::setup(){
         volumeGroup.add(playersVolume.back().set("Player " + ofToString(i), 1, 0, 1));
     }
     
-    mixer.connectTo(ofGetSystemSoundMixer());
-    
+    stream.setOutput(mixer);
     
     gui.setup(volumeGroup);
     

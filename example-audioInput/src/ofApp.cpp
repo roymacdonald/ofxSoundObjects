@@ -4,13 +4,14 @@
 void ofApp::setup(){	 
 	
 	ofSetVerticalSync(true);
-    ofxSoundStreamSetup(2,2, this, 44100, 256, 1);
+    stream.setup(2, 2, 44100, 256, 1);
 
     wave.setup(0, 0, ofGetWidth(), ofGetHeight());
     
-    ofGetSoundStream().setInput(input);
+    stream.setInput(input);
+    stream.setOutput(output);
     
-    input.connectTo(wave).connectTo(ofGetSystemSoundMixer());
+    input.connectTo(wave).connectTo(output);
     
 }
 

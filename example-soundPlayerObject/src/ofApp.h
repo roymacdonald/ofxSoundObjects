@@ -23,9 +23,11 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
-	
+    ofSoundStream stream;
+    ofxSoundOutput output;
 	// these are all subclasses of ofSoundObject
 	ofxBasicSoundPlayer player;
 	waveformDraw wave;
+
 
 };

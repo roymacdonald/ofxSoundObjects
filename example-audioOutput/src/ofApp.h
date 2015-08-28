@@ -23,4 +23,6 @@ class ofApp : public ofBaseApp{
 		
     SineWaveGenerator sine;
     waveformDraw wave;
+    
+    ofSoundStream stream;
 };

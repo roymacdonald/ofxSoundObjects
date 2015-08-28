@@ -31,6 +31,8 @@ public:
 	LowPassFilter filter;
 	DigitalDelay delay;
 	
+    ofxSoundOutput output;
+    
 	float filterCutoff;
 	float delayFeedback;
 	

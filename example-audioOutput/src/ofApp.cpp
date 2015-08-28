@@ -5,18 +5,14 @@ void ofApp::setup(){
 
 	ofBackground(34, 34, 34);
 
-	// 2 output channels,
-	// 0 input channels
-	// 44100 samples per second
-	// 512 samples per buffer
-	// 4 num buffers (latency)
 
-    ofxSoundStreamSetup(2, 0, this, 44100, 512, 4);
+    stream.setup( 2, 0, 44100, 256, 1);
 
 	ofSetFrameRate(60);
     wave.setup(0,0,ofGetWidth(),ofGetHeight());
     sine.setup(440);
-    sine.connectTo(wave).connectTo(ofGetSystemSoundMixer());
+    sine.connectTo(wave);
+    stream.setOutput(wave);
 }
 
 

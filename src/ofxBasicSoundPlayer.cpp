@@ -37,10 +37,10 @@ ofxBasicSoundPlayer::~ofxBasicSoundPlayer() {
 
 
 bool ofxBasicSoundPlayer::load(string fileName, bool _stream){
-  	if (ofGetSoundStream().getNumOutputChannels() == 0) {
+  	/*if (ofGetSoundStream().getNumOutputChannels() == 0) {
         ofSoundStreamSetup(2, 0);
-		
-    }
+    }//*/
+    
 	ofLogNotice() << "loading " << fileName;
 
 	ofLogNotice() << "opening file ";
@@ -60,7 +60,7 @@ bool ofxBasicSoundPlayer::load(string fileName, bool _stream){
     playerSampleRate = soundFile.getSampleRate();
     // else, buffer will be resized on audioOutBuffersChanged
     
-    this->connectTo(ofGetSystemSoundMixer());
+//    this->connectTo(ofGetSystemSoundMixer());
 	return true;
 }
 

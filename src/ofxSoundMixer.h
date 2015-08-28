@@ -40,5 +40,3 @@ protected:
 	void setInput(ofxSoundObject *obj);
 };
 
-/// returns a reference to the global sound mixer
-ofxSoundMixer &ofGetSystemSoundMixer();

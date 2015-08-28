@@ -11,7 +11,6 @@
 		B099C8771B8B0089009E0B49 /* ofxSoundFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B099C84E1B8B0089009E0B49 /* ofxSoundFile.cpp */; };
 		B099C8781B8B0089009E0B49 /* ofxSoundMixer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B099C8501B8B0089009E0B49 /* ofxSoundMixer.cpp */; };
 		B099C8791B8B0089009E0B49 /* ofxSoundObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B099C8521B8B0089009E0B49 /* ofxSoundObject.cpp */; };
-		B099C87A1B8B0089009E0B49 /* ofxSoundObjects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B099C8541B8B0089009E0B49 /* ofxSoundObjects.cpp */; };
 		B099C87D1B8B0089009E0B49 /* audiodecoderbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B099C86F1B8B0089009E0B49 /* audiodecoderbase.cpp */; };
 		B099C87E1B8B0089009E0B49 /* audiodecodercoreaudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B099C8701B8B0089009E0B49 /* audiodecodercoreaudio.cpp */; };
 		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
@@ -61,7 +60,6 @@
 		B099C8511B8B0089009E0B49 /* ofxSoundMixer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSoundMixer.h; sourceTree = "<group>"; };
 		B099C8521B8B0089009E0B49 /* ofxSoundObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxSoundObject.cpp; sourceTree = "<group>"; };
 		B099C8531B8B0089009E0B49 /* ofxSoundObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSoundObject.h; sourceTree = "<group>"; };
-		B099C8541B8B0089009E0B49 /* ofxSoundObjects.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxSoundObjects.cpp; sourceTree = "<group>"; };
 		B099C8551B8B0089009E0B49 /* ofxSoundObjects.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSoundObjects.h; sourceTree = "<group>"; };
 		B099C8651B8B0089009E0B49 /* CADebugMacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CADebugMacros.h; sourceTree = "<group>"; };
 		B099C8661B8B0089009E0B49 /* CAStreamBasicDescription.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CAStreamBasicDescription.h; sourceTree = "<group>"; };
@@ -124,7 +122,6 @@
 				B099C8511B8B0089009E0B49 /* ofxSoundMixer.h */,
 				B099C8521B8B0089009E0B49 /* ofxSoundObject.cpp */,
 				B099C8531B8B0089009E0B49 /* ofxSoundObject.h */,
-				B099C8541B8B0089009E0B49 /* ofxSoundObjects.cpp */,
 				B099C8551B8B0089009E0B49 /* ofxSoundObjects.h */,
 			);
 			name = src;
@@ -314,7 +311,6 @@
 			files = (
 				B099C8791B8B0089009E0B49 /* ofxSoundObject.cpp in Sources */,
 				B099C8761B8B0089009E0B49 /* ofxBasicSoundPlayer.cpp in Sources */,
-				B099C87A1B8B0089009E0B49 /* ofxSoundObjects.cpp in Sources */,
 				B099C87D1B8B0089009E0B49 /* audiodecoderbase.cpp in Sources */,
 				B099C87E1B8B0089009E0B49 /* audiodecodercoreaudio.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,

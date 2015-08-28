@@ -24,4 +24,6 @@ class ofApp : public ofBaseApp{
 				
     waveformDraw wave;
     ofxSoundInput input;
+    ofxSoundOutput output;
+    ofSoundStream stream;
 };
