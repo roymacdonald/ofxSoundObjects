@@ -2,9 +2,17 @@ ofxSoundObjects
 =====================================
 
 This is an addon version for the ofSoundObject implementation originally conceived at the 2013 OFDev Conference held at the Yamaguchi Center For Arts and Media, Japan.
+The developers involved in this were:
+
+* [Adam Carlucci](https://github.com/admsyn/)
+* [Marek Bareza](https://github.com/mazbox)
+* [Arturo Castro](https://github.com/arturoc)
+* [Roy Macdonald](https://github.com/roymacdonald/)
+
 
 The original development branch can be found [here](https://github.com/admsyn/openFrameworks/tree/feature-sound-objects).
 
+Made as addon by Roy Macdonald.
 
 ##Explanation
 ####The ofxSoundObject
@@ -13,17 +21,35 @@ The original development branch can be found [here](https://github.com/admsyn/op
 * By itself does nothing, it will just passthrough audio, yet it will buffer the audio data instead of passing it straight out. 
 * It is intended to be extended uppon to become useful.
 * Any two ofxAudioObject inherited classes can connect between them. 
-* ofxSoundInput and ofxSoundOutput classes inherit from ofxSoundObject.
+
 
 ###Usage
 
+When inheriting from ofxSoundObject the only function to override is 
+
+    void process(ofSoundBuffer &input, ofSoundBuffer &output)
+
+When you want to draw the sound buffer data somehow make sure you use an ofMutex to avoid threads colliding. Check the waveformDraw included sound object and use as guideline.
+
+
 Say you have two instances from classes that inherit from ofxSoundObject, say
 `soundObject1` and `soundObject2;`
-when you say `soundObject1.connectTo(soundObject2)` it means that the audio data from  soundObject1 (and processed if so) is sent soundObject2, so the latter processes it and sends it to whatever it is connected to.
+when you say 
+    
+    soundObject1.connectTo(soundObject2);
 
+it means that the audio data from  soundObject1 (and processed if so) is sent soundObject2, so the latter processes it and sends it to whatever it is connected to.
 
+You can connect an ofxSoundObject directly to an ofSoundStream output, so your sound goes out to your sound device.
+to make so you need to do once:
 
-You will always need an instance of ofSoundStream to be able to get or send audio data to the audio interface.
+    soundStream.setOutput(soundObject);
+
+To get sound input from your audio device you need to make an instance of ofxSoundInput, set it as the input for the sound stream and connect it to the rest of the sound objects. 
+
+    soundStream.setInput(soundInput);
+    soundInput.connectTo(whateverElseSoundObject);
+
 
 ##Examples
 ####AudioInput
@@ -40,7 +66,8 @@ The sine wave's parameters ar controlled via mouse position;
 ####SoundObjects
 This class has a NoiseGenerator, a LoPassFilter and a DigitalDelay instances, all of which inherit from ofxSoundObject. Their names are quite self explaning.
 Chech how these are connected to each other
-`noise.connectTo(filter).connectTo(delay).connectTo(output);`
+     
+     noise.connectTo(filter).connectTo(delay).connectTo(output);
 
 which means that noise is generated, the filtered by the loPassfilter, then delay (echo) is applied to finally being sent to the sound output.
 
@@ -50,6 +77,8 @@ This makes use of the ofxBasicSoundPlayer, that is a sound file player that exte
 
 ####SoundMixer
 It makes use of the ofxSoundMixer object. It loads some audiofiles and plays them back. There's a gui in which you can modify the volume of each mixer channel.
+
+
 
 ##Included soundObjects
 The following are the classes that inherit from ofxSoundObject that are included in this addon. Use this as guidelines for implementing your own.
@@ -127,6 +156,8 @@ This will allow you to mix the sound from several ofxSoundObjects connected to i
 It inherits from ofxSoundObject so it is completely compatible with other ofxSoundObjects. 
 It is really simple. Just allows volume adjustment per channel but you can extend it to make a really fancy sound mixer, just limited by your computer capabilities (not completely sure but thereticaly it should be true).
 
+####ofxSoundInput
+You need to use this to connect the sound device input to a soundObject
 
 
 
