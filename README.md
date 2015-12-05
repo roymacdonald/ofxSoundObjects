@@ -29,11 +29,7 @@ When inheriting from ofxSoundObject the only function to override is
 
     void process(ofSoundBuffer &input, ofSoundBuffer &output)
 
-When you want to draw the sound buffer data somehow make sure you use an ofMutex to avoid threads colliding. Check the waveformDraw included sound object and use as guideline.
-
-
-Say you have two instances from classes that inherit from ofxSoundObject, say
-`soundObject1` and `soundObject2;`
+When you have two instances from classes that inherit from ofxSoundObject, `soundObject1` and `soundObject2;`
 when you say 
     
     soundObject1.connectTo(soundObject2);
@@ -41,7 +37,6 @@ when you say
 it means that the audio data from  soundObject1 (and processed if so) is sent soundObject2, so the latter processes it and sends it to whatever it is connected to.
 
 You can connect an ofxSoundObject directly to an ofSoundStream output, so your sound goes out to your sound device.
-to make so you need to do once:
 
     soundStream.setOutput(soundObject);
 
@@ -49,6 +44,12 @@ To get sound input from your audio device you need to make an instance of ofxSou
 
     soundStream.setInput(soundInput);
     soundInput.connectTo(whateverElseSoundObject);
+
+The `connectTo` method returns a reference to the object being connected to, which allows to connect any ammount of objects on a single declaration.
+
+    soundObject1.connectTo(soundObject2).connectTo(soundObject3).connectTo(soundObject3).connectTo(soundObject4);
+
+When you want to draw the sound buffer data somehow make sure you use an ofMutex to avoid threads colliding. Check the waveformDraw included sound object and use as guideline.
 
 
 ##Examples
