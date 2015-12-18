@@ -4,5 +4,5 @@
 #include "ofxSoundObject.h"
 #include "ofxSoundMixer.h"
 #include "ofxSoundFile.h"
-#include "ofxSoundFile.h"
+#include "ofxBasicSoundPlayer.h"
 
