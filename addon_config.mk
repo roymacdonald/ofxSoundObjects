@@ -67,9 +67,9 @@ common:
 	# when parsing the file system looking for include paths exclude this for all or
 	# a specific platform
 	ADDON_INCLUDES_EXCLUDE = libs/libaudiodecoder/examples/%
-	ADDON_INCLUDES_EXCLUDE =+ libs/libaudiodecoder/include/%
-	ADDON_INCLUDES_EXCLUDE =+ audiodecodermediafoundation.h
-	ADDON_INCLUDES_EXCLUDE =+ include/audiodecodermediafoundation.h
+	ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/%
+	ADDON_INCLUDES_EXCLUDE += audiodecodermediafoundation.h
+	ADDON_INCLUDES_EXCLUDE += include/audiodecodermediafoundation.h
 	
 linux64:
 	ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/audiodecodercoreaudio.h
