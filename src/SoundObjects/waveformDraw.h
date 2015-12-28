@@ -28,20 +28,23 @@ public:
         if (buffer.size() >0) {
             vector<ofMesh>meshes;
 			int chans = buffer.getNumChannels();
-			for (int i = 0; i < chans && i < buffer.size(); i++) {
+			for (int i = 0; i < chans; i++) {
 				meshes.push_back(ofMesh());
 				meshes.back().setMode(OF_PRIMITIVE_LINE_STRIP);
 			}
             
 			float h = this->height / float(chans);
-			float h2 = h * 0.5f;
-            float factor= chans * float(this->width) / buffer.size();
+			//float h2 = h * 0.5f;
+//            float factor= this->width / buffer.getNumFrames();
 			
-            for(int i=0; i<buffer.size(); i++){
-				int s  = i%chans;
-				ofVec3f v(factor*(i-(s)) + x, (buffer[i]+1)*h2 + (h * (s)) + y, 0);
-				meshes[s].addColor(ofFloatColor::pink);
-				meshes[s].addVertex(v);
+            for(int i=0; i<buffer.getNumFrames(); i++){
+                ofVec3f v;
+                v.x = ofMap(i, 0, buffer.getNumFrames() -1 , x, getMaxX());
+                for (int j = 0; j < chans; j++) {
+                    v.y = ofMap(buffer[i*chans + j], -1, 1, h*(j+1), h*j );
+                    meshes[j].addColor(ofFloatColor::pink);
+                    meshes[j].addVertex(v);
+                }
 			}
 			for (int i = 0; i < chans; i++) {
 				meshes[i].draw();
