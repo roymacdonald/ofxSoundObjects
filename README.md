@@ -14,6 +14,9 @@ The original development branch can be found [here](https://github.com/admsyn/op
 
 Made as addon by Roy Macdonald.
 
+This addon includes [libaudiodecoder](https://github.com/asantoni/libaudiodecoder), which is licensed under MIT.
+Current commit: 9fc6ac944a67b74cfcaf19a41e00c6190561aae8
+
 ##Explanation
 ####The ofxSoundObject
 * Is a class for working with audio.
