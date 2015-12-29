@@ -16,7 +16,7 @@ void ofApp::setup(){
 
     sinGen.setup(440);
     
-    ofFileDialogResult result = ofSystemLoadDialog();
+    ofFileDialogResult result = ofSystemLoadDialog("Please select an audio file (.mp3, .wav, .aiff, .aac");
     if (result.bSuccess) {
         player.load(result.getPath());
         player.play();
@@ -51,6 +51,7 @@ void ofApp::draw(){
         default:
             break;
     }
+    msg += "\nPress the space bar to change input.";
     ofDrawBitmapStringHighlight(msg, 20, 20);
     
 }

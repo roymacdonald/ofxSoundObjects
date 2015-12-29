@@ -83,6 +83,10 @@ This makes use of the ofxBasicSoundPlayer, that is a sound file player that exte
 It makes use of the ofxSoundMixer object. It loads some audiofiles and plays them back. There's a gui in which you can modify the volume of each mixer channel.
 
 
+####ofxFft
+it uses [ofxFft](https://github.com/kylemcdonald/ofxFft) to perform a Fast Fourier Transform and visualize it. You can change the input of it in runtime, choosing from a audio file playback, sine wave generator or live input.
+
+
 
 ##Included soundObjects
 The following are the classes that inherit from ofxSoundObject that are included in this addon. Use this as guidelines for implementing your own.
