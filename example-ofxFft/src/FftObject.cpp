@@ -70,11 +70,9 @@ void FftObject::plot(vector<float>& buffer, const ofRectangle &r, bool bDrawLogS
             v.x = ofMap(log10(i+1), 0, log10(n), r.x, r.getMaxX());
             v.y = ofMap(log10(buffer[i]+1), 0, log10(2), offset, r.y);
             m.addVertex(v);
-            cout << v;
         }else{
             m.addVertex(ofVec3f(i*xinc+r.x, offset - buffer[i]*r.height ));
         }
-        cout << endl;
         m.addColor(ofFloatColor::red);
     }
     ofPushStyle();
