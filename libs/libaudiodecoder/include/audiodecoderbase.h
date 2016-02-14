@@ -43,12 +43,6 @@
 #include <string>
 #include <vector>
 
-#ifdef _WIN32
-#define DllExport   __declspec( dllexport )
-#else
-#define DllExport
-#endif
-
 //Types
 typedef float SAMPLE;
 
@@ -62,7 +56,7 @@ At present, all API calls are blocking and none are considered real-time safe. F
 try to avoid calling read() or any other libaudiodecoder function from inside your audio callback.
 */
 
-class DllExport AudioDecoderBase
+class AudioDecoderBase
 {
     public:
         AudioDecoderBase(const std::string filename);

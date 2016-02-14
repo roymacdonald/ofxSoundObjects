@@ -16,7 +16,7 @@
 
 //Force MSVC to generate a .lib file with /implib but without a .def file
 //http://msdn.microsoft.com/en-us/library/67wc07b9(v=vs.80).aspx
-DllExport int AudioDecoderMediaFoundation = 1;
+//DllExport int AudioDecoderMediaFoundation = 1;
 
 class IMFSourceReader;
 class IMFMediaType;
@@ -24,14 +24,14 @@ class IMFMediaSource;
 
 #define SHORT_SAMPLE short
 
-class DllExport AudioDecoderMediaFoundation : public AudioDecoderBase {
+class AudioDecoderMediaFoundation : public AudioDecoderBase {
   public:
     AudioDecoderMediaFoundation(const std::string filename);
     ~AudioDecoderMediaFoundation();
     int open();
     int seek(int sampleIdx);
     int read(int size, const SAMPLE *buffer);
-    inline int numSamples();
+    int numSamples();
     std::vector<std::string> supportedFileExtensions();
 
   private:
@@ -56,7 +56,7 @@ class DllExport AudioDecoderMediaFoundation : public AudioDecoderBase {
     bool m_dead;
     bool m_seeking;
 	unsigned int m_iBitsPerSample;
-	SHORT_SAMPLE m_destBufferShort[8192];
+	SHORT_SAMPLE m_destBufferShort[32768];
 };
 
 #endif // ifndef AUDIODECODERMEDIAFOUNDATION_H

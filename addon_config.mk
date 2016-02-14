@@ -29,7 +29,8 @@ common:
 	# include search paths, this will be usually parsed from the file system
 	# but if the addon or addon libraries need special search paths they can be
 	# specified here separated by spaces or one per line using +=
-	# ADDON_INCLUDES =
+	ADDON_INCLUDES = libs/libaudiodecoder/include/audiodecoder.h
+	ADDON_INCLUDES += libs/libaudiodecoder/include/audiodecoderbase.h
 	
 	# any special flag that should be passed to the compiler when using this
 	# addon
@@ -50,7 +51,7 @@ common:
 	# in the src folders in libs and the root of the addon. if your addon needs
 	# to include files in different places or a different set of files per platform
 	# they can be specified here
-	# ADDON_SOURCES =
+	 ADDON_SOURCES = libs/libaudiodecoder/src/audiodecoderbase.cpp
 	
 	# some addons need resources to be copied to the bin/data folder of the project
 	# specify here any files that need to be copied, you can use wildcards like * and ?
@@ -83,7 +84,9 @@ msys2:
 vs:
     ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/audiodecodercoreaudio.h
     ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/apple/%
-	
+	ADDON_INCLUDES += libs/libaudiodecoder/include/audiodecodermediafoundation.h
+	ADDON_SOURCES += libs/libaudiodecoder/src/audiodecodermediafoundation.cpp
+	ADDON_LDFLAGS = -lMfreadwrite.lib -lMFPlat.lib -lmfuuid.lib
 linuxarmv6l:
 	ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/audiodecodercoreaudio.h
     ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/apple/%
@@ -100,7 +103,8 @@ android/armeabi-v7a:
 osx:
     ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/src/audiodecodermediafoundation.cpp
 #	ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/audiodecodermediafoundation.h
-
+    ADDON_INCLUDES += libs/libaudiodecoder/include/audiodecodercoreaudio.h
+	ADDON_SOURCES += libs/libaudiodecoder/src/audiodecodercoreaudio.cpp
 ios:
 	ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/src/audiodecodermediafoundation.cpp
 	ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/audiodecodermediafoundation.h

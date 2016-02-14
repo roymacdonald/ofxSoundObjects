@@ -45,7 +45,7 @@
 #ifdef _WIN32 //Always defined on both Win32 and Win64 - http://msdn.microsoft.com/en-us/library/b0084kay(v=vs.80).aspx
 #include "audiodecodermediafoundation.h"
 
-class DllExport AudioDecoder : public AudioDecoderMediaFoundation
+class AudioDecoder : public AudioDecoderMediaFoundation
 {
     public:
         AudioDecoder(const std::string filename) : AudioDecoderMediaFoundation(filename) {};

@@ -423,7 +423,7 @@ releaseSample:
     return samples_read;
 }
 
-inline int AudioDecoderMediaFoundation::numSamples()
+int AudioDecoderMediaFoundation::numSamples()
 {
     int len(secondsFromMF(m_mfDuration) * m_iSampleRate * m_iChannels);
     return len % m_iChannels == 0 ? len : len + 1;
