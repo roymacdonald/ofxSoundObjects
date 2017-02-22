@@ -7,20 +7,20 @@ void ofApp::setup(){
     
     stream.setup(2, 0, 44100, 256, 1);
     
-    players.resize(4);
+ //   players.resize(4);
     ofDirectory dir;
     dir.allowExt("mp3");
     dir.allowExt("wav");
     
     dir.listDir("sounds");
     volumeGroup.setName("PLAYER VOLUME");
-    
+
+	players.resize(dir.size());
     for(int i = 0; i < dir.size(); i++){
-        players.push_back(ofxBasicSoundPlayer());
-        players.back().load(dir.getPath(i));
-        players.back().setLoop(true);
-        players.back().connectTo(mixer);
-        players.back().play();
+        players[i].load(dir.getPath(i));
+        players[i].setLoop(true);
+        players[i].connectTo(mixer);
+        players[i].play();
         playersVolume.push_back(1);
         volumeGroup.add(playersVolume.back().set("Player " + ofToString(i), 1, 0, 1));
     }
