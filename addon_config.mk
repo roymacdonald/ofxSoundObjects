@@ -80,7 +80,9 @@ vs:
 	ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/src/audiodecodercoreaudio.cpp
     ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/include/apple/%
 
-	ADDON_LDFLAGS += -lMfreadwrite.lib -lMFPlat.lib -lmfuuid.lib
+	ADDON_LIBS += Mfreadwrite.lib
+	ADDON_LIBS += MFPlat.lib
+	ADDON_LIBS += mfuuid.lib
 linuxarmv6l:
 linuxarmv7l:
 android/armeabi:	
