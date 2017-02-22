@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7FD42DF7-442E-479A-BA76-D0022F99702A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>emptyExample</RootNamespace>
+    <RootNamespace>example-ofxFft</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -32,7 +32,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -95,7 +95,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\libs;..\..\..\addons\src;src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxFft\libs;..\..\..\addons\ofxFft\libs\fftw;..\..\..\addons\ofxFft\libs\fftw\include;..\..\..\addons\ofxFft\libs\fftw\lib;..\..\..\addons\ofxFft\libs\fftw\lib\win32;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\prop-base;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\props;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\text-base;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp\prop-base;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp\props;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp\text-base;..\..\..\addons\ofxFft\libs\kiss;..\..\..\addons\ofxFft\src;..\..\..\addons\ofxSoundObjects\libs;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\src;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -106,9 +106,6 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
-    <PreBuildEvent>
-      <Command>set PATH=C:\Program Files (x86)\MSBuild\14.0\Bin;%PATH%</Command>
-    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -117,7 +114,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\libs;..\..\..\addons\src;src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxFft\libs;..\..\..\addons\ofxFft\libs\fftw;..\..\..\addons\ofxFft\libs\fftw\include;..\..\..\addons\ofxFft\libs\fftw\lib;..\..\..\addons\ofxFft\libs\fftw\lib\win32;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\prop-base;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\props;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\text-base;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp\prop-base;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp\props;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp\text-base;..\..\..\addons\ofxFft\libs\kiss;..\..\..\addons\ofxFft\src;..\..\..\addons\ofxSoundObjects\libs;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\src;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -136,7 +133,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\libs;..\..\..\addons\src;src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxFft\libs;..\..\..\addons\ofxFft\libs\fftw;..\..\..\addons\ofxFft\libs\fftw\include;..\..\..\addons\ofxFft\libs\fftw\lib;..\..\..\addons\ofxFft\libs\fftw\lib\win32;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\prop-base;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\props;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\text-base;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp\prop-base;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp\props;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp\text-base;..\..\..\addons\ofxFft\libs\kiss;..\..\..\addons\ofxFft\src;..\..\..\addons\ofxSoundObjects\libs;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\src;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -158,7 +155,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\libs;..\..\..\addons\src;src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxFft\libs;..\..\..\addons\ofxFft\libs\fftw;..\..\..\addons\ofxFft\libs\fftw\include;..\..\..\addons\ofxFft\libs\fftw\lib;..\..\..\addons\ofxFft\libs\fftw\lib\win32;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\prop-base;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\props;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\text-base;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp\prop-base;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp\props;..\..\..\addons\ofxFft\libs\fftw\lib\win32\.svn\tmp\text-base;..\..\..\addons\ofxFft\libs\kiss;..\..\..\addons\ofxFft\src;..\..\..\addons\ofxSoundObjects\libs;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\src;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -176,12 +173,49 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
+    <ClCompile Include="src\FftObject.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxFft\src\ofxEasyFft.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxFft\src\ofxFft.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxFft\src\ofxFftBasic.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxFft\src\ofxFftw.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxFft\src\ofxProcessFFT.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxFft\libs\kiss\kiss_fft.c" />
+    <ClCompile Include="..\..\..\addons\ofxFft\libs\kiss\kiss_fftr.c" />
+    <ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxBasicSoundPlayer.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundFile.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMixer.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObject.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\src\audiodecoderbase.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\src\audiodecodermediafoundation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ofApp.h" />
+    <ClInclude Include="src\FftObject.h" />
+    <ClInclude Include="..\..\..\addons\ofxFft\src\ofxEasyFft.h" />
+    <ClInclude Include="..\..\..\addons\ofxFft\src\ofxFft.h" />
+    <ClInclude Include="..\..\..\addons\ofxFft\src\ofxFftBasic.h" />
+    <ClInclude Include="..\..\..\addons\ofxFft\src\ofxFftw.h" />
+    <ClInclude Include="..\..\..\addons\ofxFft\src\ofxProcessFFT.h" />
+    <ClInclude Include="..\..\..\addons\ofxFft\libs\fftw\include\fftw3.h" />
+    <ClInclude Include="..\..\..\addons\ofxFft\libs\kiss\_kiss_fft_guts.h" />
+    <ClInclude Include="..\..\..\addons\ofxFft\libs\kiss\kiss_fft.h" />
+    <ClInclude Include="..\..\..\addons\ofxFft\libs\kiss\kiss_fftr.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxBasicSoundPlayer.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundFile.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMixer.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObject.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObjects.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\DigitalDelay.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\LowPassFilter.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\NoiseGenerator.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\SineWaveGenerator.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\waveformDraw.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include\audiodecoder.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include\audiodecoderbase.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include\audiodecodermediafoundation.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
+    <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
       <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
     </ProjectReference>
   </ItemGroup>
@@ -189,6 +223,7 @@
     <ResourceCompile Include="icon.rc">
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/D_DEBUG %(AdditionalOptions)</AdditionalOptions>
       <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/D_DEBUG %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(OF_ROOT)\libs\openFrameworksCompiled\project\vs</AdditionalIncludeDirectories>
     </ResourceCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
