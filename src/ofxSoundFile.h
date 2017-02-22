@@ -18,10 +18,11 @@
 
 #if defined (OF_USING_SNDFILE)
 	#include <sndfile.h>
-#elif defined (OF_USING_MPG123)
-	#include <mpg123.h>
 #elif defined (OF_USING_LAD)
-	#include "audiodecoder.h"
+    #include "audiodecoder.h"
+#endif
+#if defined (OF_USING_MPG123)
+	#include <mpg123.h>
 #endif
 
 /// reads a sound file into an ofSoundBuffer.
@@ -100,6 +101,7 @@ private:
 	float duration; //in secs
 	unsigned int samples;
 	int samplerate;
+	int bitDepth;
 	string path;
 	bool bCompressed;
 	bool bLoaded;
