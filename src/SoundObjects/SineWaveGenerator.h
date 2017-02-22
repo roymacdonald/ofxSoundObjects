@@ -9,6 +9,7 @@ public:
         this->freq = freq;
         this->amplitude = amplitude;
         this->phase = phase;
+        currentPhase = 0;
     }
     
     void process(ofSoundBuffer &in, ofSoundBuffer &out) {
@@ -17,15 +18,18 @@ public:
         int numFrames = out.getNumFrames();
         int numChannels = out.getNumChannels();
         for(int i = 0; i < numFrames; i++) {
-            float s = sin(m*i + phase) * amplitude;
+            float s = sin(m*i + phase+currentPhase) * amplitude;
             for(int c = 0; c < numChannels; c++){
                 out[i*numChannels + c ] = s;
             }
         }
-        phase = m*numFrames + phase;
+        currentPhase = m*numFrames;
     }
     
+
     float freq;
     float amplitude;
     float phase;
+private:
+    float currentPhase;
 };

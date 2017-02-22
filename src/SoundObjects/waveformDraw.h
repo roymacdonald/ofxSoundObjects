@@ -36,15 +36,19 @@ public:
 			float h = this->height / float(chans);
 			//float h2 = h * 0.5f;
 //            float factor= this->width / buffer.getNumFrames();
-			
+			 
+            float xInc = this->getWidth()/(float)(buffer.getNumFrames() -1);
+            ofVec3f v;
+            v.x = x;
             for(int i=0; i<buffer.getNumFrames(); i++){
-                ofVec3f v;
-                v.x = ofMap(i, 0, buffer.getNumFrames() -1 , x, getMaxX());
+                
+                //v.x = ofMap(i, 0, buffer.getNumFrames() -1 , x, getMaxX());
                 for (int j = 0; j < chans; j++) {
-                    v.y = ofMap(buffer[i*chans + j], -1, 1, h*(j+1), h*j );
-                    meshes[j].addColor(ofFloatColor::pink);
+                    v.y = ofMap(buffer[i*chans + j], -1, 1, h*(j+1) + y, h*j + y );
+               //     meshes[j].addColor(ofFloatColor::pink);
                     meshes[j].addVertex(v);
                 }
+                v.x += xInc;
 			}
 			for (int i = 0; i < chans; i++) {
 				meshes[i].draw();

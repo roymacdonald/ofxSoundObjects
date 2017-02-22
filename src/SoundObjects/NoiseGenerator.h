@@ -23,7 +23,7 @@ class NoiseGenerator: public ofxSoundObject {
 public:
 	void process(ofSoundBuffer &in, ofSoundBuffer &out) {
 		for(int i = 0; i < out.size(); i++) {
-			out[i] = ofRandom(-0.1, 0.1);
+			out[i] = ofRandom(-1, 1);
 		}
 	}
 };
