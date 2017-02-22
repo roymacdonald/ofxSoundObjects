@@ -17,6 +17,23 @@ Made as addon by Roy Macdonald.
 This addon includes [libaudiodecoder](https://github.com/asantoni/libaudiodecoder), which is licensed under MIT.
 Current commit: 9fc6ac944a67b74cfcaf19a41e00c6190561aae8
 
+##IMPORTANT.
+####VisualStudio2015Community
+To be able to use this addon with visual studio you need to do the following whenever updating or creating a project with project generator.
+
+1. Use project generator as you normaly would (add ofxSoundObjects from the dropdown menu).
+* Once done, open the project in VS.
+* Go to "View > Property Manager".
+* In the Properties Manager select your project and clic on the "Add Existing Property Sheet" button. (shown in the image below).
+
+	![image](VS_screenshot.jpg)
+
+* Open the file ofxSoundObjects.props that is in this addons folder. (shown in the image below).
+  
+	![image](VS_screenshot2.jpg)
+	
+That's all.
+
 ##Explanation
 ####The ofxSoundObject
 * Is a class for working with audio.
@@ -92,6 +109,7 @@ it uses [ofxFft](https://github.com/kylemcdonald/ofxFft) to perform a Fast Fouri
 The following are the classes that inherit from ofxSoundObject that are included in this addon. Use this as guidelines for implementing your own.
 
 ####DigitalDelay
+
 It will delay sound and put it into a feedback loop creating an "echo" kind of effect. It is a really common effect for sound manipulation.Parameters available:
 * **Delay**: The amount of samples that will be delayed, or how much time (samples) will be between each echo repetition.* **Mix**: The mix amount of original sound with the delayed/processed sound. 
 * **Feedback**: How much of the delayed sound is feedbacked. This is also the amount of repetitions. 0 means no repetitions. 1 means infinite repetitions. 
@@ -103,6 +121,7 @@ This object:
 * Processes sound.
 * Outputs sound.
 ####LowPassFilter.h
+
 This is a basic kind of equalizer. It will only let pass through sounds that are below a certain frequency, which is user defined.Parameters available:
 * **Cutoff**: this is the limit frequency.* **Resonance**: amount of emphasis applied to frequencies that are just before the cutoff frequency.
 This object:
@@ -110,6 +129,7 @@ This is a basic kind of equalizer. It will only let pass through sounds that are
 * Intakes sound.
 * processes sound.
 * Outputs sound.####NoiseGenerator.h
+
 This will create white-ish noise. It will just put random valued samples into the buffer.
 
 **No parameters available.**
@@ -120,6 +140,7 @@ This object:
 * Generates sound.
 * Outputs sound.
 ####SineWaveGenerator.h
+
 This will create a sine wave signal and place it into the buffer.
 
 Parameters available:
@@ -133,6 +154,7 @@ This object:
 * Generates sound.
 * Outputs sound.
 ####waveformDraw.h
+
 This draws the waveform of the sound being input to it.
 It inherits from ofRectangle which is used for the drawing area.
 Parameters available:
@@ -150,12 +172,14 @@ This object:
 The following are some useful classes included with this addon.
 
 ####ofxSoundFile
+
 This class provides access to sound data from a variety of sound file formats. It supports the most common ones like .mp3, .acc, .aiff and .wav on all systems, plus several others depending on the system. It makes use of [libaudiodecoder](http://www.oscillicious.com/libaudiodecoder) for MacOsX, iOS and Windows and [libsndfile](http://www.mega-nerd.com/libsndfile/) for Linux.
 This class will decode data and make it accessible using the ofSoundBuffer instances.
 It provides basic 16bit wav sound file writing.
 
 
 ####ofxBasicSoundPlayer
+
 This is a completely implemented sound player. It makes use of ofxSoundFile to access sound files. It will deal with passing the required data to the sound stream, interpolating it if necesary and provide all the common sound player functionalities. It is not basic at all but nobody came with a better name when develiping it.
 
 ####ofxSoundMixer
@@ -165,6 +189,7 @@ It inherits from ofxSoundObject so it is completely compatible with other ofxSou
 It is really simple. Just allows volume adjustment per channel but you can extend it to make a really fancy sound mixer, just limited by your computer capabilities (not completely sure but thereticaly it should be true).
 
 ####ofxSoundInput
+
 You need to use this to connect the sound device input to a soundObject
 
 
