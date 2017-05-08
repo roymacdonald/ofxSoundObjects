@@ -34,19 +34,18 @@ ofxBasicSoundPlayer::~ofxBasicSoundPlayer() {
 	unload();
 }
 
-
-
-bool ofxBasicSoundPlayer::load(string fileName, bool _stream){
-  	/*if (ofGetSoundStream().getNumOutputChannels() == 0) {
-        ofSoundStreamSetup(2, 0);
-    }//*/
-    
-	ofLogNotice() << "loading " << fileName;
-
-	ofLogNotice() << "opening file ";
-	bIsLoaded = soundFile.load(fileName);
+bool ofxBasicSoundPlayer::load(std::filesystem::path filePath, bool _stream){
+    ofLogVerbose() << "ofxBasicSoundPlayer::load" << endl << "Loading file: " << filePath.string();
+	bIsLoaded = soundFile.load(filePath.string());
 	if(!bIsLoaded) return false;
 
+    ofLogVerbose() << "Duration     : " << soundFile.getDuration();
+    ofLogVerbose() << "Channels     : " << soundFile.getNumChannels();
+    ofLogVerbose() << "SampleRate   : " << soundFile.getSampleRate();
+    ofLogVerbose() << "Num Samples  : " << soundFile.getNumSamples();
+    ofLogVerbose() << "isCompressed : " << (soundFile.isCompressed()?"YES":"NO");
+
+    
 	streaming = _stream;
 	if ( streaming ){
 		speed = 1;
@@ -54,19 +53,16 @@ bool ofxBasicSoundPlayer::load(string fileName, bool _stream){
 	
 	if(!streaming){
 		soundFile.readTo(buffer);
-		ofLogNotice() << "reading whole file, size: " << buffer.size() << ", sampleRate: " << buffer.getSampleRate() << ", numChannels: " << buffer.getNumChannels() << endl;
+		ofLogVerbose() << "Not streaming; Reading whole file into memory! ";
 	}
     playerNumChannels = soundFile.getNumChannels();
     playerSampleRate = soundFile.getSampleRate();
-    // else, buffer will be resized on audioOutBuffersChanged
-    
-//    this->connectTo(ofGetSystemSoundMixer());
 	return true;
 }
 
 void ofxBasicSoundPlayer::audioOutBuffersChanged(int nFrames, int nChannels, int sampleRate){
 	if(streaming){
-		ofLogNotice() << "resizing buffer ";
+		ofLogNotice() << "Resizing buffer ";
 		buffer.resize(nFrames*nChannels,0);
 	}
 	playerNumFrames = nFrames;
@@ -247,6 +243,7 @@ void ofxBasicSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
 		}else{
   	        if (positions.size() == 1 && abs(speed - 1)<FLT_EPSILON) {
                 buffer.copyTo(outputBuffer,nFrames,nChannels,positions[0],loop);
+                outputBuffer.stereoPan(volumesLeft.back(),volumesRight.back());
             }else{
                 for(int i=0;i<(int)positions.size();i++){
                     //assert( resampledBuffer.getNumFrames() == bufferSize*relativeSpeed[i] );

@@ -7,10 +7,17 @@ void ofApp::setup(){
 	
 	ofFileDialogResult result = ofSystemLoadDialog();
 	if (result.bSuccess) {
-        stream.setup(2, 0, 44100, 256, 1);
+        player.load(result.getPath());
+        ofSoundStreamSettings settings;
+        settings.bufferSize = 256;
+        settings.numBuffers = 1;
+        settings.numInputChannels = 0;
+        settings.numOutputChannels = 2;
+        settings.sampleRate = player.getSoundFile().getSampleRate();
+        stream.setup(settings);
         stream.setOutput(output);
         
-        player.load(result.getPath());
+        
 		player.play();
 		
 		wave.setup(0, 0, ofGetWidth(), ofGetHeight());
@@ -18,11 +25,17 @@ void ofApp::setup(){
         player.connectTo(wave).connectTo(output);
         
 
-        
+        gui.setup();
+        gui.add(pan.set("PAN", 0, -1,1));
+        pan.addListener(this, &ofApp::panChanged);
 		ofBackground(0);
 	}
 }
+//--------------------------------------------------------------
+void ofApp::panChanged(float&f){
 
+    player.setPan(pan);
+}
 //--------------------------------------------------------------
 void ofApp::update(){
 }
@@ -30,6 +43,8 @@ void ofApp::update(){
 void ofApp::draw(){
 	
 	wave.draw();
+    
+    gui.draw();
 	
 }
 //--------------------------------------------------------------

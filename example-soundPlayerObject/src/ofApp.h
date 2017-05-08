@@ -5,7 +5,7 @@
 #include "waveformDraw.h"
 
 #include "ofxBasicSoundPlayer.h"
-
+#include "ofxGui.h"
 class ofApp : public ofBaseApp{
 
 public:
@@ -29,5 +29,8 @@ public:
 	ofxBasicSoundPlayer player;
 	waveformDraw wave;
 
+    ofxPanel gui;
+    ofParameter<float> pan;
+    void panChanged(float&f);
 
 };

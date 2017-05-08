@@ -58,13 +58,13 @@ public:
 	bool seekTo(unsigned int sampleIndex);
 
 	/// returns sound file duration in milliseconds
-	unsigned long getDuration();
-	int getNumChannels();
-	int getSampleRate();
-	unsigned long getNumSamples();
-	bool isCompressed();
-	bool isLoaded();
-	string getPath();
+	const unsigned long getDuration() const;
+	const int getNumChannels() const;
+	const int getSampleRate() const;
+	const unsigned long getNumSamples() const;
+	const bool isCompressed() const;
+	const bool isLoaded() const;
+	const string getPath() const;
 
 private:
 	

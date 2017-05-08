@@ -65,7 +65,7 @@ bool ofxSoundObject::checkForInfiniteLoops() {
 void ofxSoundObject::audioOut(ofSoundBuffer &output) {
 	if(inputObject!=NULL) {
 		if(workingBuffer.size()!=output.size()) {
-            ofLogVerbose("ofxSoundObject") << "working buffer size != output buffer size.";
+            ofLogVerbose("ofxSoundObject") << "working buffer size != output buffer size. " << workingBuffer.size() << " != " <<output.size();
             workingBuffer.resize(output.size());
             workingBuffer.setNumChannels(output.getNumChannels());
             workingBuffer.setSampleRate(output.getSampleRate());

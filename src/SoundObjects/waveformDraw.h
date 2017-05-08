@@ -12,7 +12,7 @@ public:
 //--------------------------------------------------------------
     void process(ofSoundBuffer &input, ofSoundBuffer &output) {
        	if(input.size()!=buffer.size()) {
-            ofLogVerbose("ofSoundObject") << "working buffer size != output buffer size.";
+            ofLogVerbose("waveformDraw") << "working buffer size != output buffer size.";
             buffer.resize(input.size());
             buffer.setNumChannels(input.getNumChannels());
             buffer.setSampleRate(input.getSampleRate());

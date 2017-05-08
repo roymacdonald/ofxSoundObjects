@@ -22,7 +22,7 @@ public:
 	ofxBasicSoundPlayer();
 	virtual ~ofxBasicSoundPlayer();
 
-	bool load(string fileName, bool stream = false);
+	bool load(std::filesystem::path filePath, bool stream = false);
 	void unload();
 	void play();
 	void stop();
@@ -54,6 +54,8 @@ public:
 
 	ofEvent<ofSoundBuffer> newBufferE;
 
+    const ofxSoundFile& getSoundFile() const {return soundFile;}
+    
 private:
 	void audioOutBuffersChanged( int nFrames, int nChannels, int sampleRate );
 	void audioOut(ofSoundBuffer& outputBuffer);

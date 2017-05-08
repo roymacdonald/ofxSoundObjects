@@ -266,37 +266,37 @@ void ofxSoundFile::close(){
 }
 
 //--------------------------------------------------------------
-bool ofxSoundFile::isLoaded(){
+const bool ofxSoundFile::isLoaded() const{
     return bLoaded;
 }
 
 //--------------------------------------------------------------
-int ofxSoundFile::getNumChannels(){
+const int ofxSoundFile::getNumChannels() const{
 	return channels;
 }
 
 //--------------------------------------------------------------
-unsigned long ofxSoundFile::getDuration(){
+const unsigned long ofxSoundFile::getDuration() const{
 	return duration*1000;
 }
 
 //--------------------------------------------------------------
-int ofxSoundFile::getSampleRate(){
+const int ofxSoundFile::getSampleRate() const{
 	return samplerate;
 }
 
 //--------------------------------------------------------------
-unsigned long ofxSoundFile::getNumSamples(){
+const unsigned long ofxSoundFile::getNumSamples() const{
     return samples;
 }
 
 //--------------------------------------------------------------
-bool ofxSoundFile::isCompressed(){
+const bool ofxSoundFile::isCompressed() const{
     return bCompressed;
 }
 
 //--------------------------------------------------------------
-string ofxSoundFile::getPath(){
+const string ofxSoundFile::getPath() const{
     return path;
 }
 
