@@ -27,45 +27,41 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
-    <Import Project="..\ofxSoundObjects.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
-    <Import Project="..\ofxSoundObjects.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
-    <Import Project="..\ofxSoundObjects.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
-    <Import Project="..\ofxSoundObjects.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -99,15 +95,15 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\libs;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\src;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\libs;..\..\..\addons\ofxSoundObjects\libs\libsndfile;..\..\..\addons\ofxSoundObjects\libs\libsndfile\include;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32\Debug;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32\Release;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64\Debug;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64\Release;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);libsndfile.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32\Debug</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
@@ -118,7 +114,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\libs;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\src;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\libs;..\..\..\addons\ofxSoundObjects\libs\libsndfile;..\..\..\addons\ofxSoundObjects\libs\libsndfile\include;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32\Debug;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32\Release;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64\Debug;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64\Release;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -126,8 +122,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);libsndfile.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64\Debug</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
@@ -137,7 +133,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\libs;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\src;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\libs;..\..\..\addons\ofxSoundObjects\libs\libsndfile;..\..\..\addons\ofxSoundObjects\libs\libsndfile\include;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32\Debug;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32\Release;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64\Debug;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64\Release;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -148,8 +144,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);libsndfile.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32\Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
@@ -159,7 +155,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\libs;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include;..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\src;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\libs;..\..\..\addons\ofxSoundObjects\libs\libsndfile;..\..\..\addons\ofxSoundObjects\libs\libsndfile\include;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32\Debug;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\Win32\Release;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64\Debug;..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64\Release;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -169,8 +165,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);libsndfile.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);..\..\..\addons\ofxSoundObjects\libs\libsndfile\lib\vs\x64\Release</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
@@ -179,7 +175,9 @@
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxBaseGui.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxButton.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxGui\src\ofxColorPicker.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxGuiGroup.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxGui\src\ofxInputField.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxLabel.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxPanel.cpp" />
     <ClCompile Include="..\..\..\addons\ofxGui\src\ofxSlider.cpp" />
@@ -189,15 +187,16 @@
     <ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundFile.cpp" />
     <ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMixer.cpp" />
     <ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObject.cpp" />
-    <ClCompile Include="..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\src\audiodecoderbase.cpp" />
-    <ClCompile Include="..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\src\audiodecodermediafoundation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\libs\libsndfile\include\sndfile.hh" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxBaseGui.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxButton.h" />
+    <ClInclude Include="..\..\..\addons\ofxGui\src\ofxColorPicker.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxGui.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxGuiGroup.h" />
+    <ClInclude Include="..\..\..\addons\ofxGui\src\ofxInputField.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxLabel.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxPanel.h" />
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxSlider.h" />
@@ -213,9 +212,7 @@
     <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\NoiseGenerator.h" />
     <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\SineWaveGenerator.h" />
     <ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\waveformDraw.h" />
-    <ClInclude Include="..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include\audiodecoder.h" />
-    <ClInclude Include="..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include\audiodecoderbase.h" />
-    <ClInclude Include="..\..\..\addons\ofxSoundObjects\libs\libaudiodecoder\include\audiodecodermediafoundation.h" />
+    <ClInclude Include="..\..\..\addons\ofxSoundObjects\libs\libsndfile\include\sndfile.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">

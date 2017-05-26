@@ -3,19 +3,24 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+	ofSetLogLevel(OF_LOG_VERBOSE);
+
 	ofBackground(34, 34, 34);
 
-
-    stream.setup( 2, 0, 44100, 256, 1);
+	int samplerate = 48000;
+    stream.setup( 2, 0, samplerate, 256, 1);
 
 	ofSetFrameRate(60);
     wave.setup(0,0,ofGetWidth(),ofGetHeight());
-    sine.setup(440);
+    sine.setup(440,1,0,samplerate);
     sine.connectTo(wave);
     stream.setOutput(wave);
 }
 
-
+//--------------------------------------------------------------
+void ofApp::exit() {
+	stream.close();
+}
 //--------------------------------------------------------------
 void ofApp::update(){
 

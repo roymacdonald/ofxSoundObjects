@@ -11,7 +11,7 @@ public:
 	ofxSoundMixer();
     virtual ~ofxSoundMixer();
 
-	shared_ptr<ofBaseSoundOutput> getChannelSource(int channelNumber);
+	ofxSoundObject* getChannelSource(int channelNumber);
 	int getNumChannels();
 
 	/// sets output volume multiplier.
@@ -30,13 +30,26 @@ public:
 
     void setChannelVolume(int channelNumber, float vol);
     float getChannelVolume(int channelNumber);
+	
+	virtual void print(string prefix = "") {
+		cout << prefix << " " << "MIXER: " << channels.size() << endl;
+		prefix += "----";
+		for (int i = 0; i < channels.size(); i ++) {
+			if (channels[i] != nullptr) {
+				channels[i]->print(prefix);
+			}
+		}
+	}
 
+	ofParameter<float> masterVol;
 protected:
+	void masterVolChanged(float& f);
 	void disconnectInput(ofxSoundObject * input);
 	vector<ofxSoundObject*>channels;
     vector<float> channelVolume;
     float masterPan;
 	float masterVolume;
 	void setInput(ofxSoundObject *obj);
+	ofMutex mutex;
 };
 

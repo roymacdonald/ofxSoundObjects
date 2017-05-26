@@ -21,7 +21,6 @@ class ofxBasicSoundPlayer: public ofBaseSoundPlayer, public ofxSoundObject {//pu
 public:
 	ofxBasicSoundPlayer();
 	virtual ~ofxBasicSoundPlayer();
-    bool load(string filePath, bool stream = false);
 	bool load(std::filesystem::path filePath, bool stream = false);
 	void unload();
 	void play();
@@ -53,9 +52,20 @@ public:
 	void setMaxSounds(int max);
 
 	ofEvent<ofSoundBuffer> newBufferE;
+    ofEvent<void> endEvent;
 
     const ofxSoundFile& getSoundFile() const {return soundFile;}
-    
+	ofxSoundFile& getSoundFile() { return soundFile;}
+
+	virtual void print(string prefix = "") {
+		string name = typeid(*this).name();
+		cout << prefix << " " << name << endl;
+		cout << prefix << "    " << ofFilePath::getFileName(soundFile.getPath()) << endl;
+		if (inputObject) {
+			inputObject->print(prefix + "    ");
+		}
+	}
+
 private:
 	void audioOutBuffersChanged( int nFrames, int nChannels, int sampleRate );
 	void audioOut(ofSoundBuffer& outputBuffer);
@@ -78,8 +88,7 @@ private:
 	float pan;
 	vector<float> relativeSpeed;
 	vector<unsigned int> positions;
-	vector<float> volumesLeft;
-	vector<float> volumesRight;	
+	float volumesLeft, volumesRight;
 };
 
 

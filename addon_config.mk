@@ -63,35 +63,19 @@ common:
 	
 	# when parsing the file system looking for sources exclude this for all or
 	# a specific platform
-	ADDON_SOURCES_EXCLUDE = libs/libaudiodecoder/examples/%
 	
 	# when parsing the file system looking for include paths exclude this for all or
 	# a specific platform
-	ADDON_INCLUDES_EXCLUDE = libs/libaudiodecoder/examples/%
-	ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/%
-    ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/apple/%
+
     	
 linux64:
 linux:
 msys2:
 
 vs:
-    ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/include/audiodecodercoreaudio.h
-	ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/src/audiodecodercoreaudio.cpp
-    ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/include/apple/%
-
-	ADDON_LIBS += Mfreadwrite.lib
-	ADDON_LIBS += MFPlat.lib
-	ADDON_LIBS += mfuuid.lib
 linuxarmv6l:
 linuxarmv7l:
 android/armeabi:	
 android/armeabi-v7a:	
 osx:
-    ADDON_SOURCES += libs/libaudiodecoder/include/apple/%
-    ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/src/audiodecodermediafoundation.cpp
-	ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/include/audiodecodermediafoundation.h
 ios:
-    ADDON_SOURCES += libs/libaudiodecoder/include/apple/%
-    ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/src/audiodecodermediafoundation.cpp
-	ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/include/audiodecodermediafoundation.h

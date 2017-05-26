@@ -41,7 +41,13 @@ public:
 	/// returns true if there are no infinite loops.
 	virtual bool checkForInfiniteLoops();
 	ofxSoundObject *getInputObject();
-
+	virtual void print(string prefix = "") {
+		string name = typeid(*this).name();
+		cout << prefix << " " << name << endl;
+		if (inputObject) {
+			inputObject->print(prefix + "    ");
+		}
+	}
 protected:
 	// this is the previous dsp object in the chain
 	// that feeds this one with input.

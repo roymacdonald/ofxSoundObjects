@@ -34,6 +34,12 @@ void ofApp::setup(){
     ofAddListener(volumeGroup.parameterChangedE(), this, &ofApp::updateVolume);
 }
 //--------------------------------------------------------------
+void ofApp::exit() {
+	cout << "ofApp::exit" << endl;
+	players.clear();
+	stream.close();
+}
+//--------------------------------------------------------------
 void ofApp::updateVolume(ofAbstractParameter& p){
     for (int i = 0; i < playersVolume.size(); i++) {
         mixer.setChannelVolume(i, playersVolume[i]);
@@ -51,7 +57,14 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){}
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key){}
+void ofApp::keyPressed(int key){
+	if (key >= '1' && key <= '9') {
+		int i = key - '1';
+		if (i < players.size()) {
+			stream.setOutput(players[i]);
+		}
+	}
+}
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){}
 //--------------------------------------------------------------

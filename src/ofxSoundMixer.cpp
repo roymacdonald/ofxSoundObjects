@@ -9,15 +9,26 @@
 ofxSoundMixer::ofxSoundMixer(){
     masterVolume = 1.0f;
     masterPan = 0.5f;
+	masterVol.set("Master Vol", 1, 0, 1);
+	masterVol.addListener(this, &ofxSoundMixer::masterVolChanged);
 }
 //----------------------------------------------------
-ofxSoundMixer::~ofxSoundMixer(){}
+void ofxSoundMixer::masterVolChanged(float& f) {
+	mutex.lock();
+	masterVolume = masterVol;
+	mutex.unlock();
+}
 //----------------------------------------------------
-shared_ptr<ofBaseSoundOutput> ofxSoundMixer::getChannelSource(int channelNumber){
+ofxSoundMixer::~ofxSoundMixer(){
+	channels.clear();
+	channelVolume.clear();
+}
+//----------------------------------------------------
+ofxSoundObject* ofxSoundMixer::getChannelSource(int channelNumber){
     if (channelNumber < channels.size()) {
-        return shared_ptr<ofBaseSoundOutput>(channels[channelNumber]);
+        return channels[channelNumber];
     }else{
-        return shared_ptr<ofBaseSoundOutput>();
+        return nullptr;
     }
 }
 //----------------------------------------------------
@@ -47,7 +58,9 @@ int ofxSoundMixer::getNumChannels(){
 }
 //----------------------------------------------------
 void ofxSoundMixer::setMasterVolume(float vol){
+	mutex.lock();
     masterVolume = vol;
+	mutex.unlock();
 }
 //----------------------------------------------------
 float ofxSoundMixer::getMasterVolume(){
@@ -59,7 +72,9 @@ float ofxSoundMixer::getMasterPan(){
 }
 //----------------------------------------------------
 void ofxSoundMixer::setMasterPan(float pan){
+	mutex.lock();
     masterPan = pan;
+	mutex.unlock();
 }
 //----------------------------------------------------
 bool ofxSoundMixer::isConnectedTo(ofxSoundObject& obj){
@@ -97,14 +112,14 @@ void ofxSoundMixer::audioOut(ofSoundBuffer &output) {
                 channels[i]->audioOut(tempBuffer);
                 
                 float v = channelVolume[i];
-                for (int i = 0; i < tempBuffer.size(); i++) {
-                    output.getBuffer()[i] += tempBuffer.getBuffer()[i] * v;
+                for (int j = 0; j < tempBuffer.size(); j++) {
+                    output.getBuffer()[j] += tempBuffer.getBuffer()[j] * v;
                 }
             }
         }
-        if(output.getNumChannels() == 2) {
+     /*   if(output.getNumChannels() == 2) {
             output.stereoPan(1-masterPan, masterPan);
-        }
+        }*/
         output*=masterVolume;
     }
 }
