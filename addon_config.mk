@@ -31,7 +31,7 @@ common:
 	# specified here separated by spaces or one per line using +=
 #	ADDON_INCLUDES += libs/libaudiodecoder/include/audiodecoder.h
 #	ADDON_INCLUDES += libs/libaudiodecoder/include/audiodecoderbase.h
-	
+	ADDON_INCLUDES += libs\libsndfile\include
 	# any special flag that should be passed to the compiler when using this
 	# addon
 	# ADDON_CFLAGS =
@@ -67,12 +67,12 @@ common:
 	# when parsing the file system looking for include paths exclude this for all or
 	# a specific platform
 
+vs:
+
     	
 linux64:
 linux:
 msys2:
-
-vs:
 linuxarmv6l:
 linuxarmv7l:
 android/armeabi:	
