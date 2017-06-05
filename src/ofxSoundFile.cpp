@@ -73,7 +73,7 @@ bool ofxSoundFile::load(string _path){
 		duration = 0;
 		if(samplerate != 0) { // prevent div by zero if file doesn't open.
 			duration = float(samples) / float(samplerate);
-			cout << "ofxSoundFile loaded! " << ofFilePath::getBaseName(path);
+			cout << "ofxSoundFile loaded! " << ofFilePath::getBaseName(path) << endl;
 		//	cout << " samples: " << samples;
 		//	cout << " channels: " << channels;
 		//	cout << " samplerate: " << samplerate << endl;
