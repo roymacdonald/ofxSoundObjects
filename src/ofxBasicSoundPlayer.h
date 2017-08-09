@@ -21,8 +21,8 @@ class ofxBasicSoundPlayer: public ofBaseSoundPlayer, public ofxSoundObject {//pu
 public:
 	ofxBasicSoundPlayer();
 	virtual ~ofxBasicSoundPlayer();
-    bool load(string filePath, bool stream = false);
-	bool load(std::filesystem::path filePath, bool stream = false);
+	bool load(std::string filePath, bool stream = false);
+	bool load(const std::filesystem::path& filePath, bool stream = false) override;
 	void unload();
 	void play();
 	void stop();
