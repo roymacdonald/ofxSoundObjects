@@ -35,9 +35,9 @@ ofxBasicSoundPlayer::~ofxBasicSoundPlayer() {
 }
 
 bool ofxBasicSoundPlayer::load(string filePath, bool _stream){
-    load(std::filesystem::path(filePath), _stream);
+	return load(std::filesystem::path(filePath), _stream);
 }
-bool ofxBasicSoundPlayer::load(std::filesystem::path filePath, bool _stream){
+bool ofxBasicSoundPlayer::load(const std::filesystem::path& filePath, bool _stream){
     ofLogVerbose() << "ofxBasicSoundPlayer::load" << endl << "Loading file: " << filePath.string();
 	bIsLoaded = soundFile.load(filePath.string());
 	if(!bIsLoaded) return false;

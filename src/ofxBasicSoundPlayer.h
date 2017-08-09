@@ -21,30 +21,30 @@ class ofxBasicSoundPlayer: public ofBaseSoundPlayer, public ofxSoundObject {//pu
 public:
 	ofxBasicSoundPlayer();
 	virtual ~ofxBasicSoundPlayer();
-    bool load(string filePath, bool stream = false);
-	bool load(std::filesystem::path filePath, bool stream = false);
-	void unload();
-	void play();
-	void stop();
+	bool load(std::string filePath, bool stream = false);
+	bool load(const std::filesystem::path& filePath, bool stream = false) override;
+	void unload() override;
+	void play() override;
+	void stop() override;
 
-	void setVolume(float vol);
-	void setPan(float vol); // -1 = left, 1 = right
-	void setSpeed(float spd);
-	void setPaused(bool bP);
-	void setLoop(bool bLp);
-	void setMultiPlay(bool bMp);
-	void setPosition(float pct); // 0 = start, 1 = end;
-	void setPositionMS(int ms);
+	void setVolume(float vol) override;
+	void setPan(float vol) override; // -1 = left, 1 = right
+	void setSpeed(float spd) override;
+	void setPaused(bool bP) override;
+	void setLoop(bool bLp) override;
+	void setMultiPlay(bool bMp) override;
+	void setPosition(float pct) override; // 0 = start, 1 = end;
+	void setPositionMS(int ms) override;
 	
-	float getPosition() const;
-	int getPositionMS() const;
-	bool isPlaying() const;
-	float getSpeed() const;
-	float getPan() const;
-	bool isLoaded() const;
-	float getVolume() const;
+	float getPosition() const override;
+	int getPositionMS() const override;
+	bool isPlaying() const override;
+	float getSpeed() const override;
+	float getPan() const override;
+	bool isLoaded() const override;
+	float getVolume() const override;
 	bool getIsLooping() const;
-	unsigned long getDurationMS();
+	unsigned long getDurationMS() ;
 
 	ofSoundBuffer & getCurrentBuffer();
 

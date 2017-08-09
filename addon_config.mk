@@ -72,6 +72,8 @@ common:
     ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/apple/%
     	
 linux64:
+    ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/%
+    ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/%
 linux:
 msys2:
 
