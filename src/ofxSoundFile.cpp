@@ -204,6 +204,7 @@ bool ofxSoundFile::mpg123Open(string path){
 	mpg123_seek(mp3File,0,SEEK_SET);
     
     bitDepth = 16; //TODO:get real bitdepth;.
+	return true;
 }
 #endif
 
@@ -235,6 +236,7 @@ bool ofxSoundFile::sfOpen(string path){
 	samples = sfInfo.frames;
 	samplerate = sfInfo.samplerate;
     bitDepth = 16; //fix
+	return true;
 }
 #endif
 
