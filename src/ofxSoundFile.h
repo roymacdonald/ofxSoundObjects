@@ -11,23 +11,23 @@
 #include "ofSoundBuffer.h"
 #include <sndfile.hh>
 
-bool ofxLoadSound(ofSoundBuffer &buffer, string path);
-bool ofxSaveSound(const ofSoundBuffer &buffer, string path);
+bool ofxLoadSound(ofSoundBuffer &buffer, std::string path);
+bool ofxSaveSound(const ofSoundBuffer &buffer, std::string path);
 
 class ofxSoundFile {
 public:
 	ofxSoundFile();
     
-	ofxSoundFile(string path);
+	ofxSoundFile(std::string path);
 
 	virtual ~ofxSoundFile();
 	void close();
 
 	/// opens a sound file for reading with readTo().
-	bool load(string _path);
+	bool load(std::string _path);
 	
 
-	bool save(string _path, const ofSoundBuffer &buffer);
+	bool save(std::string _path, const ofSoundBuffer &buffer);
 
 	/// reads a file into an ofSoundBuffer.
 	/// by default, this will resize the buffer to fit the entire file.
@@ -44,7 +44,7 @@ public:
 	const unsigned long getNumSamples() const;
 	//const bool isCompressed() const;
 	const bool isLoaded() const;
-	const string getPath() const;
+	const std::string getPath() const;
 
 private:
 	
@@ -54,7 +54,7 @@ private:
 	sf_count_t samples_read;
 
 	float duration; //in secs
-	string path;
+	std::string path;
 
 };
 

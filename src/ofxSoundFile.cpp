@@ -11,7 +11,7 @@
 #include <algorithm>
 
 //--------------------------------------------------------------
-bool ofxLoadSound(ofSoundBuffer &buff, string path){
+bool ofxLoadSound(ofSoundBuffer &buff, std::string path){
     ofxSoundFile sf(path);
     if(sf.isLoaded()){
         sf.readTo(buff);
@@ -20,7 +20,7 @@ bool ofxLoadSound(ofSoundBuffer &buff, string path){
         return false;
     }
 }
-bool ofxSaveSound(const ofSoundBuffer &buff,  string path){
+bool ofxSaveSound(const ofSoundBuffer &buff,  std::string path){
 	ofxSoundFile soundFile;
 	return soundFile.save(path, buff);
 }
@@ -31,7 +31,7 @@ ofxSoundFile::ofxSoundFile() {
 }
 
 //--------------------------------------------------------------
-ofxSoundFile::ofxSoundFile(string path) {
+ofxSoundFile::ofxSoundFile(std::string path) {
     ofxSoundFile();
     load(path);
 }
@@ -42,7 +42,7 @@ ofxSoundFile::~ofxSoundFile() {
 }
 
 //--------------------------------------------------------------
-bool ofxSoundFile::load(string _path){
+bool ofxSoundFile::load(std::string _path){
  	path = ofToDataPath(_path);
 	sndFileHandle = SndfileHandle(path);
 	if (sndFileHandle) {
@@ -62,7 +62,7 @@ bool ofxSoundFile::load(string _path){
 		duration = 0;
 		if(samplerate != 0) { // prevent div by zero if file doesn't open.
 			duration = float(samples) / float(samplerate);
-			cout << "ofxSoundFile loaded! " << ofFilePath::getBaseName(path) << endl;
+			std::cout << "ofxSoundFile loaded! " << ofFilePath::getBaseName(path) << std::endl;
 		}
 		return true;
 	}
@@ -71,7 +71,7 @@ bool ofxSoundFile::load(string _path){
 }
 
 //--------------------------------------------------------------
-bool ofxSoundFile::save(string path, const ofSoundBuffer &buff){
+bool ofxSoundFile::save(std::string path, const ofSoundBuffer &buff){
 	
     //TO DO !!!!!
     
@@ -118,7 +118,7 @@ const unsigned long ofxSoundFile::getNumSamples() const{
 	return 0;
 }
 //--------------------------------------------------------------
-const string ofxSoundFile::getPath() const{
+const std::string ofxSoundFile::getPath() const{
     return path;
 }
 //--------------------------------------------------------------
