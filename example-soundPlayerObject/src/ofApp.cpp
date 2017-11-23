@@ -8,13 +8,7 @@ void ofApp::setup(){
 	ofFileDialogResult result = ofSystemLoadDialog();
 	if (result.bSuccess) {
         player.load(result.getPath());
-        ofSoundStreamSettings settings;
-        settings.bufferSize = 256;
-        settings.numBuffers = 1;
-        settings.numInputChannels = 0;
-        settings.numOutputChannels = 2;
-        settings.sampleRate = player.getSoundFile().getSampleRate();
-        stream.setup(settings);
+        stream.setup(2, 0, player.getSoundFile().getSampleRate(), 256, 1);
         stream.setOutput(output);
         
         
