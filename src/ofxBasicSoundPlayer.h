@@ -21,8 +21,8 @@ class ofxBasicSoundPlayer: public ofBaseSoundPlayer, public ofxSoundObject {//pu
 public:
 	ofxBasicSoundPlayer();
 	virtual ~ofxBasicSoundPlayer();
-	bool load(std::string filePath, bool stream = false);
-	bool load(const std::filesystem::path& filePath, bool stream = false) override;
+	bool load(std::string filePath, bool stream = false) override;
+	bool load(const std::filesystem::path& filePath, bool stream = false);
 	void unload() override;
 	void play() override;
 	void stop() override;
@@ -58,7 +58,7 @@ public:
     
 private:
 	void audioOutBuffersChanged( int nFrames, int nChannels, int sampleRate );
-	void audioOut(ofSoundBuffer& outputBuffer);
+	void audioOut(ofSoundBuffer& outputBuffer) override;
 	void updatePositions(int numFrames);
 	
 	int playerSampleRate, playerNumFrames, playerNumChannels;
