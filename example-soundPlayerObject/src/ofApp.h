@@ -4,8 +4,11 @@
 
 #include "waveformDraw.h"
 
-#include "ofxBasicSoundPlayer.h"
+#include "ofxSoundPlayerObject.h"
 #include "ofxGui.h"
+
+#include "SineWaveGenerator.h"
+
 class ofApp : public ofBaseApp{
 
 public:
@@ -26,11 +29,12 @@ public:
     ofSoundStream stream;
     ofxSoundOutput output;
 	// these are all subclasses of ofSoundObject
-	ofxBasicSoundPlayer player;
+	ofxSoundPlayerObject player;
 	waveformDraw wave;
 
     ofxPanel gui;
-    ofParameter<float> pan;
+    ofParameter<float> pan, speed;
+    void speedChanged(float&);
     void panChanged(float&f);
 
 };
