@@ -4,6 +4,8 @@
 class waveformDraw: public ofRectangle, public ofxSoundObject{
 public:
     waveformDraw(){}
+    waveformDraw(const waveformDraw& a):ofRectangle(a), ofxSoundObject(a){
+    }
     ~waveformDraw(){}
 //--------------------------------------------------------------
     void setup(float x, float y, float w, float h){
@@ -56,5 +58,5 @@ public:
         }
     }
     ofSoundBuffer buffer;
-    ofMutex mutex1;
+   mutable ofMutex mutex1;
 };
