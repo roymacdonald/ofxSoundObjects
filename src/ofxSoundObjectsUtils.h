@@ -6,9 +6,10 @@
 //
 //
 
-#ifndef __example_soundPlayerObject__ofxSoundObjectsUtils__
-#define __example_soundPlayerObject__ofxSoundObjectsUtils__
-
-#include <stdio.h>
-
-#endif /* defined(__example_soundPlayerObject__ofxSoundObjectsUtils__) */
+#pragma once
+#include "ofxSoundObjects.h"
+namespace ofxSoundObjects{
+    void getBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer, ofSoundBuffer & targetBuffer, std::vector<int> group);
+    void setBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer, ofSoundBuffer & targetBuffer, const std::vector<int>& group);
+    bool checkBuffers(const ofSoundBuffer& src, ofSoundBuffer& dst, bool bSetDst = true);
+};
