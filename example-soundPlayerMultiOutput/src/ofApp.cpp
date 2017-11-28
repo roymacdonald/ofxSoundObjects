@@ -2,6 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+
+
+
     size_t count = 0;
     
     //this will open a dialog to select a folder in which you should have audio files, ideally more than one but not an excesive amount, say maximum 10.
@@ -28,6 +31,7 @@ void ofApp::setup(){
                     for(int j =0 ; j < v.size(); j++){
                         v[j] = j+count;
                     }
+                    // SUPER IMPORTANT!!!
                     // the following line of code is the important one
                     //
                     // As an alternative you could define the channels manually in the following way
@@ -55,9 +59,13 @@ void ofApp::setup(){
     }
     
     auto devices = ofSoundStreamListDevices();
-    // SUPER IMPORTANT!!!
-    // this is where you set which audio interface to use.
+    stream.printDeviceList();
+    
+    // IMPORTANT!!!
+    // The following two lines of code is where you set which audio interface to use.
     // The number you put inside the square braquets in devices[ ] is the one
+    // printed in the list in the console.
+    // You can use a different input and output device.
     settings.setInDevice(devices[3]);
     settings.setOutDevice(devices[3]);
     
@@ -72,9 +80,25 @@ void ofApp::setup(){
 void ofApp::update(){
     
 }
-
+//helper function to convert milliseconds to MM:SS format.
+string msToMMSS(unsigned long ms){
+    ms /=1000;
+    return ofToString((int)floor(ms/60.0))+":"+ofToString(ms%60);
+}
 //--------------------------------------------------------------
 void ofApp::draw(){
+    ofDrawBitmapStringHighlight("READ THE COMMENTS IN THE setup() function!!!", 100,100);
+    
+    stringstream ss;
+    for(auto & c: output.getChannelGroups()){
+        auto pl = ((ofxSoundPlayerObject*)c.second.getInputObject());
+        auto& f = pl->getSoundFile();
+        
+        ss << "Playing " << ofFilePath::getBaseName(f.getPath()) << " to channels " << ofToString(c.first)<<endl;
+        ss << "        " << msToMMSS(pl->getPositionMS()) << " - " << msToMMSS(pl->getDurationMS()) << endl <<endl;
+        
+     }
+    ofDrawBitmapStringHighlight(ss.str(), 100, 130);
  
 }
 
