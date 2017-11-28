@@ -19,6 +19,10 @@ Release*/
 # IDE-specific ignore patterns (e.g. user-specific files)
 
 #XCode
+*/Makefile
+*/Project.xcconfig
+*/config.make
+*/openFrameworks-Info.plist
 *.xcscheme
 *.pbxproj
 *.xcodeproj/
