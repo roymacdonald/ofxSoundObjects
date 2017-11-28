@@ -8,7 +8,7 @@
 #include "ofxSoundFile.h"
 #include "ofLog.h"
 #include "ofUtils.h"
-
+using namespace std;
 //--------------------------------------------------------------
 bool ofxLoadSound(ofSoundBuffer &buff, string path){
     ofxSoundFile sf(path);
