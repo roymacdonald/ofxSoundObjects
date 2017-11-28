@@ -8,6 +8,9 @@
 
 #pragma once
 #include "ofxSoundObject.h"
+//--------------------------------------------------------------
+//  ofxSoundInputMultiplexer
+//--------------------------------------------------------------
 
 class ofxSoundBaseMultiplexer{
 
@@ -20,15 +23,24 @@ public:
     
     bool deleteChannelGroup(const std::vector<int>& group);
     
+    std::map < std::vector<int>, ofxSoundObject>& getChannelGroups();
+    
+    const std::map < std::vector<int>, ofxSoundObject>& getChannelGroups() const ;
 protected:
     std::map < std::vector<int>, ofxSoundObject> channelsMap;
     
 };
 
+//--------------------------------------------------------------
+//  ofxSoundOutputMultiplexer
+//--------------------------------------------------------------
 class ofxSoundInputMultiplexer: public ofxSoundBaseMultiplexer, public ofxSoundInput{
 public:
 	virtual void audioIn(ofSoundBuffer &input) override;
 };
+//--------------------------------------------------------------
+//  ofxSoundBaseMultiplexer
+//--------------------------------------------------------------
 class ofxSoundOutputMultiplexer: public ofxSoundBaseMultiplexer, public ofxSoundOutput{
 public:
 	virtual void audioOut(ofSoundBuffer &output) override;

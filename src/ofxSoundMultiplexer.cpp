@@ -10,6 +10,8 @@
 #include "ofxSoundObjectsUtils.h"
 
 //--------------------------------------------------------------
+//  ofxSoundBaseMultiplexer
+//--------------------------------------------------------------
 ofxSoundObject& ofxSoundBaseMultiplexer::getOrCreateChannelGroup(const std::vector<int>& group){
     std::cout << "ofxSoundBaseMultiplexer::getOrCreateChannelGroup " << ofToString(group) << " size: " << group.size() << endl;
     auto it = channelsMap.find(group);
@@ -24,6 +26,17 @@ bool ofxSoundBaseMultiplexer::deleteChannelGroup(const std::vector<int>& group){
     return (bool) channelsMap.erase(group);
 }
 //--------------------------------------------------------------
+std::map < std::vector<int>, ofxSoundObject>& ofxSoundBaseMultiplexer::getChannelGroups(){
+    return channelsMap;
+}
+//--------------------------------------------------------------
+const std::map < std::vector<int>, ofxSoundObject>& ofxSoundBaseMultiplexer::getChannelGroups() const {
+    return channelsMap;
+}
+
+//--------------------------------------------------------------
+//  ofxSoundInputMultiplexer
+//--------------------------------------------------------------
 void ofxSoundInputMultiplexer::audioIn(ofSoundBuffer &input) {
     ofxSoundObjects::checkBuffers(input, inputBuffer);
 	input.copyTo(inputBuffer);
@@ -32,6 +45,8 @@ void ofxSoundInputMultiplexer::audioIn(ofSoundBuffer &input) {
         ofxSoundObjects::getBufferFromChannelGroup(inputBuffer, m.second.getBuffer(), m.first);
     }
 }
+//--------------------------------------------------------------
+//  ofxSoundOutputMultiplexer
 //--------------------------------------------------------------
 void ofxSoundOutputMultiplexer::audioOut(ofSoundBuffer &output){
     //ofxSoundObject::audioOut(output);
