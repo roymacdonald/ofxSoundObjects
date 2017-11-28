@@ -3,6 +3,8 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
+    
+    
     auto devices = ofSoundStreamListDevices();
     ofSoundStreamSettings settings;
     settings.bufferSize = 256;
@@ -28,10 +30,9 @@ void ofApp::setup(){
 
     outstream.setup(outsettings);
     outstream.setOutput(mixer);
-//    waveforms.resize(1);
-//    waveforms[0].set(0, 0, ofGetWidth(), ofGetHeight());
-//    input.getOrCreateChannelGroup({1,2}).connectTo(waveforms[0]).connectTo(mixer);
-//*
+
+
+
     int count = 0;
     waveforms.resize(9);
     float w = ofGetWidth()/3;
@@ -48,7 +49,7 @@ void ofApp::setup(){
         input.getOrCreateChannelGroup(v).connectTo(waveforms[i]).connectTo(mixer);
         count += 2 ;
     }
-    //*/
+
 }
 
 //--------------------------------------------------------------
