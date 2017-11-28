@@ -19,6 +19,7 @@ Release*/
 # IDE-specific ignore patterns (e.g. user-specific files)
 
 #XCode
+*.xcodeproj/*
 *.pbxuser
 *.perspective
 *.perspectivev3
