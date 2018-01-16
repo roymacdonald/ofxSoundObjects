@@ -12,8 +12,9 @@ void ofApp::setup(){
     settings.numInputChannels = 64;
     settings.numOutputChannels = 0;
     
-    settings.setInDevice(devices[3]);
-    settings.setOutDevice(devices[3]);
+    // Set the following to the correct sound device.
+    settings.setInDevice(devices[3]);//change the number between brackets for the one that has been printed on the console.
+  //  settings.setOutDevice(devices[3]);// You can have different devices as input and output if you wish.
     stream.setup(settings);
     stream.setInput(input);
 //    stream.setOutput(mixer);
