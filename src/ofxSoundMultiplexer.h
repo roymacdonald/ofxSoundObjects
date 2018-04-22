@@ -8,6 +8,7 @@
 
 #pragma once
 #include "ofxSoundObject.h"
+#include <map>
 //--------------------------------------------------------------
 //  ofxSoundInputMultiplexer
 //--------------------------------------------------------------
