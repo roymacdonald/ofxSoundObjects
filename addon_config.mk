@@ -24,13 +24,12 @@ meta:
 common:
 	# dependencies with other addons, a list of them separated by spaces 
 	# or use += in several lines
-	# ADDON_DEPENDENCIES =
+	ADDON_DEPENDENCIES = ofxAudioFile
 	
 	# include search paths, this will be usually parsed from the file system
 	# but if the addon or addon libraries need special search paths they can be
 	# specified here separated by spaces or one per line using +=
-#	ADDON_INCLUDES += libs/libaudiodecoder/include/audiodecoder.h
-#	ADDON_INCLUDES += libs/libaudiodecoder/include/audiodecoderbase.h
+	# ADDON_INCLUDES = 
 	
 	# any special flag that should be passed to the compiler when using this
 	# addon
@@ -51,7 +50,7 @@ common:
 	# in the src folders in libs and the root of the addon. if your addon needs
 	# to include files in different places or a different set of files per platform
 	# they can be specified here
-	# ADDON_SOURCES = libs/libaudiodecoder/src/audiodecoderbase.cpp
+	# ADDON_SOURCES =
 	
 	# some addons need resources to be copied to the bin/data folder of the project
 	# specify here any files that need to be copied, you can use wildcards like * and ?
@@ -63,37 +62,20 @@ common:
 	
 	# when parsing the file system looking for sources exclude this for all or
 	# a specific platform
-	ADDON_SOURCES_EXCLUDE = libs/libaudiodecoder/examples/%
+	# ADDON_SOURCES_EXCLUDE =
 	
 	# when parsing the file system looking for include paths exclude this for all or
 	# a specific platform
-	ADDON_INCLUDES_EXCLUDE = libs/libaudiodecoder/examples/%
-	ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/%
-    ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/include/apple/%
+	# ADDON_INCLUDES_EXCLUDE =
+	
     	
 linux64:
-    ADDON_INCLUDES_EXCLUDE += libs/libaudiodecoder/%
-    ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/%
 linux:
 msys2:
-
 vs:
-    ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/include/audiodecodercoreaudio.h
-	ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/src/audiodecodercoreaudio.cpp
-    ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/include/apple/%
-
-	ADDON_LIBS += Mfreadwrite.lib
-	ADDON_LIBS += MFPlat.lib
-	ADDON_LIBS += mfuuid.lib
 linuxarmv6l:
 linuxarmv7l:
 android/armeabi:	
 android/armeabi-v7a:	
 osx:
-    ADDON_SOURCES += libs/libaudiodecoder/include/apple/%
-    ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/src/audiodecodermediafoundation.cpp
-	ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/include/audiodecodermediafoundation.h
 ios:
-    ADDON_SOURCES += libs/libaudiodecoder/include/apple/%
-    ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/src/audiodecodermediafoundation.cpp
-	ADDON_SOURCES_EXCLUDE += libs/libaudiodecoder/include/audiodecodermediafoundation.h
