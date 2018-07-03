@@ -12,12 +12,13 @@ The developers involved in this were:
 
 The original development branch can be found [here](https://github.com/admsyn/openFrameworks/tree/feature-sound-objects).
 
-Made as addon by Roy Macdonald.
+Made as addon, improoved and updated by Roy Macdonald.
 
-This addon includes [libaudiodecoder](https://github.com/asantoni/libaudiodecoder), which is licensed under MIT.
-Current commit: 9fc6ac944a67b74cfcaf19a41e00c6190561aae8
 
 ## IMPORTANT.
+#### LibAudioDecoder replaced by ofxAudioFile
+This addon no longer uses libAudioDecoder, instead uses [ofxAudioFile](https://github.com/npisanti/ofxAudioFile). Make sure you have downloaded and correctly instaled it.
+
 #### VisualStudio2015Community
 To be able to use this addon with visual studio you need to do the following whenever updating or creating a project with project generator.
 
@@ -73,18 +74,18 @@ When you want to draw the sound buffer data somehow make sure you use an ofMutex
 
 
 ## Examples
-#### AudioInput
+#### example-AudioInput
 This will take the input audio data from the sound card, plot it in the display and send it to the output.
 Notice that the waveformDraw class uses a mutex for avoiding crashes as different threads try to access and modify the object audio data.
 
 WARNING: This example can create an extreme acoustic sound feedback, so be careful with the sound levels before running it.
 
 
-#### AudioOutput
+#### example-AudioOutput
 This will generate a sine wave and output it to the sound output.
 The sine wave's parameters ar controlled via mouse position;
 
-#### SoundObjects
+#### example-SoundObjects
 This class has a NoiseGenerator, a LoPassFilter and a DigitalDelay instances, all of which inherit from ofxSoundObject. Their names are quite self explaning.
 Chech how these are connected to each other
      
@@ -92,17 +93,25 @@ Chech how these are connected to each other
 
 which means that noise is generated, the filtered by the loPassfilter, then delay (echo) is applied to finally being sent to the sound output.
 
-#### SoundPlayerObject
-This makes use of the ofxBasicSoundPlayer, that is a sound file player that extends ofxSoundObject, which is not so basic at all, thus you can connect it to any other object and process and do whatever you might want to do with the playedback sound data. See below a more thorough explanation of this sound player. When starting this example a file dialog will pop up in which you should select an audio file to be played back.
+#### example-SoundPlayerObject
+This makes use of ofxSoundPlayerObject, that is a sound file player that extends ofxSoundObject, thus you can connect it to any other object and process and do whatever you might want to do with the playedback sound data. See below a more thorough explanation of this sound player. When starting this example a file dialog will pop up in which you should select an audio file to be played back.
 
 
-#### SoundMixer
+#### example-SoundMixer
 It makes use of the ofxSoundMixer object. It loads some audiofiles and plays them back. There's a gui in which you can modify the volume of each mixer channel.
 
 
-#### ofxFft
+#### example-ofxFft
 it uses [ofxFft](https://github.com/kylemcdonald/ofxFft) to perform a Fast Fourier Transform and visualize it. You can change the input of it in runtime, choosing from a audio file playback, sine wave generator or live input.
 
+
+#### example-soundPlayerMultiOutput
+Makes use of ofxSoundOutputMultiplexer in order to output the sound player (or any other object connected to it) to  more than one output on multi output sound interfaces.
+
+
+#### example-multiInputMixdown
+
+Makes use of ofxSoundInputMultiplexer in order to mix specific channels of a multi input sound interface and output this to the default output.
 
 
 ## Included soundObjects
@@ -192,14 +201,14 @@ The following are some useful classes included with this addon.
 
 #### ofxSoundFile
 
-This class provides access to sound data from a variety of sound file formats. It supports the most common ones like .mp3, .acc, .aiff and .wav on all systems, plus several others depending on the system. It makes use of [libaudiodecoder](http://www.oscillicious.com/libaudiodecoder) for MacOsX, iOS and Windows and [libsndfile](http://www.mega-nerd.com/libsndfile/) for Linux.
+This class provides access to sound data from a variety of sound file formats. It supports the most common ones like .mp3, .aiff, .ogg and .wav on all systems, plus several others depending on the system. It makes use of [ofxAudioFile](https://github.com/npisanti/ofxAudioFile) for reading files and [libsndfile](http://www.mega-nerd.com/libsndfile/) for writing.
 This class will decode data and make it accessible using the ofSoundBuffer instances.
-It provides basic 16bit wav sound file writing.
+It provides 8, 16, 24 and 32bit WAV sound file writing.
 
 
-#### ofxBasicSoundPlayer
+#### ofxSoundPlayerObject
 
-This is a completely implemented sound player. It makes use of ofxSoundFile to access sound files. It will deal with passing the required data to the sound stream, interpolating it if necesary and provide all the common sound player functionalities. It is not basic at all but nobody came with a better name when develiping it.
+This is a completely implemented sound player. It makes use of ofxSoundFile to access sound files. It will deal with passing the required data to the sound stream, interpolating it if necesary and provide all the common sound player functionalities. It allows multiple instances of playback of the same soundfile, each acting independently from the others.
 
 #### ofxSoundMixer
 
@@ -211,5 +220,6 @@ It is really simple. Just allows volume adjustment per channel but you can exten
 
 You need to use this to connect the sound device input to a soundObject
 
+#### ofxSoundMultiplexer
 
-
+This class allows to connect multiply the ammount of inputs or outputs of a regular sound object, thus allowing to connect and route multi input and output sound interfaces
