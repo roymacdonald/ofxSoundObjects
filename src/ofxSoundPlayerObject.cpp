@@ -46,8 +46,9 @@ bool ofxSoundPlayerObject::load(std::filesystem::path filePath, bool _stream){
     ofLogVerbose("ofxSoundPlayerObject") << "SampleRate   : " << soundFile.getSampleRate();
     ofLogVerbose("ofxSoundPlayerObject") << "Num Samples  : " << soundFile.getNumSamples();
     
-	bStreaming = _stream;
-	if(!bStreaming){	
+//	bStreaming = _stream;
+	bStreaming = false; // temporarily unavailable, until properly implementing in ofxSoundFile
+	if(!bStreaming){
 		soundFile.readTo(buffer);
 		ofLogVerbose() << "Not streaming; Reading whole file into memory! ";
 	}
@@ -267,7 +268,7 @@ void ofxSoundPlayerObject::setPosition(float pct, size_t index){
     updateInstance([&](soundPlayInstance& inst){
         inst.position = pct*playerNumFrames;
         if(bStreaming){
-			soundFile.seekTo(inst.position);
+			//soundFile.seekTo(inst.position);
 		}
     },index, "ofxSoundPlayerObject::setPosition");
 }
