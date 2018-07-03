@@ -9,25 +9,10 @@
 
 #include "ofConstants.h"
 #include "ofSoundBuffer.h"
-
-#if defined (TARGET_OSX) || defined (TARGET_WIN32) || defined (TARGET_OS_IPHONE)
-	#define OF_USING_LAD // libaudiodecoder
-#elif defined (TARGET_LINUX)
-	#define OF_USING_SNDFILE // libsndfile
-#endif
-
-#if defined (OF_USING_SNDFILE)
-	#include <sndfile.h>
-#elif defined (OF_USING_LAD)
-    #include "audiodecoder.h"
-#endif
-#if defined (OF_USING_MPG123)
-	#include <mpg123.h>
-#endif
-
+#include "ofxAudioFile.h"
+#include <sndfile.hh>
 /// reads a sound file into an ofSoundBuffer.
 /// encoding support varies by platform.
-/// Windows and OSX use libaudiodecoder for decoding, Linux uses libsndfile
 bool ofxLoadSound(ofSoundBuffer &buffer, std::string path);
 
 /// writes an ofSoundBuffer as a 16-bit PCM WAV file.
@@ -38,71 +23,57 @@ public:
 	ofxSoundFile();
 	ofxSoundFile(std::string path);
 
-	virtual ~ofxSoundFile();
 	void close();
 
 	/// opens a sound file for reading with readTo().
 	/// encoding support varies by platform.
 	/// Windows and OSX use libaudiodecoder for decoding, Linux uses libsndfile
-	bool load(std::string _path);
+	bool load(std::string filepath);
 	
-	/// writes an ofSoundBuffer as a 16-bit PCM WAV file
-	bool save(std::string _path, const ofSoundBuffer &buffer);
+	/// writes an ofSoundBuffer as a PCM WAV file
+	/// Use any of the following values to set the file data format (Default is 16 bits)
+	///
+    ///	SF_FORMAT_PCM_S8			/* Signed 8 bit data */
+	///	SF_FORMAT_PCM_16			/* Signed 16 bit data */
+	///	SF_FORMAT_PCM_24			/* Signed 24 bit data */
+	///	SF_FORMAT_PCM_32			/* Signed 32 bit data */
+	///	SF_FORMAT_PCM_U8		/* Unsigned 8 bit data */
 
+	static bool save(std::string _path, const ofSoundBuffer &buffer, int format = SF_FORMAT_PCM_16);
+
+	
 	/// reads a file into an ofSoundBuffer.
 	/// by default, this will resize the buffer to fit the entire file.
 	/// supplying a "samples" argument will read only the given number of samples
-	bool readTo(ofSoundBuffer &buffer, unsigned int samples = 0);
+	bool readTo(ofSoundBuffer &buffer, uint64_t samples = 0);
 	
 	/// seek to the sample at the requested index
-	bool seekTo(unsigned int sampleIndex);
+//	bool seekTo(uint64_t sampleIndex);
 
 	/// returns sound file duration in milliseconds
-	const unsigned long getDuration() const;
-	const int getNumChannels() const;
-	const int getSampleRate() const;
-	const unsigned long getNumSamples() const;
+	const uint64_t getDuration() const;
+	const unsigned int getNumChannels() const;
+	const unsigned int getSampleRate() const;
+	const uint64_t getNumSamples() const;
 	const bool isCompressed() const;
 	const bool isLoaded() const;
 	const std::string getPath() const;
 
 private:
 	
-	bool sfReadFile(ofSoundBuffer & buffer);
-	bool mpg123ReadFile(ofSoundBuffer & buffer);
-	bool ladReadFile(ofSoundBuffer & buffer);
+	ofxAudioFile audiofile;
 	
-	bool sfOpen(std::string path);
-	bool mpg123Open(std::string path);
-	bool ladOpen(std::string path);
+	double playhead;
+	std::atomic<double> playheadControl;
+	double step;
 	
-	void initDecodeLib();
-	
-#ifdef OF_USING_SNDFILE
-	// soundfilelib info
-	SNDFILE* sndFile;
-	int subformat;
-	double scale;
-	sf_count_t samples_read;
-#endif
-	
-#ifdef OF_USING_MPG123
-	// mpg123 info
-	mpg123_handle * mp3File;
-	static bool mpg123Inited;
-#endif
-	
-#ifdef OF_USING_LAD
-	AudioDecoder* audioDecoder;
-#endif
-
 	// common info
-	int channels;
+//	int channels;
 	float duration; //in secs
-	unsigned int samples;
-	int samplerate;
-	int bitDepth;
-	std::string path;
+//	unsigned int samples;
+//	int samplerate;
+//	int bitDepth;
+//	std::string path;
 	bool bCompressed;
-	bool bLoaded;
+//	bool bLoaded;
 };
