@@ -8,15 +8,21 @@ void ofApp::setup(){
 	ofFileDialogResult result = ofSystemLoadDialog();
 	if (result.bSuccess) {
         player.load(result.getPath());
-        stream.setup(2, 0, player.getSoundFile().getSampleRate(), 256, 1);
-        stream.setOutput(output);
-        
-		player.play();
+		
+		ofSoundStreamSettings soundSettings;
+		soundSettings.numInputChannels = 0;
+		soundSettings.numOutputChannels = 2;
+		soundSettings.sampleRate = player.getSoundFile().getSampleRate();
+		soundSettings.bufferSize = 256;
+		soundSettings.numBuffers = 1;
+		
+        stream.setup(soundSettings);
 		
 		wave.setup(0, 0, ofGetWidth(), ofGetHeight());
         
         player.connectTo(wave).connectTo(output);
         
+		stream.setOutput(output);
 
         gui.setup();
         gui.add(pan.set("PAN", 0, -1,1));
