@@ -1,16 +1,10 @@
 #include "FftObject.h"
-FftObject::FftObject():ofxSoundObject(), fft(nullptr), bIsProcessed(false), numChannels(0){}
-FftObject::~FftObject(){
-    if (fft != nullptr) {
-        delete fft;
-        fft = nullptr;
-    }
-}
 //--------------------------------------------------------------
 void FftObject::setup(unsigned int bufferSize) {
     this->bufferSize = bufferSize;
     
-    fft = ofxFft::create(bufferSize, OF_FFT_WINDOW_HAMMING, OF_FFT_FFTW);
+	
+    fft = shared_ptr<ofxFft>(ofxFft::create(bufferSize, OF_FFT_WINDOW_HAMMING, OF_FFT_FFTW));
     
     numChannels = 0;
     bIsProcessed = false;

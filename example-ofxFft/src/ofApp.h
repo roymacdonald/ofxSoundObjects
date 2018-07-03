@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxBasicSoundPlayer.h"
+#include "ofxSoundPlayerObject.h"
 #include "FftObject.h"
 #include "waveformDraw.h"
 #include "SineWaveGenerator.h"
@@ -27,7 +27,7 @@ class ofApp : public ofBaseApp{
     ofxSoundOutput output;
     ofxSoundInput input;
     // these are all subclasses of ofSoundObject
-    ofxBasicSoundPlayer player;
+    ofxSoundPlayerObject player;
     SineWaveGenerator sinGen;
     FftObject fft;
     waveformDraw wave;
