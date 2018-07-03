@@ -9,28 +9,6 @@
 		<string>46</string>
 		<key>objects</key>
 		<dict>
-			<key>A7936996C1DBDACFDC89B3A1</key>
-			<dict>
-				<key>fileRef</key>
-				<string>B2E1EB0F30B9F14A9B7FA4D6</string>
-				<key>isa</key>
-				<string>PBXBuildFile</string>
-			</dict>
-			<key>B2E1EB0F30B9F14A9B7FA4D6</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>file</string>
-				<key>fileEncoding</key>
-				<string>30</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>%</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/include/apple/%</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
 			<key>85268351534F8230AF283541</key>
 			<dict>
 				<key>children</key>
@@ -70,188 +48,10 @@
 				<key>sourceTree</key>
 				<string>&lt;group&gt;</string>
 			</dict>
-			<key>A4EE2673D8B0F4E160BEB4DA</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>30</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>sndfile.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/libs/libsndfile/include/include/sndfile.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>BE536BA5791C07A98B8365B0</key>
-			<dict>
-				<key>fileRef</key>
-				<string>132DE600BC2D5A7FF190F13D</string>
-				<key>isa</key>
-				<string>PBXBuildFile</string>
-			</dict>
-			<key>132DE600BC2D5A7FF190F13D</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.cpp.cpp</string>
-				<key>fileEncoding</key>
-				<string>30</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>audiodecodercoreaudio.cpp</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/src/audiodecodercoreaudio.cpp</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>DFFC7CFC295FB1816D40F88E</key>
-			<dict>
-				<key>children</key>
-				<array>
-					<string>DC8BB4888D53830E1BCB1732</string>
-					<string>132DE600BC2D5A7FF190F13D</string>
-				</array>
-				<key>isa</key>
-				<string>PBXGroup</string>
-				<key>name</key>
-				<string>src</string>
-				<key>sourceTree</key>
-				<string>&lt;group&gt;</string>
-			</dict>
-			<key>3BB5196CADF7BC9A7777C5D9</key>
-			<dict>
-				<key>fileRef</key>
-				<string>DC8BB4888D53830E1BCB1732</string>
-				<key>isa</key>
-				<string>PBXBuildFile</string>
-			</dict>
-			<key>DC8BB4888D53830E1BCB1732</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.cpp.cpp</string>
-				<key>fileEncoding</key>
-				<string>30</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>audiodecoderbase.cpp</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/src/audiodecoderbase.cpp</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>9C10C5DAD721456271310627</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>30</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>audiodecodercoreaudio.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/include/audiodecodercoreaudio.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>1CBC36432FB26826AFDBB241</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>30</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>audiodecoderbase.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/include/audiodecoderbase.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>1D7E7C28922E7C507DD56160</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>30</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>audiodecoder.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/include/audiodecoder.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>5AD5C0C0E99DAF876B40FFA9</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>30</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>CAStreamBasicDescription.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/include/apple/CAStreamBasicDescription.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>4710833B233798A49949C87A</key>
-			<dict>
-				<key>children</key>
-				<array>
-					<string>B14AC0DEB6082D5B5B722764</string>
-					<string>5AD5C0C0E99DAF876B40FFA9</string>
-				</array>
-				<key>isa</key>
-				<string>PBXGroup</string>
-				<key>name</key>
-				<string>apple</string>
-				<key>sourceTree</key>
-				<string>&lt;group&gt;</string>
-			</dict>
-			<key>87B08DF735299C35C5021EEA</key>
-			<dict>
-				<key>children</key>
-				<array>
-					<string>4710833B233798A49949C87A</string>
-					<string>1D7E7C28922E7C507DD56160</string>
-					<string>1CBC36432FB26826AFDBB241</string>
-					<string>9C10C5DAD721456271310627</string>
-				</array>
-				<key>isa</key>
-				<string>PBXGroup</string>
-				<key>name</key>
-				<string>include</string>
-				<key>sourceTree</key>
-				<string>&lt;group&gt;</string>
-			</dict>
-			<key>F26253624AC86260AFD80B56</key>
-			<dict>
-				<key>children</key>
-				<array>
-					<string>87B08DF735299C35C5021EEA</string>
-					<string>DFFC7CFC295FB1816D40F88E</string>
-				</array>
-				<key>isa</key>
-				<string>PBXGroup</string>
-				<key>name</key>
-				<string>libaudiodecoder</string>
-				<key>sourceTree</key>
-				<string>&lt;group&gt;</string>
-			</dict>
 			<key>EE444319650A32985C5E8F71</key>
 			<dict>
 				<key>children</key>
 				<array>
-					<string>F26253624AC86260AFD80B56</string>
 					<string>AC88EE60CE0AA69EB125399B</string>
 				</array>
 				<key>isa</key>
@@ -261,18 +61,18 @@
 				<key>sourceTree</key>
 				<string>&lt;group&gt;</string>
 			</dict>
-			<key>B14AC0DEB6082D5B5B722764</key>
+			<key>A4EE2673D8B0F4E160BEB4DA</key>
 			<dict>
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
-				<string>CADebugMacros.h</string>
+				<string>sndfile.h</string>
 				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/include/apple/CADebugMacros.h</string>
+				<string>../../../addons/ofxSoundObjects/libs/libsndfile/include/include/sndfile.h</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -281,7 +81,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -296,7 +96,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -311,7 +111,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -326,7 +126,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -358,7 +158,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -373,7 +173,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -395,7 +195,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -410,7 +210,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -432,7 +232,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -447,7 +247,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -462,7 +262,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -484,7 +284,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -499,7 +299,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -521,7 +321,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -536,7 +336,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -558,7 +358,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -573,7 +373,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -635,7 +435,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -650,7 +450,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -672,7 +472,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -687,7 +487,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -709,7 +509,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -724,7 +524,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -746,7 +546,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -756,49 +556,12 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
-			<key>C22E25DE3C1AAB44D4BDDCC1</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>30</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>ofxSimpleButton.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxGui/src/ofxSimpleButton.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>9C5CE15FBFF3DD6F947DB6E6</key>
-			<dict>
-				<key>fileRef</key>
-				<string>A6D96B12C1F6492224A8102F</string>
-				<key>isa</key>
-				<string>PBXBuildFile</string>
-			</dict>
-			<key>A6D96B12C1F6492224A8102F</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.cpp.cpp</string>
-				<key>fileEncoding</key>
-				<string>30</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>ofxSimpleButton.cpp</string>
-				<key>path</key>
-				<string>../../../addons/ofxGui/src/ofxSimpleButton.cpp</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
 			<key>89449E3044D456F7DE7BEA14</key>
 			<dict>
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -820,7 +583,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -835,7 +598,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -857,7 +620,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -872,7 +635,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -894,7 +657,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -909,7 +672,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -931,7 +694,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -946,7 +709,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -961,7 +724,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -983,7 +746,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -998,7 +761,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -1020,7 +783,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -1035,7 +798,7 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
@@ -1064,8 +827,6 @@
 					<string>B87C60311EC1FE841C1ECD89</string>
 					<string>E112B3AEBEA2C091BF2B40AE</string>
 					<string>89449E3044D456F7DE7BEA14</string>
-					<string>A6D96B12C1F6492224A8102F</string>
-					<string>C22E25DE3C1AAB44D4BDDCC1</string>
 					<string>15F2C6477A769C03A56D1401</string>
 					<string>52AFA1F08C420992CAAAE648</string>
 					<string>802251BAF1B35B1D67B32FD0</string>
@@ -1105,13 +866,154 @@
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
-				<string>30</string>
+				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
 				<string>ofxBaseGui.cpp</string>
 				<key>path</key>
 				<string>../../../addons/ofxGui/src/ofxBaseGui.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>52FD122EF24A07CC48E76C1A</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>stb_vorbis.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxAudioFile/libs/stb_vorbis.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>14CE30EFC660375B0E3A33CB</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>dr_wav.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxAudioFile/libs/dr_wav.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>D58D44DBBD421ADE63291045</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>dr_mp3.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxAudioFile/libs/dr_mp3.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>6D1C73FC524C750B5BF8D039</key>
+			<dict>
+				<key>children</key>
+				<array>
+					<string>C3CCD2226B35155DE0F050F6</string>
+					<string>D58D44DBBD421ADE63291045</string>
+					<string>14CE30EFC660375B0E3A33CB</string>
+					<string>52FD122EF24A07CC48E76C1A</string>
+				</array>
+				<key>isa</key>
+				<string>PBXGroup</string>
+				<key>name</key>
+				<string>libs</string>
+				<key>sourceTree</key>
+				<string>&lt;group&gt;</string>
+			</dict>
+			<key>C3CCD2226B35155DE0F050F6</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>dr_flac.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxAudioFile/libs/dr_flac.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>A7460711EFAA29E29B900534</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxAudioFile.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxAudioFile/src/ofxAudioFile.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>3FE22A25DEBB96787DAEB9D9</key>
+			<dict>
+				<key>children</key>
+				<array>
+					<string>3794A57D8EFC646921513FD9</string>
+					<string>A7460711EFAA29E29B900534</string>
+				</array>
+				<key>isa</key>
+				<string>PBXGroup</string>
+				<key>name</key>
+				<string>src</string>
+				<key>sourceTree</key>
+				<string>&lt;group&gt;</string>
+			</dict>
+			<key>D8D8E0F43C631167E024126A</key>
+			<dict>
+				<key>children</key>
+				<array>
+					<string>3FE22A25DEBB96787DAEB9D9</string>
+					<string>6D1C73FC524C750B5BF8D039</string>
+				</array>
+				<key>isa</key>
+				<string>PBXGroup</string>
+				<key>name</key>
+				<string>ofxAudioFile</string>
+				<key>sourceTree</key>
+				<string>&lt;group&gt;</string>
+			</dict>
+			<key>55169838B1C1CE8A3035E2D8</key>
+			<dict>
+				<key>fileRef</key>
+				<string>3794A57D8EFC646921513FD9</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>3794A57D8EFC646921513FD9</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxAudioFile.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxAudioFile/src/ofxAudioFile.cpp</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -1251,11 +1153,10 @@ fi
 					<array>
 						<string>$(OF_CORE_HEADERS)</string>
 						<string>src</string>
+						<string>../../../addons/ofxAudioFile/libs</string>
+						<string>../../../addons/ofxAudioFile/src</string>
 						<string>../../../addons/ofxGui/src</string>
 						<string>../../../addons/ofxSoundObjects/libs</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/include</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/src</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include/include</string>
@@ -1328,11 +1229,10 @@ fi
 					<array>
 						<string>$(OF_CORE_HEADERS)</string>
 						<string>src</string>
+						<string>../../../addons/ofxAudioFile/libs</string>
+						<string>../../../addons/ofxAudioFile/src</string>
 						<string>../../../addons/ofxGui/src</string>
 						<string>../../../addons/ofxSoundObjects/libs</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/include</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/src</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include/include</string>
@@ -1346,7 +1246,9 @@ fi
 					<key>COPY_PHASE_STRIP</key>
 					<string>YES</string>
 					<key>FRAMEWORK_SEARCH_PATHS</key>
-					<string>$(inherited)</string>
+					<array>
+						<string>$(inherited)</string>
+					</array>
 					<key>GCC_GENERATE_DEBUGGING_SYMBOLS</key>
 					<string>YES</string>
 					<key>GCC_MODEL_TUNING</key>
@@ -1379,6 +1281,7 @@ fi
 			<dict>
 				<key>children</key>
 				<array>
+					<string>D8D8E0F43C631167E024126A</string>
 					<string>480A780D8D0308AE4A368801</string>
 					<string>41B26342D97D99EEEB93B344</string>
 				</array>
@@ -1541,11 +1444,10 @@ fi
 					<array>
 						<string>$(OF_CORE_HEADERS)</string>
 						<string>src</string>
+						<string>../../../addons/ofxAudioFile/libs</string>
+						<string>../../../addons/ofxAudioFile/src</string>
 						<string>../../../addons/ofxGui/src</string>
 						<string>../../../addons/ofxSoundObjects/libs</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/include</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/src</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include/include</string>
@@ -1616,11 +1518,10 @@ fi
 					<array>
 						<string>$(OF_CORE_HEADERS)</string>
 						<string>src</string>
+						<string>../../../addons/ofxAudioFile/libs</string>
+						<string>../../../addons/ofxAudioFile/src</string>
 						<string>../../../addons/ofxGui/src</string>
 						<string>../../../addons/ofxSoundObjects/libs</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/include</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/src</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include/include</string>
@@ -1684,6 +1585,7 @@ fi
 				<array>
 					<string>E4B69E200A3A1BDC003C02F2</string>
 					<string>E4B69E210A3A1BDC003C02F2</string>
+					<string>55169838B1C1CE8A3035E2D8</string>
 					<string>856AA354D08AB4B323081444</string>
 					<string>5CBB2AB3A60F65431D7B555D</string>
 					<string>853E0BA2F448076739446874</string>
@@ -1691,7 +1593,6 @@ fi
 					<string>852E0891794923EE7583C621</string>
 					<string>483908258D00B98B4BE69F07</string>
 					<string>F285EB3169F1566CA3D93C20</string>
-					<string>9C5CE15FBFF3DD6F947DB6E6</string>
 					<string>837220E80EB56CD44AD27F2A</string>
 					<string>B56FE57CC35806596D38118C</string>
 					<string>1CD33E884D9E3358252E82A1</string>
@@ -1701,9 +1602,6 @@ fi
 					<string>878C0EFF16E187226B0148FA</string>
 					<string>69930F292133561E8E277BCF</string>
 					<string>7CAF1A5AEF6F06B39340FF34</string>
-					<string>3BB5196CADF7BC9A7777C5D9</string>
-					<string>BE536BA5791C07A98B8365B0</string>
-					<string>A7936996C1DBDACFDC89B3A1</string>
 				</array>
 				<key>isa</key>
 				<string>PBXSourcesBuildPhase</string>
@@ -1795,11 +1693,10 @@ fi
 					<array>
 						<string>$(OF_CORE_HEADERS)</string>
 						<string>src</string>
+						<string>../../../addons/ofxAudioFile/libs</string>
+						<string>../../../addons/ofxAudioFile/src</string>
 						<string>../../../addons/ofxGui/src</string>
 						<string>../../../addons/ofxSoundObjects/libs</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/include</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/src</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include/include</string>
@@ -1813,7 +1710,9 @@ fi
 					<key>COPY_PHASE_STRIP</key>
 					<string>NO</string>
 					<key>FRAMEWORK_SEARCH_PATHS</key>
-					<string>$(inherited)</string>
+					<array>
+						<string>$(inherited)</string>
+					</array>
 					<key>GCC_DYNAMIC_NO_PIC</key>
 					<string>NO</string>
 					<key>GCC_GENERATE_DEBUGGING_SYMBOLS</key>
@@ -1855,11 +1754,10 @@ fi
 					<array>
 						<string>$(OF_CORE_HEADERS)</string>
 						<string>src</string>
+						<string>../../../addons/ofxAudioFile/libs</string>
+						<string>../../../addons/ofxAudioFile/src</string>
 						<string>../../../addons/ofxGui/src</string>
 						<string>../../../addons/ofxSoundObjects/libs</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/include</string>
-						<string>../../../addons/ofxSoundObjects/libs/libaudiodecoder/src</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include</string>
 						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include/include</string>
@@ -1873,7 +1771,9 @@ fi
 					<key>COPY_PHASE_STRIP</key>
 					<string>YES</string>
 					<key>FRAMEWORK_SEARCH_PATHS</key>
-					<string>$(inherited)</string>
+					<array>
+						<string>$(inherited)</string>
+					</array>
 					<key>GCC_GENERATE_DEBUGGING_SYMBOLS</key>
 					<string>YES</string>
 					<key>GCC_MODEL_TUNING</key>
