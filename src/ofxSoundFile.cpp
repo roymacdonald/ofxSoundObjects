@@ -152,7 +152,7 @@ const string ofxSoundFile::getPath() const{
 }
 
 //--------------------------------------------------------------
-bool ofxSoundFile::readTo(ofSoundBuffer & buffer, uint64_t _samples){
+void ofxSoundFile::readTo(ofSoundBuffer & buffer, uint64_t _samples){
 //	buffer.setNumChannels(getNumChannels());
 //	buffer.setSampleRate(getSampleRate());
 	if(_samples!=0){

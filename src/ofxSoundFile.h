@@ -45,11 +45,8 @@ public:
 	/// reads a file into an ofSoundBuffer.
 	/// by default, this will resize the buffer to fit the entire file.
 	/// supplying a "samples" argument will read only the given number of samples
-	bool readTo(ofSoundBuffer &buffer, uint64_t samples = 0);
+	void readTo(ofSoundBuffer &buffer, uint64_t samples = 0);
 	
-	/// seek to the sample at the requested index
-//	bool seekTo(uint64_t sampleIndex);
-
 	/// returns sound file duration in milliseconds
 	const uint64_t getDuration() const;
 	const unsigned int getNumChannels() const;
@@ -63,17 +60,7 @@ private:
 	
 	ofxAudioFile audiofile;
 	
-	double playhead;
-	std::atomic<double> playheadControl;
-	double step;
-	
-	// common info
-//	int channels;
 	float duration; //in secs
-//	unsigned int samples;
-//	int samplerate;
-//	int bitDepth;
-//	std::string path;
 	bool bCompressed;
-//	bool bLoaded;
+
 };
