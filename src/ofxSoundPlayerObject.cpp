@@ -177,13 +177,13 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
             audioOutBuffersChanged(nFrames, nChannels, outputBuffer.getSampleRate());
         }
 		if(bStreaming){
-			int samplesRead = soundFile.readTo(buffer,nFrames);
-			if ( samplesRead==0 ){
-				stop();
-			}else{
-				buffer.copyTo(outputBuffer);
-			//	newBufferE.notify(this,buffer);// is there any need to notify this?
-			}
+//			int samplesRead = soundFile.readTo(buffer,nFrames);
+//			if ( samplesRead==0 ){
+//				stop();
+//			}else{
+//				buffer.copyTo(outputBuffer);
+//			//	newBufferE.notify(this,buffer);// is there any need to notify this?
+//			}
 		}else{
 			if (buffer.size()) {
                 auto processBuffers = [&](ofSoundBuffer& buf, soundPlayInstance& i){
