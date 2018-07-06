@@ -160,7 +160,9 @@ void ofxSoundPlayerObject::drawDebug(float x, float y){
         ss << "    pan: " << instances[i].pan << endl;
         ss << "    relativeSpeed: " << instances[i].relativeSpeed << endl;
         ss << "    position: " << instances[i].position << endl;
-        ss << "    volumeLeft: " << instances[i].volumeLeft << endl;
+		ss << "	   position Norm: " << getPosition(i) <<endl;
+		ss << "	   position MS: " << getPositionMS(i) <<endl; 
+		ss << "    volumeLeft: " << instances[i].volumeLeft << endl;
         ss << "    volumeRight: " << instances[i].volumeRight << endl;
         ss << "    id: " << instances[i].id << endl;
     }
@@ -266,7 +268,7 @@ void ofxSoundPlayerObject::setMultiPlay(bool bMp){
 void ofxSoundPlayerObject::setPosition(float pct, size_t index){
 	pct = ofClamp(pct, 0, 1);
     updateInstance([&](soundPlayInstance& inst){
-        inst.position = pct*playerNumFrames;
+        inst.position = pct* soundFile.getNumSamples(); 
         if(bStreaming){
 			//soundFile.seekTo(inst.position);
 		}
@@ -274,7 +276,7 @@ void ofxSoundPlayerObject::setPosition(float pct, size_t index){
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setPositionMS(int ms, size_t index){
-	setPosition((float(ms)/ 1000.0f)* float(buffer.getSampleRate()), index);
+	setPosition(float(buffer.getSampleRate() * ms)/ (1000.0f* soundFile.getNumSamples() ), index);
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setMaxSoundsTotal(int max){ maxSoundsTotal = max; }
@@ -285,7 +287,7 @@ void ofxSoundPlayerObject::setMaxSounds(int max){ maxSounds = max; }
 //========================GETTERS===============================
 float ofxSoundPlayerObject::getPosition(size_t index) const{ 
 	if(index < instances.size()){
-		return float(instances[index].position)/float(playerNumFrames); 
+		return float(instances[index].position)/float( soundFile.getNumSamples()); 
 	}
 	return 0;
 }
@@ -341,7 +343,7 @@ float ofxSoundPlayerObject::getVolume(size_t index) const{
 }
 //--------------------------------------------------------------
 unsigned long ofxSoundPlayerObject::getDurationMS(){
-	return buffer.getDurationMS();
+	return soundFile.getDuration();
 }
 //--------------------------------------------------------------
 ofSoundBuffer & ofxSoundPlayerObject::getCurrentBuffer(){

@@ -35,6 +35,9 @@ public:
     ofxPanel gui;
     ofParameter<float> pan, speed;
     void speedChanged(float&);
-    void panChanged(float&f);
+	void panChanged(float&f);
 
+	
+	vector<ofMesh> waveforms;
+	
 };

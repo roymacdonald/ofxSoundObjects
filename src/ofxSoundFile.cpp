@@ -150,11 +150,8 @@ const string ofxSoundFile::getPath() const{
 	return audiofile.path();
 //    return path;
 }
-
 //--------------------------------------------------------------
 void ofxSoundFile::readTo(ofSoundBuffer & buffer, uint64_t _samples){
-//	buffer.setNumChannels(getNumChannels());
-//	buffer.setSampleRate(getSampleRate());
 	if(_samples!=0){
 		// will read the requested number of samples
 		// clamp to the number of samples we actually have
@@ -164,74 +161,4 @@ void ofxSoundFile::readTo(ofSoundBuffer & buffer, uint64_t _samples){
 	}
 	buffer.resize(_samples*getNumChannels());
 	buffer.copyFrom(audiofile.data(), _samples, getNumChannels(), getSampleRate());
-//#ifdef OF_USING_SNDFILE
-//	else if (sndFile){
-//		// will read entire file
-//		buffer.resize(samples);
-//	}
-//#endif
-//#ifdef OF_USING_LAD
-//	else if (audioDecoder) {
-//		// will read entire file
-//		buffer.resize(samples);
-//	}
-//#endif
-//#ifdef OF_USING_MPG123
-//	else if(mp3File){
-//		buffer.clear();
-//	}
-//#endif
-//	
-//#ifdef OF_USING_SNDFILE
-//	if(sndFile) return sfReadFile(buffer);
-//#elif defined( OF_USING_MPG123 )
-//	if(mp3File) return mpg123ReadFile(buffer);
-//#elif defined( OF_USING_LAD )
-//	if(audioDecoder) return ladReadFile(buffer);
-//#endif
-//	return false;
 }
-//--------------------------------------------------------------
-//bool ofxSoundFile::seekTo(unsigned int sample){
-//	sample = min(samples,sample);
-//#ifdef OF_USING_SNDFILE
-//	if(sndFile) sf_seek(sndFile,sample,SEEK_SET);
-//#endif
-//#ifdef OF_USING_LAD
-//	if(audioDecoder) audioDecoder->seek(sample);
-//#endif
-//	
-//#ifdef OF_USING_MPG123
-//	else if(mp3File) mpg123_seek(mp3File,sample,SEEK_SET);
-//#endif
-//	else return false;
-//	
-//	return true; //TODO: check errors
-//}
-//--------------------------------------------------------------
-//#ifdef OF_USING_SNDFILE
-//bool ofxSoundFile::sfReadFile(ofSoundBuffer & buffer){
-//	samples_read = sf_read_float (sndFile, &buffer[0], buffer.size());
-//	/*if(samples_read<(int)buffer.size()){
-//		ofLogError() <<  "ofxSoundFile: couldnt read " << path;
-//		return false;
-//	}*/
-//	if (subformat == SF_FORMAT_FLOAT || subformat == SF_FORMAT_DOUBLE){
-//		for (int i = 0 ; i < int(buffer.size()) ; i++){
-//			buffer[i] *= scale ;
-//		}
-//	}
-//	return true;
-//}
-//#endif
-////--------------------------------------------------------------
-//#ifdef OF_USING_LAD
-//bool ofxSoundFile::ladReadFile(ofSoundBuffer &buffer){
-//	
-//	int samplesRead = audioDecoder->read( buffer.size(), &buffer[0] );
-//	return samplesRead;
-//}
-//#endif
-//
-//
-
