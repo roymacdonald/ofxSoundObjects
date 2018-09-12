@@ -5,7 +5,7 @@
 void ofApp::setup(){
     ofSetLogLevel(OF_LOG_VERBOSE);
     
-    stream.setup(2, 0, 44100, 256, 1);
+    stream.setup(2, 0, 48000, 256, 1);//make sure you pass the correct sample rate.
     
  //   players.resize(4);
     ofDirectory dir;
@@ -17,10 +17,11 @@ void ofApp::setup(){
 
 	players.resize(dir.size());
     for(int i = 0; i < dir.size(); i++){
-        players[i].load(dir.getPath(i));
-        players[i].setLoop(true);
+		cout << dir.getPath(i) << endl;
+        players[i].load(ofToDataPath(dir.getPath(i)));
         players[i].connectTo(mixer);
         players[i].play();
+		players[i].setLoop(true);// this has to go after calling play.
         playersVolume.push_back(1);
         volumeGroup.add(playersVolume.back().set("Player " + ofToString(i), 1, 0, 1));
     }
@@ -44,7 +45,9 @@ void ofApp::update(){
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
-    
+	if(players.size()){
+		players[0].drawDebug(gui.getShape().getMaxX(), gui.getShape().y);
+	}
     gui.draw();
     
 }

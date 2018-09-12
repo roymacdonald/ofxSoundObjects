@@ -4,7 +4,7 @@
 
 #include "ofxGui.h"
 #include "ofxSoundMixer.h"
-#include "ofxBasicSoundPlayer.h"
+#include "ofxSoundPlayerObject.h"
 
 class ofApp : public ofBaseApp{
 
@@ -25,7 +25,7 @@ public:
 
 	
     ofxSoundMixer mixer;
-	vector<ofxBasicSoundPlayer> players;
+	vector<ofxSoundPlayerObject> players;
     vector<ofParameter<float> > playersVolume;
 
     ofParameterGroup volumeGroup;

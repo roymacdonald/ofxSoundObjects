@@ -104,23 +104,18 @@ bool ofxSoundFile::save(string path, const ofSoundBuffer &buff, int format){
 //--------------------------------------------------------------                  
 //--------------------------------------------------------------
 void ofxSoundFile::close(){
-//	channels = 1;
 	audiofile.free();
 	duration = 0; //in secs
-//	samplerate = 0;
-//	samples = 0;
 }
 
 //--------------------------------------------------------------
 const bool ofxSoundFile::isLoaded() const{
 	return audiofile.loaded();
-//    return bLoaded;
 }
 
 //--------------------------------------------------------------
 const unsigned int ofxSoundFile::getNumChannels() const{
 	return audiofile.channels();
-	//	return channels;
 }
 
 //--------------------------------------------------------------
@@ -131,13 +126,11 @@ const uint64_t ofxSoundFile::getDuration() const{
 //--------------------------------------------------------------
 const unsigned int ofxSoundFile::getSampleRate() const{
 	return audiofile.samplerate();
-//	return samplerate;
 }
 
 //--------------------------------------------------------------
 const uint64_t ofxSoundFile::getNumSamples() const{
 	return audiofile.length();
-//    return samples;
 }
 
 //--------------------------------------------------------------
@@ -148,7 +141,6 @@ const bool ofxSoundFile::isCompressed() const{
 //--------------------------------------------------------------
 const string ofxSoundFile::getPath() const{
 	return audiofile.path();
-//    return path;
 }
 //--------------------------------------------------------------
 void ofxSoundFile::readTo(ofSoundBuffer & buffer, uint64_t _samples){
