@@ -2,12 +2,21 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup>
+    <CustomBuildAfterTargets>PostBuildEvent</CustomBuildAfterTargets>
+  </PropertyGroup>
   <ItemDefinitionGroup>
-    
     <Link>
-      <AdditionalDependencies>Mfreadwrite.lib;MFPlat.lib;mfuuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libsndfile-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libs\libsndfile\lib\win\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <CustomBuildStep>
+      <Command>if exist "..\libs\libsndfile\lib\win\$(PlatformTarget)\libsndfile-1.dll" ( robocopy "..\libs\libsndfile\lib\win\$(PlatformTarget)\libsndfile-1.dll" "$(ProjectDir)bin\libsndfile-1.dll" "*.dll" /njs /njh /np /fp /bytes )
+if errorlevel 1 exit 0 else exit %errorlevel%</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Message>place libsndfile.dll with the executable</Message>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>
