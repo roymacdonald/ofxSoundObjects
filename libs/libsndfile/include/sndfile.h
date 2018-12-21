@@ -92,10 +92,6 @@ enum
 	SF_FORMAT_GSM610		= 0x0020,		/* GSM 6.10 encoding. */
 	SF_FORMAT_VOX_ADPCM		= 0x0021,		/* OKI / Dialogix ADPCM */
 
-	SF_FORMAT_NMS_ADPCM_16	= 0x0022,		/* 16kbs NMS G721-variant encoding. */
-	SF_FORMAT_NMS_ADPCM_24	= 0x0023,		/* 24kbs NMS G721-variant encoding. */
-	SF_FORMAT_NMS_ADPCM_32	= 0x0024,		/* 32kbs NMS G721-variant encoding. */
-
 	SF_FORMAT_G721_32		= 0x0030,		/* 32kbs G721 ADPCM encoding. */
 	SF_FORMAT_G723_24		= 0x0031,		/* 24kbs G723 ADPCM encoding. */
 	SF_FORMAT_G723_40		= 0x0032,		/* 40kbs G723 ADPCM encoding. */
@@ -341,7 +337,7 @@ typedef	struct SNDFILE_tag	SNDFILE ;
 typedef __int64		sf_count_t ;
 #define SF_COUNT_MAX		0x7fffffffffffffffi64
 #else
-typedef int64_t	sf_count_t ;
+typedef __int64	sf_count_t ;
 #define SF_COUNT_MAX		0x7FFFFFFFFFFFFFFFLL
 #endif
 
