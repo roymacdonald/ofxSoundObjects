@@ -32,9 +32,11 @@ To be able to use this addon with visual studio you need to do the following whe
 
 	![image](VS_screenshot.jpg)
 
-* Open the file ofxSoundObjects.props that is in this addons folder. (shown in the image below).
+* Open the file ofxSoundObjects.props that is in this addon folder. (shown in the image below).
   
 	![image](VS_screenshot2.jpg)
+
+* Press the "Save All" button or keys `ctrl` + `shift` + `s` so you don't need to add the .props file again when opening this project.
 	
 That's all.
 
