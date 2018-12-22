@@ -8,10 +8,10 @@
   <ItemDefinitionGroup>
     <Link>
       <AdditionalDependencies>libsndfile-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\libs\libsndfile\lib\win\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OF_ROOT)\addons\ofxSoundObjects\libs\libsndfile\lib\win\$(PlatformTarget);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
-      <Command>if exist "..\libs\libsndfile\lib\win\$(PlatformTarget)\libsndfile-1.dll" ( robocopy "..\libs\libsndfile\lib\win\$(PlatformTarget)\libsndfile-1.dll" "$(ProjectDir)bin\libsndfile-1.dll" "*.dll" /njs /njh /np /fp /bytes )
+      <Command>if exist "$(OF_ROOT)\addons\ofxSoundObjects\libs\libsndfile\lib\win\$(PlatformTarget)\libsndfile-1.dll" ( robocopy "$(OF_ROOT)\addons\ofxSoundObjects\libs\libsndfile\lib\win\$(PlatformTarget)\libsndfile-1.dll" "$(ProjectDir)bin\libsndfile-1.dll" "*.dll" /njs /njh /np /fp /bytes )
 if errorlevel 1 exit 0 else exit %errorlevel%</Command>
     </CustomBuildStep>
     <CustomBuildStep>
