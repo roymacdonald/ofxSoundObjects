@@ -16,6 +16,9 @@ Made as addon, improoved and updated by Roy Macdonald.
 
 
 ## IMPORTANT.
+### Debug mode does not sound on Windows
+It seems that there is a bug in RtAudio (the library that provides OF with cross platform access to the sound devices) that disables audio output when running in debug mode. So, you'll need to switch to Release mode always.
+
 #### LibAudioDecoder replaced by ofxAudioFile
 This addon no longer uses libAudioDecoder, instead uses [ofxAudioFile](https://github.com/npisanti/ofxAudioFile). Make sure you have downloaded and correctly instaled it.
 
