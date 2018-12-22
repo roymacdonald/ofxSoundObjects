@@ -206,6 +206,7 @@ The following are some useful classes included with this addon.
 
 This class provides access to sound data from a variety of sound file formats. It supports the most common ones like .mp3, .aiff, .ogg and .wav on all systems, plus several others depending on the system. It makes use of [ofxAudioFile](https://github.com/npisanti/ofxAudioFile) for reading files and [libsndfile](http://www.mega-nerd.com/libsndfile/) for writing.
 This class will decode data and make it accessible using the ofSoundBuffer instances.
+Currently all the loaded files data is automatically converted into 32bit floating point regardless of its original bitdepth.
 It provides 8, 16, 24 and 32bit WAV sound file writing.
 
 
