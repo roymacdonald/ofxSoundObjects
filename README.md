@@ -19,7 +19,7 @@ Made as addon, improoved and updated by Roy Macdonald.
 #### LibAudioDecoder replaced by ofxAudioFile
 This addon no longer uses libAudioDecoder, instead uses [ofxAudioFile](https://github.com/npisanti/ofxAudioFile). Make sure you have downloaded and correctly instaled it.
 
-#### VisualStudio2015Community
+#### VisualStudio 2017
 To be able to use this addon with visual studio you need to do the following whenever updating or creating a project with project generator.
 
 1. Use project generator as you normaly would (add ofxSoundObjects from the dropdown menu).
