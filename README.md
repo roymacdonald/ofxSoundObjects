@@ -1,6 +1,11 @@
 ofxSoundObjects
 =====================================
 
+[![Build status](https://travis-ci.org/roymacdonald/ofxSoundObjects.svg?branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
+[![Build status](https://ci.appveyor.com/api/projects/status/m7rwi7209bpepf0i/branch/master?svg=true)](https://ci.appveyor.com/project/roymacdonald/ofxsoundobjects/branch/master)
+
+
+
 This is an addon version for the ofSoundObject implementation originally conceived at the 2013 OFDev Conference held at the Yamaguchi Center For Arts and Media, Japan.
 The developers involved in this were:
 
