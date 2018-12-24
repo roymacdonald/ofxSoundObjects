@@ -4,7 +4,7 @@ void FftObject::setup(unsigned int bufferSize) {
     this->bufferSize = bufferSize;
     
 	
-    fft = shared_ptr<ofxFft>(ofxFft::create(bufferSize, OF_FFT_WINDOW_HAMMING, OF_FFT_FFTW));
+    fft = shared_ptr<ofxFft>(ofxFft::create(bufferSize, OF_FFT_WINDOW_HAMMING));
     
     numChannels = 0;
     bIsProcessed = false;
