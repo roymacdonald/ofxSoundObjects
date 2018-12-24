@@ -1,5 +1,6 @@
 # ofxSoundObjects
 ## Simple yet super powerful modular sound architecture for openFrameworks.
+It allows to connect any sound source, process, display and output it in any way needed. It is capable of reading and writing audio files. 
 
 This is an addon version for the ofSoundObject implementation originally conceived at the 2013 OFDev Conference held at the Yamaguchi Center For Arts and Media, Japan.
 The developers involved in this were:
