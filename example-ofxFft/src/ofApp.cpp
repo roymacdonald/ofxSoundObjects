@@ -4,7 +4,13 @@
 void ofApp::setup(){
     ofSetLogLevel(OF_LOG_VERBOSE);
     int bufferSize = 512;
-    stream.setup(2, 2, 44100, bufferSize, 4);
+	ofSoundStreamSettings streamSettings;
+	streamSettings.numInputChannels = 2;
+	streamSettings.numOutputChannels = 2;
+	streamSettings.sampleRate = 44100;
+	streamSettings.bufferSize = bufferSize;
+	streamSettings.numBuffers = 4;
+    stream.setup(streamSettings);
     stream.setOutput(output);
     stream.setInput(input);
     
