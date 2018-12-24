@@ -16,11 +16,9 @@ Made as addon, improoved and updated by Roy Macdonald.
 
 
 ## Continous Integration (CI) builds status
-* macos
-* linux (32 and 64 bits)
+* macos and linux (32 and 64 bits)
 [![Build status](https://travis-ci.org/roymacdonald/ofxSoundObjects.svg?branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
-* Windows using MSYS2 (32 bit)
-* Windows using Visual Studio 2017 (32 and 64 bits)
+* Windows using MSYS2 (32 bit) and Visual Studio 2017 (32 and 64 bits)
 [![Build status](https://ci.appveyor.com/api/projects/status/m7rwi7209bpepf0i/branch/master?svg=true)](https://ci.appveyor.com/project/roymacdonald/ofxsoundobjects/branch/master)
 
 
