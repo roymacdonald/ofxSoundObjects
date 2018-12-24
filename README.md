@@ -1,10 +1,5 @@
-ofxSoundObjects
-=====================================
-
-[![Build status](https://travis-ci.org/roymacdonald/ofxSoundObjects.svg?branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
-[![Build status](https://ci.appveyor.com/api/projects/status/m7rwi7209bpepf0i/branch/master?svg=true)](https://ci.appveyor.com/project/roymacdonald/ofxsoundobjects/branch/master)
-
-
+# ofxSoundObjects
+## Simple yet super powerful modular sound architecture for openFrameworks.
 
 This is an addon version for the ofSoundObject implementation originally conceived at the 2013 OFDev Conference held at the Yamaguchi Center For Arts and Media, Japan.
 The developers involved in this were:
@@ -20,12 +15,29 @@ The original development branch can be found [here](https://github.com/admsyn/op
 Made as addon, improoved and updated by Roy Macdonald.
 
 
+## Continous Integration (CI) builds status
+* macos
+* linux (32 and 64 bits)
+[![Build status](https://travis-ci.org/roymacdonald/ofxSoundObjects.svg?branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
+* Windows using MSYS2 (32 bit)
+* Windows using Visual Studio 2017 (32 and 64 bits)
+[![Build status](https://ci.appveyor.com/api/projects/status/m7rwi7209bpepf0i/branch/master?svg=true)](https://ci.appveyor.com/project/roymacdonald/ofxsoundobjects/branch/master)
+
+
+## Dependencies
+* [ofxAudioFile](https://github.com/npisanti/ofxAudioFile)
+* [ofxFft](https://github.com/kylemcdonald/ofxFft) (only needed for the Fftobject)
+
 ## IMPORTANT.
-### Debug mode does not sound on Windows
-It seems that there is a bug in RtAudio (the library that provides OF with cross platform access to the sound devices) that disables audio output when running in debug mode. So, you'll need to switch to Release mode always.
+### All platforms
 
 #### LibAudioDecoder replaced by ofxAudioFile
 This addon no longer uses libAudioDecoder, instead uses [ofxAudioFile](https://github.com/npisanti/ofxAudioFile). Make sure you have downloaded and correctly instaled it.
+
+
+### Windows 
+#### Debug mode does not sound on Windows
+It seems that there is a bug in RtAudio (the library that provides OF with cross platform access to the sound devices) that disables audio output when running in debug mode. So, you'll need to switch to Release mode always.
 
 #### VisualStudio 2017
 To be able to use this addon with visual studio you need to do the following whenever updating or creating a project with project generator.
@@ -44,6 +56,10 @@ To be able to use this addon with visual studio you need to do the following whe
 * Press the "Save All" button or keys `ctrl` + `shift` + `s` so you don't need to add the .props file again when opening this project.
 	
 That's all.
+
+## Project Generator
+Create or update your project using openFrameworks' Project Generator and add `ofxSoundObjects` and `ofxAudioFile` in the addons section. 
+
 
 ## Explanation
 #### The ofxSoundObject
