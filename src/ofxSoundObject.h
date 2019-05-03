@@ -3,6 +3,7 @@
 #include "ofConstants.h"
 #include "ofBaseTypes.h"
 #include "ofSoundBuffer.h"
+#include "ofxSoundObjectsConstants.h"
 
 // this #define is for use by addon writers, to conditionally support sound objects in addons
 // (while allowing backwards compatibility with previous versions of openFrameworks)
@@ -20,7 +21,8 @@ class ofSoundBuffer;
 
 class ofxSoundObject: public ofBaseSoundOutput {
 public:
-	ofxSoundObject();
+//	ofxSoundObject();
+	ofxSoundObject(ofxSoundObjectsType);
 	virtual ~ofxSoundObject() {}
 
 	/// Connects the output of this ofxSoundObject to the input of the parameter ofxSoundObject
@@ -45,6 +47,10 @@ public:
 	virtual bool checkForInfiniteLoops();
 	ofxSoundObject *getInputObject();
 
+	
+	///this returns the object that is at the begining of the objects chain. It should be an audio input, a sound file player or some kind of signal generator, like a synth.
+	ofxSoundObject *getSourceObject();
+	
     /// This sets/gets the number of channels that this sound object should process.
     /// By default it will use the number of channels from the ofSoundBuffer passed by the previous link in the chain.
     /// For a 2 channel setup there should be no need to set this, it is mainly for scenarios with more inputs or outputs.
@@ -53,17 +59,26 @@ public:
 
     ofSoundBuffer& getBuffer();
     const ofSoundBuffer& getBuffer() const;
+	
+	
+	ofxSoundObjectsType getType(){return type;}
+	
+	
+	ofxSoundObjectsMode getMode(){return mode;}
 
 protected:
 	// this is the previous dsp object in the chain
 	// that feeds this one with input.
-	ofxSoundObject *inputObject;
-    ofxSoundObject *outputObjectRef;
+	ofxSoundObject *inputObject = nullptr;
+    ofxSoundObject *outputObjectRef = nullptr;
     virtual void setInput(ofxSoundObject *obj);
-    
+	
+	ofxSoundObjectsMode mode = OFX_SOUND_OBJECT_PULL;
     
 //    int numChannels = 0;
 
+	ofxSoundObjectsType type = OFX_SOUND_OBJECT_PROCESSOR;
+	
 private:
 	// ofxSoundObjects reference their source, not their destination
 	// because it's not needed in a pullthrough audio architecture.
@@ -93,6 +108,9 @@ protected:
 /**
  * This class represents the output in your dsp chain.
  */
-class ofxSoundOutput: public ofxSoundObject {};
+class ofxSoundOutput: public ofxSoundObject {
+public:
+	ofxSoundOutput();
+};
 
 

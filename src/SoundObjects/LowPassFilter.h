@@ -22,7 +22,7 @@
 class LowPassFilter: public ofxSoundObject {
 	
 public:
-	
+	LowPassFilter():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){}
 	// originally https://github.com/micknoise/Maximilian/blob/master/ofxMaxim/ofxMaxim/libs/maximilian.h
 	// ported to js, ported back again
 	class LPF {

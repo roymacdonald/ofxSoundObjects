@@ -30,7 +30,7 @@
 class DigitalDelay: public ofxSoundObject {
 public:
 	
-	
+	DigitalDelay():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){}
 	
 	vector<float> buffer;
 

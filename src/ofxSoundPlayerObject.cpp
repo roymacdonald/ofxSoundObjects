@@ -13,7 +13,7 @@ int ofxSoundPlayerObject::maxSoundsTotal=128;
 int ofxSoundPlayerObject::maxSoundsPerPlayer=16;
 
 //--------------------------------------------------------------
-ofxSoundPlayerObject::ofxSoundPlayerObject() {
+ofxSoundPlayerObject::ofxSoundPlayerObject():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE) {
 	bStreaming = false;
 	bMultiplay = false;
 	bIsLoaded = false;

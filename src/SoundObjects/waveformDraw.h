@@ -3,7 +3,7 @@
 #include "ofxSoundObject.h"
 class waveformDraw: public ofRectangle, public ofxSoundObject{
 public:
-    waveformDraw(){}
+	waveformDraw():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){}
     waveformDraw(const waveformDraw& a):ofRectangle(a), ofxSoundObject(a){
     }
     ~waveformDraw(){}

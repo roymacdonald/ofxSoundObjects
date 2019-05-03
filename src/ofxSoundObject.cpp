@@ -9,13 +9,15 @@
 //--------------------------------------------------------------
 //  ofxSoundObject
 //--------------------------------------------------------------
-ofxSoundObject::ofxSoundObject() {
-	inputObject = NULL;
-    outputObjectRef = NULL;
+//ofxSoundObject::ofxSoundObject() {
+//	ofLogError("ofxSoundObject::ofxSoundObject()", "dont call the ofxSoundObjects empty constructor. ");
+//}
+ofxSoundObject::ofxSoundObject(ofxSoundObjectsType t){
+	type = t;
 }
 //--------------------------------------------------------------
 ofxSoundObject &ofxSoundObject::connectTo(ofxSoundObject &soundObject) {
-    if (outputObjectRef != NULL) {
+    if (outputObjectRef != nullptr) {
         disconnect();
     }
     outputObjectRef = &soundObject;
@@ -30,14 +32,14 @@ ofxSoundObject &ofxSoundObject::connectTo(ofxSoundObject &soundObject) {
 }
 //--------------------------------------------------------------
 void ofxSoundObject::disconnectInput(ofxSoundObject * input){
-    if (inputObject != NULL) {
-    inputObject = NULL;
+    if (inputObject != nullptr) {
+    inputObject = nullptr;
     }
 }
 //--------------------------------------------------------------
 void ofxSoundObject::disconnect(){
     outputObjectRef->disconnectInput(this);
-    outputObjectRef =NULL;
+    outputObjectRef =nullptr;
 }
 //--------------------------------------------------------------
 void ofxSoundObject::setInput(ofxSoundObject *obj) {
@@ -51,19 +53,28 @@ ofxSoundObject *ofxSoundObject::getInputObject() {
 bool ofxSoundObject::checkForInfiniteLoops() {
 	ofxSoundObject *prev = inputObject;
 
-	// move up the dsp chain until we find ourselves or the beginning of the chain (input==NULL)
-	while(prev!=this && prev!=NULL) {
+	// move up the dsp chain until we find ourselves or the beginning of the chain (input==nullptr)
+	while(prev!=this && prev!=nullptr) {
 		prev = prev->getInputObject();
 	}
 
 	// if we found ourselves, return false (to indicate there's an infinite loop)
-	return (prev==NULL);
+	return (prev==nullptr);
+}
+//--------------------------------------------------------------
+ofxSoundObject* ofxSoundObject::getSourceObject(){
+	if(type == OFX_SOUND_OBJECT_SOURCE)return this;
+	if(inputObject != nullptr){
+		return inputObject->getSourceObject();
+	}
+	ofLogWarning("ofxSoundObject::getSourceObject", "There is no source on your signal chain so most probaly you will get no sound");
+	return nullptr;
 }
 //--------------------------------------------------------------
 // this pulls the audio through from earlier links in the chain
 void ofxSoundObject::audioOut(ofSoundBuffer &output) {
     ofxSoundObjects::checkBuffers(output, workingBuffer);
-	if(inputObject!=NULL) {
+	if(inputObject!=nullptr) {
 		inputObject->audioOut(workingBuffer);
 	}
 	this->process(workingBuffer, output);
@@ -84,10 +95,11 @@ return workingBuffer;
 const ofSoundBuffer& ofxSoundObject::getBuffer() const{
 return workingBuffer;    
 }
+
 //--------------------------------------------------------------
 //  ofxSoundInput
 //--------------------------------------------------------------
-ofxSoundInput::ofxSoundInput() {
+ofxSoundInput::ofxSoundInput():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE) {
 }
 //--------------------------------------------------------------
 // copy audio in to internal buffer
@@ -100,3 +112,9 @@ void ofxSoundInput::audioOut(ofSoundBuffer &output) {
     ofxSoundObjects::checkBuffers(output, inputBuffer);
 	inputBuffer.copyTo(output);
 }
+//--------------------------------------------------------------
+//  ofxSoundInput
+//--------------------------------------------------------------
+ofxSoundOutput::ofxSoundOutput():ofxSoundObject(OFX_SOUND_OBJECT_DESTINATION) {
+}
+

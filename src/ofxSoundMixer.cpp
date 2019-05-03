@@ -6,7 +6,7 @@
 
 #include "ofxSoundMixer.h"
 //----------------------------------------------------
-ofxSoundMixer::ofxSoundMixer(){
+ofxSoundMixer::ofxSoundMixer():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
     masterVolume = 1.0f;
     masterPan = 0.5f;
 	masterVol.set("Master Vol", 1, 0, 1);
@@ -104,7 +104,7 @@ float ofxSoundMixer::getChannelVolume(int channelNumber){
 void ofxSoundMixer::audioOut(ofSoundBuffer &output) {
     if(channels.size()>0) {
         for(int i = 0; i < channels.size(); i++){
-            if (channels[i] != NULL && channelVolume[i] > 0) {
+            if (channels[i] != nullptr && channelVolume[i] > 0) {
                 ofSoundBuffer tempBuffer;
                 tempBuffer.resize(output.size());
                 tempBuffer.setNumChannels(output.getNumChannels());
