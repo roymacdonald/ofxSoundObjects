@@ -103,6 +103,7 @@ float ofxSoundMixer::getChannelVolume(int channelNumber){
 // this pulls the audio through from earlier links in the chain and sums up the total output
 void ofxSoundMixer::audioOut(ofSoundBuffer &output) {
     if(channels.size()>0) {
+		output.set(0);//clears the output buffer as its memory might come with junk
         for(int i = 0; i < channels.size(); i++){
             if (channels[i] != nullptr && channelVolume[i] > 0) {
                 ofSoundBuffer tempBuffer;
