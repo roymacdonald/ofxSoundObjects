@@ -11,7 +11,7 @@
 #include "ofParameter.h"
 #include "ofxSoundObject.h"
 #include "ofTypes.h"
-#include "ofxSoundObjectBaseRenderer.h"
+
 class ofxSoundMatrixMixerRenderer;
 class ofxSoundMatrixMixer: public ofxSoundObject{
 public:
@@ -49,11 +49,15 @@ protected:
 				auto src  = obj->getSignalSourceObject();
 				if(src != nullptr){
 					if(channelsVolumes.size() != src->getNumChannels()){
-						channelsVolumes.resize(src->getNumChannels(), std::vector<float>(numOutChanns, 1.0f));
+						channelsVolumes.resize(src->getNumChannels());//, std::vector<ofParameter<float> >(numOutChanns));
 					}
-					for(auto& c: channelsVolumes){
-						if(c.size() != numOutChanns) 
-							c.resize(numOutChanns, 1.0f);
+					for(size_t i = 0; i < channelsVolumes.size();i++){
+						if(channelsVolumes[i].size() != numOutChanns){
+							channelsVolumes[i].resize(numOutChanns);
+							for(size_t o = 0; o < numOutChanns; o++){
+								channelsVolumes[i][o].set(ofToString(i) + " : " + ofToString(o), 0,0,1);
+							}
+						}
 					}
 				}
 			}
@@ -64,7 +68,10 @@ protected:
 		
 		ofxSoundObject* obj;
 		
-		std::vector< std::vector<float> > channelsVolumes; //[in channel index] [ output channel index] 
+		std::vector< std::vector<ofParameter<float> > > channelsVolumes; //[in channel index] [ output channel index] 
+		std::vector<float> rmsVolume;
+		std::vector<float> peakVolume, prevPeak;
+		
 	};
 	
 	//	void setupMixers();
@@ -88,12 +95,8 @@ protected:
 	
 	
 	void mixChannelBufferIntoOutput(const size_t& idx, ofSoundBuffer& input, ofSoundBuffer& output);
+
+	bool bComputeRMSandPeak = true;
 	
-};
-
-
-class ofxSoundMatrixMixerRenderer: public ofxSoundObjectBaseRenderer<ofxSoundMatrixMixer>{
-public:
-	virtual void draw() override;
 };
 
