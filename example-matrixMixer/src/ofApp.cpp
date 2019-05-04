@@ -5,7 +5,7 @@ void ofApp::setup(){
 	
 	
 	
-	size_t count = 0;
+
 	
 	//this will open a dialog to select a folder in which you should have audio files, ideally more than one but not an excesive amount, say maximum 10.
 	// Each audio file will be routed to a different output of your multi channel audio interface.
@@ -18,56 +18,50 @@ void ofApp::setup(){
 			dir.allowExt("aiff");
 			dir.allowExt("mp3");
 			dir.listDir();
-			
 			players.resize(dir.size());
-			
 			for (int i = 0; i < dir.size(); i++) {
 				if(players[i].load(dir.getPath(i))){
-					auto chans = players[i].getSoundFile().getNumChannels();
-					//create a vector<int> object that will define which are the channels you want to connect to
-					//
-					vector<int> v;
-					v.resize(chans);
-					for(int j =0 ; j < v.size(); j++){
-						v[j] = j+count;
-					}
-					// SUPER IMPORTANT!!!
-					// the following line of code is the important one
-					//
-					// As an alternative you could define the channels manually in the following way
-					// output.getOrCreateChannelGroup({0,1});
-					// which will create an output for channels 0 and 1.
-					// Channels start at 0. The first channel of your audio interface is 0 not 1.
-					ofxSoundObject& playerOutput = output.getOrCreateChannelGroup(v);
-					// the next line is just a regular way of connecting sound objects.
-					players[i].connectTo(playerOutput);
+					players[i].connectTo(mixer);
 					players[i].play();
-					count += chans ;
+					
 				}
 			}
 		}
 	}
+	
+	
+	
+	auto inDevices = ofxSoundObjects::getInputSoundDevices();
+	auto outDevices = ofxSoundObjects::getOutputSoundDevices();
+	
+	
+	ofxSoundObjects::printInputSoundDevices();
+	ofxSoundObjects::printOutputSoundDevices();
+	
+	// IMPORTANT!!!
+	// The following two lines of code is where you set which audio interface to use.
+	// the index is the number printed in the console inside [ ] before the interface name 
+	// You can use a different input and output device.
+	
+	inDeviceIndex = 0;
+	outDeviceIndex = 0;
+	
+	
 	// Setup the sound stream.
 	ofSoundStreamSettings settings;
 	settings.bufferSize = 256;
 	settings.numBuffers = 1;
 	settings.numInputChannels = 0;
-	settings.numOutputChannels = count;
+	settings.numOutputChannels = outDevices[outDeviceIndex].outputChannels;
+	
 	if(players.size()){
 		// we setup the samplerate of the sound stream according to the one of the first player
 		settings.sampleRate = players[0].getSoundFile().getSampleRate();
 	}
 	
-	auto devices = ofSoundStreamListDevices();
-	stream.printDeviceList();
 	
-	// IMPORTANT!!!
-	// The following two lines of code is where you set which audio interface to use.
-	// The number you put inside the square braquets in devices[ ] is the one
-	// printed in the list in the console.
-	// You can use a different input and output device.
-	settings.setInDevice(devices[3]);
-	settings.setOutDevice(devices[3]);
+	settings.setInDevice(inDevices[inDeviceIndex]);
+	settings.setOutDevice(outDevices[outDeviceIndex]);
 	
 	
 	stream.setup(settings);
@@ -87,18 +81,18 @@ string msToMMSS(unsigned long ms){
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
-	ofDrawBitmapStringHighlight("READ THE COMMENTS IN THE setup() function!!!", 100,100);
 	
-	stringstream ss;
-	for(auto & c: output.getChannelGroups()){
-		auto pl = ((ofxSoundPlayerObject*)c.second.getInputObject());
-		auto& f = pl->getSoundFile();
-		
-		ss << "Playing " << ofFilePath::getBaseName(f.getPath()) << " to channels " << ofToString(c.first)<<endl;
-		ss << "        " << msToMMSS(pl->getPositionMS()) << " - " << msToMMSS(pl->getDurationMS()) << endl <<endl;
-		
-	}
-	ofDrawBitmapStringHighlight(ss.str(), 100, 130);
+	
+//	stringstream ss;
+//	for(auto & c: output.getChannelGroups()){
+//		auto pl = ((ofxSoundPlayerObject*)c.second.getInputObject());
+//		auto& f = pl->getSoundFile();
+//		
+//		ss << "Playing " << ofFilePath::getBaseName(f.getPath()) << " to channels " << ofToString(c.first)<<endl;
+//		ss << "        " << msToMMSS(pl->getPositionMS()) << " - " << msToMMSS(pl->getDurationMS()) << endl <<endl;
+//		
+//	}
+//	ofDrawBitmapStringHighlight(ss.str(), 100, 130);
  
 }
 
