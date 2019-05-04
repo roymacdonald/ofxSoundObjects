@@ -11,10 +11,12 @@
 #include "ofParameter.h"
 #include "ofxSoundObject.h"
 #include "ofTypes.h"
-
+#include "ofxSoundObjectBaseRenderer.h"
+class ofxSoundMatrixMixerRenderer;
 class ofxSoundMatrixMixer: public ofxSoundObject{
 public:
-	
+	friend class ofxSoundMatrixMixerRenderer;
+
 	ofxSoundMatrixMixer();
 	virtual ~ofxSoundMatrixMixer();
 	
@@ -22,6 +24,10 @@ public:
 	ofxSoundObject* getInputObject(size_t objectNumber);
 	size_t getNumInputChannels();
 	size_t getNumInputObjects();
+	
+	size_t getNumOutputChannels();
+	
+	
 	/// sets output volume multiplier.
 	/// a volume of 1 means "full volume", 0 is muted.
 	void setMasterVolume(float vol);
@@ -47,7 +53,7 @@ protected:
 					}
 					for(auto& c: channelsVolumes){
 						if(c.size() != numOutChanns) 
-							c.resize(numOutChanns);
+							c.resize(numOutChanns, 1.0f);
 					}
 				}
 			}
@@ -84,3 +90,10 @@ protected:
 	void mixChannelBufferIntoOutput(const size_t& idx, ofSoundBuffer& input, ofSoundBuffer& output);
 	
 };
+
+
+class ofxSoundMatrixMixerRenderer: public ofxSoundObjectBaseRenderer<ofxSoundMatrixMixer>{
+public:
+	virtual void draw() override;
+};
+
