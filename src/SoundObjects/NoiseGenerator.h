@@ -21,7 +21,7 @@
 
 class NoiseGenerator: public ofxSoundObject {
 public:
-	NoiseGenerator:ofxSoundObject(OFX_SOUND_OBJECT_SOURCE){}
+	NoiseGenerator():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE){}
 	void process(ofSoundBuffer &in, ofSoundBuffer &out) {
 		for(int i = 0; i < out.size(); i++) {
 			out[i] = ofRandom(-1, 1);

@@ -30,16 +30,15 @@
 class DigitalDelay: public ofxSoundObject {
 public:
 	
-	DigitalDelay():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){}
-	
-	vector<float> buffer;
-
-	
-	DigitalDelay() {
+	DigitalDelay():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
 		setDelay(4410);
 		feedback = 0.5f;
 		mix = 0.5f;
 	}
+	
+	vector<float> buffer;
+
+	
 	
 	void setDelay(int newDelay) {
 		buffer.resize(newDelay);

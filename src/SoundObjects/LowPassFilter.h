@@ -22,7 +22,10 @@
 class LowPassFilter: public ofxSoundObject {
 	
 public:
-	LowPassFilter():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){}
+	LowPassFilter():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
+		res = 0;
+		fc = 1;
+	}
 	// originally https://github.com/micknoise/Maximilian/blob/master/ofxMaxim/ofxMaxim/libs/maximilian.h
 	// ported to js, ported back again
 	class LPF {
@@ -72,10 +75,6 @@ public:
 	};
 	
 	
-	LowPassFilter() {
-		res = 0;
-		fc = 1;
-	}
 	void process(ofSoundBuffer &input, ofSoundBuffer &output) {
 		
 		int numChannels = output.getNumChannels();
