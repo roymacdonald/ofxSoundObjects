@@ -7,7 +7,7 @@
 //
 
 #include "ofxSoundMatrixMixer.h"
-
+#include "ofMath.h"
 //----------------------------------------------------
 ofxSoundMatrixMixer::ofxSoundMatrixMixer():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
 	masterVolume = 1.0f;	
@@ -115,31 +115,55 @@ bool ofxSoundMatrixMixer::isConnected(ofxSoundObject& obj){
 	return false;
 }
 //----------------------------------------------------
+void ofxSoundMatrixMixer::pullChannel(ofSoundBuffer& buffer, const size_t& chanIndex, const size_t &numFrames, const unsigned int & sampleRate){
+	if (inObjects[chanIndex].obj != nullptr ) {
+		ofxSoundObject * source = inObjects[chanIndex].obj->getSignalSourceObject();
+		if(source != nullptr){
+			
+			size_t nc = source->getNumChannels();
+			buffer.resize(nc * numFrames);
+			buffer.setNumChannels(nc);
+			buffer.setSampleRate(sampleRate);
+			inObjects[chanIndex].obj->audioOut(buffer);
+		}else{
+			std::cout << "cant pullChannel. source is null" << std::endl; 
+		}
+	}
+}
+//----------------------------------------------------
+void ofxSoundMatrixMixer::mixChannelBufferIntoOutput(const size_t& idx, ofSoundBuffer& input, ofSoundBuffer& output){
+	auto nf = output.getNumFrames();
+	auto out_nc = output.getNumChannels();
+	auto  in_nc = input.getNumChannels();
+	
+	if(input.getNumFrames() != output.getNumFrames()){
+		ofLogWarning("ofxSoundMatrixMixer::mixChannelBufferIntoOutput",  "input and output buffers have different number of frames. these should be equal");
+	}
+	
+	for(size_t ic =0; ic < in_nc; ic++){
+		for(size_t oc = 0; oc < out_nc; oc++){
+			auto& v = inObjects[idx].channelsVolumes[ic][oc]; 
+			if( !ofIsFloatEqual(v, 0.0f)){
+				for(size_t i= 0; i < nf; i++){
+					output[i * out_nc + oc] += v* input[i * in_nc +ic];
+				}
+			}
+		}
+	}
+}
+//----------------------------------------------------
 // this pulls the audio through from earlier links in the chain and sums up the total output
 void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 	updateNumOutputChannels(output.getNumChannels());
 	if(inObjects.size()>0) {
-		for(int i = 0; i < inObjects.size(); i++){
-			if (inObjects[i].obj != NULL ) {
-				ofSoundBuffer tempBuffer;
-				tempBuffer.resize(output.size());
-//				tempBuffer.setNumChannels(inObjects[i].obj);
-				tempBuffer.setSampleRate(output.getSampleRate());
-				inObjects[i].obj->audioOut(tempBuffer);//could this be done on different threads? maybe threadChannels?
-				
-				for(auto& c : inObjects[i].channelsVolumes){
-					
-				}
-				
-//				float v = channelVolume[i];
-				for (int j = 0; j < tempBuffer.size(); j++) {
-					output.getBuffer()[j] += tempBuffer.getBuffer()[j] * v;
-				}
-			}
+		size_t numFrames = output.getNumFrames();
+		unsigned int samplerate = output.getSampleRate();
+		for(size_t i = 0; i < inObjects.size(); i++){
+			ofSoundBuffer tempBuffer;
+			pullChannel(tempBuffer, i, numFrames, samplerate);
+			
+			
 		}
-		/*   if(output.getNumChannels() == 2) {
-		 output.stereoPan(1-masterPan, masterPan);
-		 }*/
 		output*=masterVolume;
 	}
 //	numOutputChannels = output.getNumChannels();
