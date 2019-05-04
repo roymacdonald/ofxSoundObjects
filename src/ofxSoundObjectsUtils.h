@@ -12,4 +12,9 @@ namespace ofxSoundObjects{
     void getBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer, ofSoundBuffer & targetBuffer, std::vector<int> group);
     void setBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer, ofSoundBuffer & targetBuffer, const std::vector<int>& group);
     bool checkBuffers(const ofSoundBuffer& src, ofSoundBuffer& dst, bool bSetDst = true);
+	
+	std::vector<ofSoundDevice>getInputSoundDevices();
+	std::vector<ofSoundDevice>getOutputSoundDevices();
+	void printInputSoundDevices();
+	void printOutputSoundDevices();
 };
