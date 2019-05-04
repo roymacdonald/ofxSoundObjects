@@ -376,3 +376,7 @@ void ofxSoundPlayerObject::updateInstance(std::function<void(soundPlayInstance& 
 		ofLogVerbose(methodName) << "index out of range" << endl;
 	}
 }
+//--------------------------------------------------------------
+size_t ofxSoundPlayerObject::getNumChannels() const {
+	return soundFile.getNumChannels();
+}

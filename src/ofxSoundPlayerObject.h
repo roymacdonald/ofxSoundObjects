@@ -24,6 +24,8 @@ public:
 	int play();// when play is called and multiplay enabled a new playing instance is setup and it's index returned. If it is not possible to play -1 is returned;
 	void stop(size_t index =0);
 	
+	virtual size_t getNumChannels() const override;
+	
 	void setVolume(float vol, int index =-1 );
 	void setPan(float vol, int index =-1 ); // -1 = left, 1 = right
 	void setSpeed(float spd, int index =-1 );
@@ -79,7 +81,7 @@ public:
 	size_t getNumInstances() { return instances.size(); }
 private:
 	void audioOutBuffersChanged( int nFrames, int nChannels, int sampleRate );
-	void audioOut(ofSoundBuffer& outputBuffer);
+	virtual void audioOut(ofSoundBuffer& outputBuffer) override;
 	void updatePositions(int numFrames);
 	
 	size_t playerSampleRate;
