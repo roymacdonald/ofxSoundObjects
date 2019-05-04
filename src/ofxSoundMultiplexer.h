@@ -7,6 +7,7 @@
 //
 
 #pragma once
+/*
 #include "ofxSoundObject.h"
 #include <map>
 //--------------------------------------------------------------
@@ -37,6 +38,7 @@ protected:
 //--------------------------------------------------------------
 class ofxSoundInputMultiplexer: public ofxSoundBaseMultiplexer, public ofxSoundInput{
 public:
+	ofxSoundInputMultiplexer();
 	virtual void audioIn(ofSoundBuffer &input) override;
 };
 //--------------------------------------------------------------
@@ -44,7 +46,9 @@ public:
 //--------------------------------------------------------------
 class ofxSoundOutputMultiplexer: public ofxSoundBaseMultiplexer, public ofxSoundOutput{
 public:
+	ofxSoundOutputMultiplexer();
 	virtual void audioOut(ofSoundBuffer &output) override;
 private:
 
 };
+//*/

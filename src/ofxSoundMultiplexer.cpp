@@ -9,6 +9,8 @@
 #include "ofxSoundMultiplexer.h"
 #include "ofxSoundObjectsUtils.h"
 
+
+/*
 //--------------------------------------------------------------
 //  ofxSoundBaseMultiplexer
 //--------------------------------------------------------------
@@ -62,3 +64,4 @@ void ofxSoundOutputMultiplexer::audioOut(ofSoundBuffer &output){
         ofxSoundObjects::setBufferFromChannelGroup(m.second.getBuffer(), output, m.first);
     }
 }
+//*/
