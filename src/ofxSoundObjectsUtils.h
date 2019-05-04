@@ -13,6 +13,9 @@ namespace ofxSoundObjects{
     void setBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer, ofSoundBuffer & targetBuffer, const std::vector<int>& group);
     bool checkBuffers(const ofSoundBuffer& src, ofSoundBuffer& dst, bool bSetDst = true);
 	
+	void getBufferPeaks(ofSoundBuffer& buffer, std::vector<float>& peaks);
+	
+	
 	std::vector<ofSoundDevice>getInputSoundDevices();
 	std::vector<ofSoundDevice>getOutputSoundDevices();
 	void printInputSoundDevices();

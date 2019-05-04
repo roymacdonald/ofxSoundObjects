@@ -122,4 +122,21 @@ void  ofxSoundObjects::printInputSoundDevices(){
 void  ofxSoundObjects::printOutputSoundDevices(){
 	printDevices("ofxSoundObjects::printOutputSoundDevices", getOutputSoundDevices(), false);
 }
+//--------------------------------------------------------------
+void ofxSoundObjects::getBufferPeaks(ofSoundBuffer& buffer, std::vector<float>& peaks){
+	auto nc = buffer.getNumChannels();
+	auto nf = buffer.getNumFrames();
+	auto & b = buffer.getBuffer();
+	if(peaks.size() != nc) peaks.resize(nc, 0.0f);
+	size_t i;
+	for(size_t c = 0; c < nc; c++){
+		for(size_t f = 0; f < nf; f++){
+			i = f * nc + c;
+			if(peaks[c] < b[i]) peaks[c] = b[i];
+		}
+	}
+	
+}
+
+
 
