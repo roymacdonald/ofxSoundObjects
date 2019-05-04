@@ -21,8 +21,7 @@ class ofSoundBuffer;
 
 class ofxSoundObject: public ofBaseSoundOutput {
 public:
-//	ofxSoundObject();
-	ofxSoundObject(const ofxSoundObject& ) = default; 	
+	ofxSoundObject();
 	ofxSoundObject(ofxSoundObjectsType);
 	virtual ~ofxSoundObject() {}
 

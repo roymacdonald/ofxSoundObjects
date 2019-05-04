@@ -9,9 +9,9 @@
 //--------------------------------------------------------------
 //  ofxSoundObject
 //--------------------------------------------------------------
-//ofxSoundObject::ofxSoundObject() {
-//	ofLogError("ofxSoundObject::ofxSoundObject()", "dont call the ofxSoundObjects empty constructor. ");
-//}
+ofxSoundObject::ofxSoundObject() {
+	ofLogWarning("ofxSoundObject::ofxSoundObject()", "the ofxSoundObjects' no args constructor should not be called. ");
+}
 ofxSoundObject::ofxSoundObject(ofxSoundObjectsType t){
 	type = t;
 }
