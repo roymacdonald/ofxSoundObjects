@@ -22,6 +22,7 @@ class ofSoundBuffer;
 class ofxSoundObject: public ofBaseSoundOutput {
 public:
 //	ofxSoundObject();
+	ofxSoundObject(const ofxSoundObject& ) = default; 	
 	ofxSoundObject(ofxSoundObjectsType);
 	virtual ~ofxSoundObject() {}
 
@@ -49,13 +50,13 @@ public:
 
 	
 	///this returns the object that is at the begining of the objects chain. It should be an audio input, a sound file player or some kind of signal generator, like a synth.
-	ofxSoundObject *getSourceObject();
+	ofxSoundObject * getSignalSourceObject();
 	
     /// This sets/gets the number of channels that this sound object should process.
     /// By default it will use the number of channels from the ofSoundBuffer passed by the previous link in the chain.
     /// For a 2 channel setup there should be no need to set this, it is mainly for scenarios with more inputs or outputs.
 //    virtual void setNumChannels(int num);
-//    virtual int getNumChannels() const;
+    virtual size_t getNumChannels() const;
 
     ofSoundBuffer& getBuffer();
     const ofSoundBuffer& getBuffer() const;
@@ -97,6 +98,7 @@ private:
 class ofxSoundInput: public ofBaseSoundInput, public ofxSoundObject {
 public:
 	ofxSoundInput();
+	virtual size_t getNumChannels() const override;
 	// copy audio in to internal buffer
 	virtual void audioIn(ofSoundBuffer &input) override;
 	virtual void audioOut(ofSoundBuffer &output) override;

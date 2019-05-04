@@ -62,10 +62,10 @@ bool ofxSoundObject::checkForInfiniteLoops() {
 	return (prev==nullptr);
 }
 //--------------------------------------------------------------
-ofxSoundObject* ofxSoundObject::getSourceObject(){
+ofxSoundObject* ofxSoundObject::getSignalSourceObject(){
 	if(type == OFX_SOUND_OBJECT_SOURCE)return this;
 	if(inputObject != nullptr){
-		return inputObject->getSourceObject();
+		return inputObject->getSignalSourceObject();
 	}
 	ofLogWarning("ofxSoundObject::getSourceObject", "There is no source on your signal chain so most probaly you will get no sound");
 	return nullptr;
@@ -83,10 +83,10 @@ void ofxSoundObject::audioOut(ofSoundBuffer &output) {
 //void ofxSoundObject::setNumChannels(int num){
 //    numChannels = num;
 //}
-////--------------------------------------------------------------
-//int ofxSoundObject::getNumChannels() const{
-//    return numChannels;
-//}
+//--------------------------------------------------------------
+size_t ofxSoundObject::getNumChannels() const{
+    return workingBuffer.getNumChannels();
+}
 //--------------------------------------------------------------
 ofSoundBuffer& ofxSoundObject::getBuffer(){
 return workingBuffer;
@@ -100,6 +100,10 @@ return workingBuffer;
 //  ofxSoundInput
 //--------------------------------------------------------------
 ofxSoundInput::ofxSoundInput():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE) {
+}
+//--------------------------------------------------------------
+size_t ofxSoundInput::getNumChannels() const{
+	return inputBuffer.getNumChannels();
 }
 //--------------------------------------------------------------
 // copy audio in to internal buffer
