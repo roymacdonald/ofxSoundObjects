@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxSoundObjects.h"
+#include "ofxSoundObjectMatrixMixerRenderer.h"
 
 class ofApp : public ofBaseApp{
 	
@@ -27,6 +28,7 @@ public:
 	ofxSoundMatrixMixer mixer;
 	ofxSoundMatrixMixerRenderer mixerRenderer;
 
+	ofxSoundInput input;
 	
 	vector<ofxSoundPlayerObject> players;
 	

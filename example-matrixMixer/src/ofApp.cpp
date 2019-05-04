@@ -22,12 +22,13 @@ void ofApp::setup(){
 				if(players[i].load(dir.getPath(i))){
 					players[i].connectTo(mixer);
 					players[i].play();
+					players[i].setLoop(true);
 				}
 			}
 		}
 	}
 
-
+	input.connectTo(mixer);
 	
 	auto inDevices = ofxSoundObjects::getInputSoundDevices();
 	auto outDevices = ofxSoundObjects::getOutputSoundDevices();
@@ -49,7 +50,7 @@ void ofApp::setup(){
 	ofSoundStreamSettings settings;
 	settings.bufferSize = 256;
 	settings.numBuffers = 1;
-	settings.numInputChannels = 0;
+	settings.numInputChannels =  inDevices[inDeviceIndex].inputChannels;
 	settings.numOutputChannels = outDevices[outDeviceIndex].outputChannels;
 	
 	if(players.size()){
@@ -63,10 +64,11 @@ void ofApp::setup(){
 	
 	
 	stream.setup(settings);
+	stream.setInput(input);
 	stream.setOutput(mixer);
 
 	
-	//	mixerRenderer.setObject(&mixer);
+//		mixerRenderer.setObject(&mixer);
 	mixerRenderer.obj = &mixer;
 
 }
