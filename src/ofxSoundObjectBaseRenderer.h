@@ -6,9 +6,22 @@
 //
 //
 
-#ifndef ofxSoundObjectBaseRenderer_hpp
-#define ofxSoundObjectBaseRenderer_hpp
+#pragma once
 
-#include <stdio.h>
-
-#endif /* ofxSoundObjectBaseRenderer_hpp */
+template<class ClassToRender>
+class ofxSoundObjectBaseRenderer{
+public:
+	ofxSoundObjectBaseRenderer(){}
+	ofxSoundObjectBaseRenderer(ClassToRender* o);
+	virtual void draw() = 0;
+	
+	void setObject(ClassToRender* o);
+	
+//protected:
+	
+	ClassToRender * obj = nullptr;
+	
+	/// render must be called only when something has changed and the gui needs to be redrawn. 
+//	virtual void render() = 0;
+	
+};
