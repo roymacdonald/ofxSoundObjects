@@ -1,5 +1,4 @@
 #include "ofApp.h"
-
 //--------------------------------------------------------------
 void ofApp::setup(){
 	
@@ -23,13 +22,12 @@ void ofApp::setup(){
 				if(players[i].load(dir.getPath(i))){
 					players[i].connectTo(mixer);
 					players[i].play();
-					
 				}
 			}
 		}
 	}
-	
-	
+
+
 	
 	auto inDevices = ofxSoundObjects::getInputSoundDevices();
 	auto outDevices = ofxSoundObjects::getOutputSoundDevices();
@@ -65,24 +63,25 @@ void ofApp::setup(){
 	
 	
 	stream.setup(settings);
-	stream.setOutput(output);
+	stream.setOutput(mixer);
+
 	
-	
+	//	mixerRenderer.setObject(&mixer);
+	mixerRenderer.obj = &mixer;
+
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 	
 }
-//helper function to convert milliseconds to MM:SS format.
-string msToMMSS(unsigned long ms){
-	ms /=1000;
-	return ofToString((int)floor(ms/60.0))+":"+ofToString(ms%60);
-}
 //--------------------------------------------------------------
 void ofApp::draw(){
 	
 	
+
+	mixerRenderer.draw();
+
 //	stringstream ss;
 //	for(auto & c: output.getChannelGroups()){
 //		auto pl = ((ofxSoundPlayerObject*)c.second.getInputObject());
@@ -103,7 +102,7 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-	
+
 }
 
 //--------------------------------------------------------------

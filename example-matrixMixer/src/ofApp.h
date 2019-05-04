@@ -23,13 +23,15 @@ public:
 	void gotMessage(ofMessage msg);
 	
 	ofSoundStream stream;
-	
+
 	ofxSoundMatrixMixer mixer;
-	ofxSoundOutput output;
+	ofxSoundMatrixMixerRenderer mixerRenderer;
+
 	
 	vector<ofxSoundPlayerObject> players;
 	
 	
 	size_t inDeviceIndex, outDeviceIndex;
+	
 	
 };
