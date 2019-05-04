@@ -196,7 +196,9 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
 						else {
 							buffer.resampleTo(buf, i.position, nFrames, i.relativeSpeed, i.loop, ofSoundBuffer::Linear);
 						}
-						buf.stereoPan(i.volumeLeft*volume,i.volumeRight*volume);
+						if(buf.getNumChannels() == 2){
+							buf.stereoPan(i.volumeLeft*volume,i.volumeRight*volume);
+						}
                 };
 				if (instances.size() == 1){
                     processBuffers(outputBuffer, instances[0]);
