@@ -42,9 +42,13 @@ public:
 	//	
 	
 	ofParameter<float> masterVol;
+	
+	void load(const std::string& path);
+	void save(const std::string& path);
+	
 protected:
 	struct MatrixInputObject{//this is just an auxiliary struct to keep things tidier 
-		void updateChanVolsSize(const size_t& numOutChanns){
+		void updateChanVolsSize(const size_t& numOutChanns, const size_t& chanCount ){
 			if(obj != nullptr){
 				auto src  = obj->getSignalSourceObject();
 				if(src != nullptr){
@@ -55,15 +59,15 @@ protected:
 						if(channelsVolumes[i].size() != numOutChanns){
 							channelsVolumes[i].resize(numOutChanns);
 							for(size_t o = 0; o < numOutChanns; o++){
-								channelsVolumes[i][o].set(ofToString(i) + " : " + ofToString(o), 0,0,1);
+								channelsVolumes[i][o].set("chan "+ofToString(chanCount + i) + " : " + ofToString(o), 0,0,1);
 							}
 						}
 					}
 				}
 			}
 		}
-		MatrixInputObject(ofxSoundObject* _obj, const size_t& numOutChanns):obj(_obj){
-			updateChanVolsSize(numOutChanns);
+		MatrixInputObject(ofxSoundObject* _obj, const size_t& numOutChanns, const size_t& chanCount):obj(_obj){
+			updateChanVolsSize(numOutChanns, chanCount);
 		}
 		
 		ofxSoundObject* obj;
@@ -97,6 +101,10 @@ protected:
 	void mixChannelBufferIntoOutput(const size_t& idx, ofSoundBuffer& input, ofSoundBuffer& output);
 
 	bool bComputeRMSandPeak = true;
+	
+	void putMatrixVolumesIntoParamGroup(ofParameterGroup & group);
+	
+
 	
 };
 
