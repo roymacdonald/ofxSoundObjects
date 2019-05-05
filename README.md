@@ -57,7 +57,7 @@ To be able to use this addon with visual studio you need to do the following whe
 That's all.
 
 ## Project Generator
-Create or update your project using openFrameworks' Project Generator and add `ofxSoundObjects` and `ofxAudioFile` in the addons section. 
+Create or update your project using openFrameworks' Project Generator and add `ofxSoundObjects`, `ofxGui` and `ofxAudioFile` in the addons section. 
 
 
 ## Explanation
@@ -130,13 +130,17 @@ It makes use of the ofxSoundMixer object. It loads some audiofiles and plays the
 it uses [ofxFft](https://github.com/kylemcdonald/ofxFft) to perform a Fast Fourier Transform and visualize it. You can change the input of it in runtime, choosing from a audio file playback, sine wave generator or live input.
 
 
-#### example-soundPlayerMultiOutput
-Makes use of ofxSoundOutputMultiplexer in order to output the sound player (or any other object connected to it) to  more than one output on multi output sound interfaces.
+#### example-matrixMixer
+This examples shows how to use the matrix mixer. A matrix mixer is a special kind of mixer that allows you to mix any input into any output, allowing for complex mix scenarios or rerouting audio channels. This becomes very useful when using audio interfaces with lots of outputs. 
 
 
-#### example-multiInputMixdown
+### Removed examples
+I decided to remove the following examples because I removed the ofxSoundMultiplexer class. The functionality of these two is now achieved using the matrix mixer.
 
-Makes use of ofxSoundInputMultiplexer in order to mix specific channels of a multi input sound interface and output this to the default output.
+* example-soundPlayerMultiOutput
+* example-multiInputMixdown
+
+
 
 
 ## Included soundObjects
@@ -246,6 +250,6 @@ It is really simple. Just allows volume adjustment per channel but you can exten
 
 You need to use this to connect the sound device input to a soundObject
 
-#### ofxSoundMultiplexer
+#### ofxSoundMatrixMixer
+This class implements a matrix mixer, which is a special kind of mixer that allows you to mix any input into any output, allowing for complex mix scenarios or rerouting audio channels. This becomes very useful when using audio interfaces with lots of outputs. By itself it does not have a gui but the `ofxSoundMatrixMixerRenderer` class implements one. The `example-matrixMixer` shows how to use both of these.
 
-This class allows to connect multiply the ammount of inputs or outputs of a regular sound object, thus allowing to connect and route multi input and output sound interfaces
