@@ -1,3 +1,3 @@
 ofxAudioFile
-ofxSoundObjects
 ofxGui
+ofxSoundObjects
