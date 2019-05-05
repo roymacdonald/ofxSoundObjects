@@ -14,5 +14,7 @@ public:
 	virtual void draw() override;
 private:
 	std::vector<std::vector<std::vector< std::unique_ptr<ofxFloatSlider>>>> sliders;
+	
+	
 };
 

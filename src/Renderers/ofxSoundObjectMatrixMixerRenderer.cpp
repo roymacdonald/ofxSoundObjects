@@ -85,23 +85,28 @@ void ofxSoundMatrixMixerRenderer::draw(){
 			
 			
 			
-			
-			auto src = dynamic_cast<ofxSoundPlayerObject*>(obj->inObjects[idx].obj->getSignalSourceObject());
-			if(src){
-				auto info = getSoundFileInfo(src->getSoundFile());
+			auto sgnlSrc = obj->inObjects[idx].obj->getSignalSourceObject();
+			auto player = dynamic_cast<ofxSoundPlayerObject*>(sgnlSrc);
+			if(player){
+				auto info = getSoundFileInfo(player->getSoundFile());
 				auto bb = bf.getBoundingBox(info, 0,0);
 				ofDrawBitmapString(info, objR.x - bb.x, objR.y - bb.y);
 				
 				ofRectangle posR = objR;
 				posR.height = 10;
 				posR.y = objR.getMaxY() - posR.height;
-				posR.width = ofMap(src->getPositionMS(), 0, src->getDurationMS(), 0, objR.width);
+				posR.width = ofMap(player->getPositionMS(), 0, player->getDurationMS(), 0, objR.width);
 				
 				ofSetColor(100);
 				ofDrawRectangle(posR);
 				
 			}else{
-				ofDrawBitmapString(ofToString(v.size()), objR.x, objR.getMaxY());
+				auto liveScr = dynamic_cast<ofxSoundInput*>(sgnlSrc);
+				if(liveScr){
+					ofDrawBitmapString(ofxSoundObjects::getSoundDeviceString(liveScr->getDeviceInfo(), true, false), objR.x, objR.getMinY()+20);
+				}else{
+					ofDrawBitmapString(ofToString(v.size()), objR.x, objR.getMaxY() - 20);
+				}
 			}
 			objR.y += objR.height;
 			ofRectangle rmsR;
@@ -144,6 +149,4 @@ void ofxSoundMatrixMixerRenderer::draw(){
 		ss << "Num Input Objects   : " << obj->inObjects.size() << std::endl;
 		ofDrawBitmapStringHighlight(ss.str(), margin.x, margin.x);
 	}
-	
-	
 }
