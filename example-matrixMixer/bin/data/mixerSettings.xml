@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<ofxSoundMatrixMixer>
+	<Master_Vol>1</Master_Vol>
+	<chan_0_:_0>0</chan_0_:_0>
+	<chan_0_:_1>0</chan_0_:_1>
+	<chan_1_:_0>0</chan_1_:_0>
+	<chan_1_:_1>0.479592</chan_1_:_1>
+	<chan_2_:_0>0.729592</chan_2_:_0>
+	<chan_2_:_1>0</chan_2_:_1>
+	<chan_3_:_0>0.568878</chan_3_:_0>
+	<chan_3_:_1>0</chan_3_:_1>
+	<chan_4_:_0>0</chan_4_:_0>
+	<chan_4_:_1>0</chan_4_:_1>
+	<chan_5_:_0>0</chan_5_:_0>
+	<chan_5_:_1>0</chan_5_:_1>
+	<chan_6_:_0>0</chan_6_:_0>
+	<chan_6_:_1>0.441327</chan_6_:_1>
+	<chan_7_:_0>0</chan_7_:_0>
+	<chan_7_:_1>0.443878</chan_7_:_1>
+	<chan_8_:_0>0</chan_8_:_0>
+	<chan_8_:_1>0</chan_8_:_1>
+</ofxSoundMatrixMixer>
