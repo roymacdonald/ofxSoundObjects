@@ -8,7 +8,8 @@ void ofApp::setup(){
 	
 	//this will open a dialog to select a folder in which you should have audio files, ideally more than one but not an excesive amount, say maximum 10.
 	// Each audio file will be routed to a different output of your multi channel audio interface.
-	ofFileDialogResult r = ofSystemLoadDialog("Select folder with audio files(wav, aiff, mp3)", true);
+	// by default the file dialog should open in the soundplayer example's folder that has some audio files so you can simply pres open if you want to try those 
+	ofFileDialogResult r = ofSystemLoadDialog("Select folder with audio files(wav, aiff, mp3)", true, "../../../../../examples/sound/soundPlayerExample/bin/data/sounds");
 	if(r.bSuccess){
 		ofFile f(r.getPath());
 		if(f.isDirectory()){
@@ -71,6 +72,9 @@ void ofApp::setup(){
 //		mixerRenderer.setObject(&mixer);
 	mixerRenderer.obj = &mixer;
 
+	mixerSettingsXmlPath = "mixerSettings.xml";
+	mixer.load(mixerSettingsXmlPath);
+	
 }
 
 //--------------------------------------------------------------
@@ -104,7 +108,12 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-
+	if(key == 's'){
+		mixer.save(mixerSettingsXmlPath);
+	}else if(key == 'l'){
+		mixer.load(mixerSettingsXmlPath);
+	}
+	
 }
 
 //--------------------------------------------------------------
