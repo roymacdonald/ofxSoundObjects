@@ -1,2 +1,3 @@
 ofxAudioFile
 ofxSoundObjects
+ofxGui
