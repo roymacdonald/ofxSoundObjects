@@ -1,2 +1,0 @@
-ofxAudioFile
-ofxSoundObjects
