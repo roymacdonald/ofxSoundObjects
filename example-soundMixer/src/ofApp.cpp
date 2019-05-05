@@ -5,14 +5,20 @@
 void ofApp::setup(){
     ofSetLogLevel(OF_LOG_VERBOSE);
     
-    stream.setup(2, 0, 48000, 256, 1);//make sure you pass the correct sample rate.
-    
- //   players.resize(4);
+	ofSoundStreamSettings streamSettings;
+	streamSettings.numInputChannels = 0;
+	streamSettings.numOutputChannels = 2;
+	streamSettings.sampleRate = 48000; //make sure you pass the correct sample rate.
+	streamSettings.bufferSize = 256;
+	streamSettings.numBuffers = 1;
+	
+    stream.setup(streamSettings);
+	
     ofDirectory dir;
     dir.allowExt("mp3");
     dir.allowExt("wav");
     
-    dir.listDir("sounds");
+    dir.listDir("../../../../../examples/sound/soundPlayerExample/bin/data/sounds");
     volumeGroup.setName("PLAYER VOLUME");
 
 	players.resize(dir.size());
