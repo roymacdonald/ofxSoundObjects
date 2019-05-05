@@ -36,5 +36,5 @@ public:
 	size_t inDeviceIndex, outDeviceIndex;
 		
 	string mixerSettingsXmlPath;
-	
+	bool bSettingsLoaded = false;
 };

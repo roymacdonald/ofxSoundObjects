@@ -73,7 +73,7 @@ void ofApp::setup(){
 	mixerRenderer.obj = &mixer;
 
 	mixerSettingsXmlPath = "mixerSettings.xml";
-	mixer.load(mixerSettingsXmlPath);
+	
 	
 }
 
@@ -87,18 +87,10 @@ void ofApp::draw(){
 	
 
 	mixerRenderer.draw();
-
-//	stringstream ss;
-//	for(auto & c: output.getChannelGroups()){
-//		auto pl = ((ofxSoundPlayerObject*)c.second.getInputObject());
-//		auto& f = pl->getSoundFile();
-//		
-//		ss << "Playing " << ofFilePath::getBaseName(f.getPath()) << " to channels " << ofToString(c.first)<<endl;
-//		ss << "        " << msToMMSS(pl->getPositionMS()) << " - " << msToMMSS(pl->getDurationMS()) << endl <<endl;
-//		
-//	}
-//	ofDrawBitmapStringHighlight(ss.str(), 100, 130);
- 
+	stringstream ss;
+	ss << "Press l key to load mixer settings." << endl;
+	ss << "Press s key to save mixer settings." << endl;
+	ofDrawBitmapStringHighlight(ss.str(), 300, 20);
 }
 
 //--------------------------------------------------------------
