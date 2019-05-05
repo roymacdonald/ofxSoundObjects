@@ -127,14 +127,14 @@ void ofxSoundMatrixMixerRenderer::draw(){
 					drawRect(cell);
 					ofSetColor(255);
 					
-					auto &s = sliders[idx][i][j]; 
-					if(s){
+					 
+					if(sliders[idx][i][j]){
 						auto p = cell.getBottomLeft();
-						p.y -= s->getHeight();
-						if(s->getPosition() != p){
-							s->setPosition(p);
+						p.y -= sliders[idx][i][j]->getHeight();
+						if(sliders[idx][i][j]->getPosition() != p){
+							sliders[idx][i][j]->setPosition(p);
 						}
-						s->draw();
+						sliders[idx][i][j]->draw();
 					}
 //					ofDrawBitmapString(ofToString(v[i][j]), cell.x, cell.getMaxY());
 				}
