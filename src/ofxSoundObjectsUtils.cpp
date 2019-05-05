@@ -114,21 +114,9 @@ void printDevices(const std::string& msg, const std::vector<ofSoundDevice>& devs
 	ss  << std::endl;
 	if(ofGetLogLevel() != OF_LOG_SILENT){
 		ss << "------- SOUND "<< (bInputs?"INPUT":"OUTPUT") << " DEVICES ---------" << endl;
-		for(size_t i = 0; i < devs.size(); i++){	
-			
+		for(size_t i = 0; i < devs.size(); i++){				
 			auto& dev = devs[i]; 
-			ss << ofxSoundObjects::getSoundDeviceString(devs[i], bInputs, !bInputs);
-//			ss << "[ "<< i << " ] " << dev.name;
-//			if(bInputs && dev.isDefaultInput){ ss << " [default]";}
-//			else if(!bInputs && dev.isDefaultOutput){ ss << " [default]";}
-//			ss  << std::endl;
-//			
-//			ss << "     API: " << toString(dev.api) << std::endl;
-//			ss << "     ID: " << dev.deviceID << std::endl;
-//			
-//			if(bInputs)  ss << "     Inputs :" << dev.inputChannels << std::endl; 
-//			if(!bInputs) ss << "     Outputs :" << dev.outputChannels << std::endl;
-			
+			ss << "[ "<< i << " ] "  << ofxSoundObjects::getSoundDeviceString(devs[i], bInputs, !bInputs);			
 		}
 	}
 	ofLogNotice(msg,ss.str());

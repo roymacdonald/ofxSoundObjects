@@ -110,7 +110,7 @@ void ofxSoundMatrixMixerRenderer::draw(){
 			}
 			objR.y += objR.height;
 			ofRectangle rmsR;
-			for(size_t i = 0; i < v.size(); i++){
+			for(size_t i = 0; i < v.size() && i < sliders[idx].size(); i++){
 				cell.y = gridR.y + (cell.height * (i + cellCount));
 				chanR.y = cell.y;
 				drawRect(chanR);
@@ -122,7 +122,7 @@ void ofxSoundMatrixMixerRenderer::draw(){
 					ofDrawRectangle(rmsR);
 				}
 				
-				for(size_t j = 0; j < v[i].size(); j++){
+				for(size_t j = 0; j < v[i].size() && i < sliders[idx][i].size(); j++){
 					cell.x = gridR.x + cell.width*j; 	 
 					drawRect(cell);
 					ofSetColor(255);
