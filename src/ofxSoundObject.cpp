@@ -117,8 +117,35 @@ void ofxSoundInput::audioOut(ofSoundBuffer &output) {
 	inputBuffer.copyTo(output);
 }
 //--------------------------------------------------------------
-//  ofxSoundInput
+int ofxSoundInput::getDeviceId(){
+	return inputBuffer.getDeviceID();
+}
+ofSoundDevice getDevInfo(int id){
+	auto ll = ofGetLogLevel();//Ugly hack to avoid printing when calling ofSoundStreamListDevices()
+	ofSetLogLevel(OF_LOG_SILENT);
+	auto devs = ofSoundStreamListDevices();
+	ofSetLogLevel(ll); 
+	if(id >= 0 && id < devs.size()){
+		return devs[id];
+	}
+	ofSoundDevice d;
+	return d;
+}
+//--------------------------------------------------------------
+ofSoundDevice ofxSoundInput::getDeviceInfo(){
+	return getDevInfo(getDeviceId());
+}
+//--------------------------------------------------------------
+//  ofxSoundOutput
 //--------------------------------------------------------------
 ofxSoundOutput::ofxSoundOutput():ofxSoundObject(OFX_SOUND_OBJECT_DESTINATION) {
 }
-
+//--------------------------------------------------------------
+int ofxSoundOutput::getDeviceId(){
+	return getBuffer().getDeviceID();
+}
+//--------------------------------------------------------------
+ofSoundDevice ofxSoundOutput::getDeviceInfo(){
+	return getDevInfo(getDeviceId());
+}
+//--------------------------------------------------------------

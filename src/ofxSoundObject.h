@@ -101,7 +101,13 @@ public:
 	// copy audio in to internal buffer
 	virtual void audioIn(ofSoundBuffer &input) override;
 	virtual void audioOut(ofSoundBuffer &output) override;
-        
+	
+	/// Returns the device ID that is connected to this input
+	int getDeviceId();
+	
+	/// Returns info about the device that is connected to this input
+	ofSoundDevice getDeviceInfo();
+
 protected:
 	ofSoundBuffer inputBuffer;
 };
@@ -112,6 +118,13 @@ protected:
 class ofxSoundOutput: public ofxSoundObject {
 public:
 	ofxSoundOutput();
+	
+	/// Returns the device ID that is connected to this output
+	int getDeviceId();
+	
+	/// Returns info about the device that is connected to this output
+	ofSoundDevice getDeviceInfo();
+	
 };
 
 
