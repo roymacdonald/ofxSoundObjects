@@ -24,14 +24,15 @@ meta:
 common:
 	# dependencies with other addons, a list of them separated by spaces 
 	# or use += in several lines
-	ADDON_DEPENDENCIES = ofxAudioFile
-	
+	ADDON_DEPENDENCIES =  ofxAudioFile
+	ADDON_DEPENDENCIES += ofxGui
 	# include search paths, this will be usually parsed from the file system
 	# but if the addon or addon libraries need special search paths they can be
 	# specified here separated by spaces or one per line using +=
 	ADDON_INCLUDES =  libs/libsndfile/include
 	ADDON_INCLUDES += src
 	ADDON_INCLUDES += src/SoundObjects
+	ADDON_INCLUDES += src/Renderers
 	# any special flag that should be passed to the compiler when using this
 	# addon
 	# ADDON_CFLAGS =
