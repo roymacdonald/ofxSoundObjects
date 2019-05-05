@@ -15,7 +15,7 @@ namespace ofxSoundObjects{
 	
 	void getBufferPeaks(ofSoundBuffer& buffer, std::vector<float>& peaks);
 	
-	
+	std::string getSoundDeviceString(ofSoundDevice soundDevice, bool bInputs, bool bOutputs);
 	std::vector<ofSoundDevice>getInputSoundDevices();
 	std::vector<ofSoundDevice>getOutputSoundDevices();
 	void printInputSoundDevices();

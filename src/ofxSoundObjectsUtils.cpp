@@ -68,6 +68,7 @@ bool ofxSoundObjects::checkBuffers(const ofSoundBuffer& src, ofSoundBuffer& dst,
 	}
 	return false;
 }
+//--------------------------------------------------------------
 std::vector<ofSoundDevice> getSoundDevices(bool bGetInputs){
 	auto ll = ofGetLogLevel();//Ugly hack to avoid printing when calling ofSoundStreamListDevices()
 	ofSetLogLevel(OF_LOG_SILENT);
@@ -90,6 +91,23 @@ std::vector<ofSoundDevice> ofxSoundObjects::getInputSoundDevices(){
 std::vector<ofSoundDevice> ofxSoundObjects::getOutputSoundDevices(){
 	return getSoundDevices(false);
 }
+//--------------------------------------------------------------
+std::string ofxSoundObjects::getSoundDeviceString(ofSoundDevice dev, bool bInputs, bool bOutputs){
+	std::stringstream ss;
+	ss << dev.name;
+	if(bInputs && dev.isDefaultInput){ ss << " [default]";}
+	else if(!bOutputs && dev.isDefaultOutput){ ss << " [default]";}
+	ss  << std::endl;
+	
+	ss << "     API: " << toString(dev.api) << std::endl;
+	ss << "     ID: " << dev.deviceID << std::endl;
+	
+	if(bInputs)  ss << "     Inputs :" << dev.inputChannels << std::endl; 
+	if(bOutputs) ss << "     Outputs :" << dev.outputChannels << std::endl;
+	
+	return ss.str();
+
+}
 void printDevices(const std::string& msg, const std::vector<ofSoundDevice>& devs, bool bInputs){
 	
 	std::stringstream ss;
@@ -99,16 +117,17 @@ void printDevices(const std::string& msg, const std::vector<ofSoundDevice>& devs
 		for(size_t i = 0; i < devs.size(); i++){	
 			
 			auto& dev = devs[i]; 
-			ss << "[ "<< i << " ] " << dev.name;
-			if(bInputs && dev.isDefaultInput){ ss << " [default]";}
-			else if(!bInputs && dev.isDefaultOutput){ ss << " [default]";}
-			ss  << std::endl;
-			
-			ss << "     API: " << toString(dev.api) << std::endl;
-			ss << "     ID: " << dev.deviceID << std::endl;
-			
-			if(bInputs)  ss << "     Inputs :" << dev.inputChannels << std::endl; 
-			if(!bInputs) ss << "     Outputs :" << dev.outputChannels << std::endl;
+			ss << ofxSoundObjects::getSoundDeviceString(devs[i], bInputs, !bInputs);
+//			ss << "[ "<< i << " ] " << dev.name;
+//			if(bInputs && dev.isDefaultInput){ ss << " [default]";}
+//			else if(!bInputs && dev.isDefaultOutput){ ss << " [default]";}
+//			ss  << std::endl;
+//			
+//			ss << "     API: " << toString(dev.api) << std::endl;
+//			ss << "     ID: " << dev.deviceID << std::endl;
+//			
+//			if(bInputs)  ss << "     Inputs :" << dev.inputChannels << std::endl; 
+//			if(!bInputs) ss << "     Outputs :" << dev.outputChannels << std::endl;
 			
 		}
 	}
