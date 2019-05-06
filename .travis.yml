@@ -192,7 +192,7 @@ install:
   - cd openFrameworks
   - git clone --depth=1 --branch=master https://github.com/npisanti/ofxAudioFile addons/ofxAudioFile
   - git clone --depth=1 --branch=master https://github.com/kylemcdonald/ofxFft addons/ofxFft
-  - travis_wait scripts/ci/addons/install.sh
+  - travis_wait 30 scripts/ci/addons/install.sh
 
 script:
   - scripts/ci/addons/build.sh
