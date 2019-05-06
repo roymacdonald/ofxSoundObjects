@@ -4,9 +4,7 @@
 class waveformDraw: public ofRectangle, public ofxSoundObject{
 public:
 	waveformDraw():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){}
-    waveformDraw(const waveformDraw& a):ofRectangle(a), ofxSoundObject(a){
-    }
-    ~waveformDraw(){}
+    waveformDraw(const waveformDraw& a):ofRectangle(a), ofxSoundObject(a){}
 //--------------------------------------------------------------
     void setup(float x, float y, float w, float h){
         this->set(x, y, w, h);
