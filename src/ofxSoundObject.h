@@ -51,6 +51,11 @@ public:
 	///this returns the object that is at the begining of the objects chain. It should be an audio input, a sound file player or some kind of signal generator, like a synth.
 	ofxSoundObject * getSignalSourceObject();
 	
+	
+	///this returns the object that is at the end of the objects chain. It should be an audio output or a sound file writer
+	ofxSoundObject * getSignalDestinationObject();
+	
+	
     /// This sets/gets the number of channels that this sound object should process.
     /// By default it will use the number of channels from the ofSoundBuffer passed by the previous link in the chain.
     /// For a 2 channel setup there should be no need to set this, it is mainly for scenarios with more inputs or outputs.

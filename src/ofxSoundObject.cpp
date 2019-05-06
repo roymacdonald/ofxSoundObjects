@@ -69,7 +69,16 @@ ofxSoundObject* ofxSoundObject::getSignalSourceObject(){
 	if(inputObject != nullptr){
 		return inputObject->getSignalSourceObject();
 	}
-	ofLogWarning("ofxSoundObject::getSourceObject", "There is no source on your signal chain so most probaly you will get no sound");
+	ofLogWarning("ofxSoundObject::getSignalSourceObject", "There is no source on your signal chain so most probaly you will get no sound");
+	return nullptr;
+}
+//--------------------------------------------------------------
+ofxSoundObject* ofxSoundObject::getSignalDestinationObject(){
+	if(type == OFX_SOUND_OBJECT_DESTINATION)return this;
+	if(outputObjectRef != nullptr){
+		return outputObjectRef->getSignalDestinationObject();
+	}
+	ofLogWarning("ofxSoundObject::getSignalDestinationObject", "There is no destination on your signal chain so most probaly you will get no sound");
 	return nullptr;
 }
 //--------------------------------------------------------------
