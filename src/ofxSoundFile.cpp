@@ -56,12 +56,15 @@ bool ofxSoundFile::load(string filepath){
 	bool result = false;
 
 	if( ofFile::doesFileExist( filepath ) ){
+		audiofile.setVerbose(true);
 		audiofile.load( filepath );
 		result = audiofile.loaded();
 		if (!result){
-			ofLogError()<<"error loading file, double check the file path";
+			ofLogError("ofxSoundFile::load")<<"error loading file, double check the file path";
 		}else{
+			 
 			bCompressed = (ofFilePath::getFileExt(ofToLower(filepath)) == "mp3");
+			ofLogVerbose("ofxSoundFile::load") << "file loaded. is mp3 : "<< (bCompressed?"YES":"NO");  
 		}
 		
 	}else{
