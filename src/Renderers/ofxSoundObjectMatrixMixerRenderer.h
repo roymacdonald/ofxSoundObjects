@@ -15,6 +15,7 @@ public:
 private:
 	std::vector<std::vector<std::vector< std::unique_ptr<ofxFloatSlider>>>> sliders;
 	
+	void initOrResizeNumSliders(const float & sliderWidth = 200);
 	
 };
 

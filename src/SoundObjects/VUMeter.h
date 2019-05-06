@@ -9,7 +9,7 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxSoundObject.h"
-#include "ofxSoundObjectsUtils.h"
+#include "ofxSoundUtils.h"
 
 class VUMeter: public ofRectangle, public ofxSoundObject{
 public:
@@ -44,7 +44,7 @@ public:
 		if(holdPeak.size() != nc) holdPeak.resize(nc);
 		
 		auto t = ofGetElapsedTimeMillis();
-		if(ofxSoundObjectsUtils::getBufferPeaks(input, peak, holdPeak)){
+		if(ofxSoundUtils::getBufferPeaks(input, peak, holdPeak)){
 			lastPeakTime = t;
 			lastPeak = peak;
 			holdPeak = peak;

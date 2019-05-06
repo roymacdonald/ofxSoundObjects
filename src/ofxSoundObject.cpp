@@ -5,7 +5,9 @@
  */
 
 #include "ofxSoundObject.h"
-#include "ofxSoundObjectsUtils.h"
+#include "ofxSoundUtils.h"
+#include "ofSoundStream.h"
+#include "ofLog.h"
 //--------------------------------------------------------------
 //  ofxSoundObject
 //--------------------------------------------------------------
@@ -73,7 +75,7 @@ ofxSoundObject* ofxSoundObject::getSignalSourceObject(){
 //--------------------------------------------------------------
 // this pulls the audio through from earlier links in the chain
 void ofxSoundObject::audioOut(ofSoundBuffer &output) {
-    ofxSoundObjects::checkBuffers(output, workingBuffer);
+    ofxSoundUtils::checkBuffers(output, workingBuffer);
 	if(inputObject!=nullptr) {
 		inputObject->audioOut(workingBuffer);
 	}
@@ -108,12 +110,12 @@ size_t ofxSoundInput::getNumChannels() const{
 //--------------------------------------------------------------
 // copy audio in to internal buffer
 void ofxSoundInput::audioIn(ofSoundBuffer &input) {
-    ofxSoundObjects::checkBuffers(input, inputBuffer);
+    ofxSoundUtils::checkBuffers(input, inputBuffer);
 	input.copyTo(inputBuffer);
 }
 //--------------------------------------------------------------
 void ofxSoundInput::audioOut(ofSoundBuffer &output) {
-    ofxSoundObjects::checkBuffers(output, inputBuffer);
+    ofxSoundUtils::checkBuffers(output, inputBuffer);
 	inputBuffer.copyTo(output);
 }
 //--------------------------------------------------------------

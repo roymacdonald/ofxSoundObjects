@@ -11,6 +11,7 @@
 #include "ofParameter.h"
 #include "ofxSoundObject.h"
 #include "ofTypes.h"
+#include "VUMeter.h"
 
 class ofxSoundMatrixMixerRenderer;
 class ofxSoundMatrixMixer: public ofxSoundObject{
@@ -73,8 +74,7 @@ protected:
 		ofxSoundObject* obj;
 		
 		std::vector< std::vector<ofParameter<float> > > channelsVolumes; //[in channel index] [ output channel index] 
-		std::vector<float> rmsVolume;
-		std::vector<float> peakVolume, prevPeak;
+		VUMeter vuMeter;
 		
 	};
 	

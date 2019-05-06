@@ -2,9 +2,11 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 	
+	ofSetLogLevel(OF_LOG_VERBOSE);
 	
+	ofxSoundUtils::printInputSoundDevices();
+	ofxSoundUtils::printOutputSoundDevices();
 	
-
 	
 	//this will open a dialog to select a folder in which you should have audio files, ideally more than one but not an excesive amount, say maximum 10.
 	// Each audio file will be routed to a different output of your multi channel audio interface.
@@ -31,14 +33,14 @@ void ofApp::setup(){
 
 	input.connectTo(mixer);
 	
-	auto inDevices = ofxSoundObjects::getInputSoundDevices();
-	auto outDevices = ofxSoundObjects::getOutputSoundDevices();
+	auto inDevices = ofxSoundUtils::getInputSoundDevices();
+	auto outDevices = ofxSoundUtils::getOutputSoundDevices();
 	
+
 	
-	ofxSoundObjects::printInputSoundDevices();
-	ofxSoundObjects::printOutputSoundDevices();
+
 	
-	// IMPORTANT!!!
+		// IMPORTANT!!!
 	// The following two lines of code is where you set which audio interface to use.
 	// the index is the number printed in the console inside [ ] before the interface name 
 	// You can use a different input and output device.

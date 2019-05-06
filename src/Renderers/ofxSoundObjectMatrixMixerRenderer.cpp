@@ -30,6 +30,24 @@ std:stringstream ss;
 	ss << "  NumSamples " << f.getNumSamples();
 	return ss.str();
 }
+
+//----------------------------------------------------
+void ofxSoundMatrixMixerRenderer::initOrResizeNumSliders(const float & sliderWidth){
+	if(sliders.size() != obj->inObjects.size())sliders.resize(obj->inObjects.size());
+	for(size_t idx =0 ; idx < obj->inObjects.size(); idx++ ){
+		auto & v = obj->inObjects[idx].channelsVolumes;
+		if(sliders[idx].size() != v.size()) sliders[idx].resize(v.size());
+		for(size_t i = 0; i <sliders[idx].size(); i++){
+			if(sliders[idx][i].size() != v[i].size()) sliders[idx][i].resize(v[i].size());
+			for(size_t o = 0; o < sliders[idx][i].size(); o++){
+				if(!sliders[idx][i][o]){
+					sliders[idx][i][o] = make_unique<ofxFloatSlider>(v[i][o], sliderWidth);
+				}					
+			}
+		}
+	}
+}
+
 //----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::draw(){
 	
@@ -62,20 +80,11 @@ void ofxSoundMatrixMixerRenderer::draw(){
 		ofRectangle objR(leftR.x, leftR.y, leftW - chanW, leftR.height / obj->inObjects.size());
 		ofRectangle chanR(objR.getMaxX(), objR.y, chanW, cell.height);
 		
-		if(sliders.size() != obj->inObjects.size())sliders.resize(obj->inObjects.size());
+		
+		initOrResizeNumSliders(cell.width);
 		
 		for(size_t idx =0 ; idx < obj->inObjects.size(); idx++ ){
 			auto & v = obj->inObjects[idx].channelsVolumes;
-			if(sliders[idx].size() != v.size()) sliders[idx].resize(v.size());
-			for(size_t i = 0; i <sliders[idx].size(); i++){
-				if(sliders[idx][i].size() != v[i].size()) sliders[idx][i].resize(v[i].size());
-				for(size_t o = 0; o < sliders[idx][i].size(); o++){
-					if(!sliders[idx][i][o]){
-						sliders[idx][i][o] = make_unique<ofxFloatSlider>(v[i][o], cell.width);
-					}					
-				}
-			}
-			
 			
 			objR.height = cell.height * v.size();
 			chanR.y = objR.y;
@@ -103,7 +112,7 @@ void ofxSoundMatrixMixerRenderer::draw(){
 			}else{
 				auto liveScr = dynamic_cast<ofxSoundInput*>(sgnlSrc);
 				if(liveScr){
-					ofDrawBitmapString(ofxSoundObjects::getSoundDeviceString(liveScr->getDeviceInfo(), true, false), objR.x, objR.getMinY()+20);
+					ofDrawBitmapString(ofxSoundUtils::getSoundDeviceString(liveScr->getDeviceInfo(), true, false), objR.x, objR.getMinY()+20);
 				}else{
 					ofDrawBitmapString(ofToString(v.size()), objR.x, objR.getMaxY() - 20);
 				}
@@ -114,20 +123,15 @@ void ofxSoundMatrixMixerRenderer::draw(){
 				cell.y = gridR.y + (cell.height * (i + cellCount));
 				chanR.y = cell.y;
 				drawRect(chanR);
-				if(obj->bComputeRMSandPeak && i < obj->inObjects[idx].rmsVolume.size()){
-					rmsR = chanR;
-					rmsR.height = ofMap(obj->inObjects[idx].rmsVolume[i], 0, 1, 0, chanR.height);
-					rmsR.y = chanR.getMaxY() - rmsR.height; 
-					ofSetColor(100);
-					ofDrawRectangle(rmsR);
+				if(obj->bComputeRMSandPeak){
+					obj->inObjects[idx].vuMeter.drawChannel(i, chanR);
 				}
-				
 				for(size_t j = 0; j < v[i].size() && i < sliders[idx][i].size(); j++){
 					cell.x = gridR.x + cell.width*j; 	 
 					drawRect(cell);
 					ofSetColor(255);
 					
-					 
+					
 					if(sliders[idx][i][j]){
 						auto p = cell.getBottomLeft();
 						p.y -= sliders[idx][i][j]->getHeight();

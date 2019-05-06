@@ -7,7 +7,7 @@
 //
 
 #include "ofxSoundMatrixMixer.h"
-#include "ofxSoundObjectsUtils.h"
+#include "ofxSoundUtils.h"
 //----------------------------------------------------
 ofxSoundMatrixMixer::ofxSoundMatrixMixer():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
 	masterVolume = 1.0f;	
@@ -109,8 +109,6 @@ void ofxSoundMatrixMixer::updateNumInputChannels(){
 			numInputChannels += src->getNumChannels();
 		}
 	}
-	
-	
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::setMasterVolume(float vol){
@@ -143,22 +141,7 @@ void ofxSoundMatrixMixer::pullChannel(ofSoundBuffer& buffer, const size_t& chanI
 			inObjects[chanIndex].obj->audioOut(buffer);
 			
 			if(bComputeRMSandPeak){
-				
-				std::vector<float>rms(nc, 0.0f);
-				std::vector<float>peak(nc, 0.0f);
-				std::vector<float>prevPeak(nc, 0.0f);
-				
-				ofxSoundObjects::getBufferPeaks(buffer, peak);				
-				for(size_t i =0; i < nc; i++){
-					rms[i] = buffer.getRMSAmplitudeChannel(i);
-				}
-
-				mutex.lock();
-				inObjects[chanIndex].rmsVolume = rms;
-				inObjects[chanIndex].peakVolume = peak;
-				inObjects[chanIndex].prevPeak = prevPeak;
-				mutex.unlock();
-
+				inObjects[chanIndex].vuMeter.calculate(buffer);
 			}
 			
 		}else{
@@ -250,7 +233,7 @@ void ofxSoundMatrixMixer::putMatrixVolumesIntoParamGroup(ofParameterGroup & grou
 	for(size_t idx =0 ; idx < inObjects.size(); idx++ ){	
 		for(size_t ic =0; ic < inObjects[idx].channelsVolumes.size(); ic++){
 			for(size_t oc = 0; oc < inObjects[idx].channelsVolumes[ic].size(); oc++){
-				std::cout << inObjects[idx].channelsVolumes[ic][oc].getName() << std::endl;
+//				std::cout << inObjects[idx].channelsVolumes[ic][oc].getName() << std::endl;
 				group.add(inObjects[idx].channelsVolumes[ic][oc]);
 			}
 		}

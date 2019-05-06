@@ -5,4 +5,4 @@
 #include "ofxSoundFile.h"
 #include "ofxSoundPlayerObject.h"
 #include "ofxSoundMatrixMixer.h"
-#include "ofxSoundObjectsUtils.h"
+#include "ofxSoundUtils.h"
