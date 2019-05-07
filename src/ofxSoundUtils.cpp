@@ -85,6 +85,18 @@ std::vector<ofSoundDevice> getSoundDevices(bool bGetInputs){
 	}
 	return devs;
 }
+ofSoundDevice ofxSoundUtils::getSoundDeviceInfo(int id){
+	auto ll = ofGetLogLevel();//Ugly hack to avoid printing when calling ofSoundStreamListDevices()
+	ofSetLogLevel(OF_LOG_SILENT);
+	auto devs = ofSoundStreamListDevices();
+	ofSetLogLevel(ll); 
+	if(id >= 0 && id < devs.size()){
+		return devs[id];
+	}
+	ofSoundDevice d;
+	return d;
+}
+
 //--------------------------------------------------------------
 std::vector<ofSoundDevice> ofxSoundUtils::getInputSoundDevices(){
 	return getSoundDevices(true);

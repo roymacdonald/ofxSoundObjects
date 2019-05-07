@@ -12,7 +12,7 @@ public:
     virtual ~ofxSoundMixer();
 
 	ofxSoundObject* getChannelSource(int channelNumber);
-	int getNumChannels();
+	size_t getNumChannels() override;
 
 	/// sets output volume multiplier.
 	/// a volume of 1 means "full volume", 0 is muted.
@@ -25,7 +25,7 @@ public:
 	void  setMasterPan(float pan);
 	float getMasterPan();
 
-	void audioOut(ofSoundBuffer &output);
+	void audioOut(ofSoundBuffer &output) override;
 	bool isConnectedTo(ofxSoundObject& obj);
 
     void setChannelVolume(int channelNumber, float vol);
@@ -44,12 +44,12 @@ public:
 	ofParameter<float> masterVol;
 protected:
 	void masterVolChanged(float& f);
-	void disconnectInput(ofxSoundObject * input);
+	void disconnectInput(ofxSoundObject * input) override;
 	vector<ofxSoundObject*>channels;
     vector<float> channelVolume;
     float masterPan;
 	float masterVolume;
-	void setInput(ofxSoundObject *obj);
+	void setInput(ofxSoundObject *obj) override;
 	ofMutex mutex;
 };
 

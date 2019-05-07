@@ -379,6 +379,6 @@ void ofxSoundPlayerObject::updateInstance(std::function<void(soundPlayInstance& 
 	}
 }
 //--------------------------------------------------------------
-size_t ofxSoundPlayerObject::getNumChannels() const {
+size_t ofxSoundPlayerObject::getNumChannels() {
 	return soundFile.getNumChannels();
 }

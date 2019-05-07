@@ -12,10 +12,18 @@
 class ofxSoundMatrixMixerRenderer: public ofxSoundObjectBaseRenderer<ofxSoundMatrixMixer>{
 public:
 	virtual void draw() override;
+	void enableSliders();
+	void disableSliders();
+	void toggleSliders();
+	bool isSlidersEnabled();
 private:
 	std::vector<std::vector<std::vector< std::unique_ptr<ofxFloatSlider>>>> sliders;
+	std::vector<std::unique_ptr<ofxFloatSlider>> outputSliders;
+	std::unique_ptr<ofxFloatSlider> masterSlider;
 	
 	void initOrResizeNumSliders(const float & sliderWidth = 200);
 	
+	
+	bool bSlidersEnabled = false;
 };
 

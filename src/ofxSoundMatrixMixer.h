@@ -75,12 +75,18 @@ protected:
 		
 		std::vector< std::vector<ofParameter<float> > > channelsVolumes; //[in channel index] [ output channel index] 
 		VUMeter vuMeter;
+		bool bBufferProcessed = false;
 		
 	};
+
+	VUMeter outVuMeter;
+
+	std::vector<ofParameter<float>> outputVolumes;
 	
 	//	void setupMixers();
 	//	std::vector<ofxSoundMixer> mixers;
 	void masterVolChanged(float& f);
+	
 	void disconnectInput(ofxSoundObject * input) override;
 	std::vector<MatrixInputObject>inObjects;
 	//	vector<ofxSoundObject*>inObjects;

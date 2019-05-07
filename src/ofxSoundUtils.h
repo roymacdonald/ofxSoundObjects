@@ -16,9 +16,13 @@ namespace ofxSoundUtils{
 	
 	bool getBufferPeaks(ofSoundBuffer& buffer, std::vector<float>& currentPeaks, std::vector<float>& prevPeaks); // returns true if a new peak was found
 	
+	//--------------------------------------------------------------
+	ofSoundDevice getSoundDeviceInfo(int id);
 	std::string getSoundDeviceString(ofSoundDevice soundDevice, bool bInputs, bool bOutputs);
 	std::vector<ofSoundDevice>getInputSoundDevices();
 	std::vector<ofSoundDevice>getOutputSoundDevices();
 	void printInputSoundDevices();
 	void printOutputSoundDevices();
+	
+	
 };

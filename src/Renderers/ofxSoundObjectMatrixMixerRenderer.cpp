@@ -46,6 +46,64 @@ void ofxSoundMatrixMixerRenderer::initOrResizeNumSliders(const float & sliderWid
 			}
 		}
 	}
+	if(outputSliders.size() != obj->getNumOutputChannels()) outputSliders.resize(obj->getNumOutputChannels());
+	for(size_t i = 0; i < outputSliders.size(); i++){
+		if(!outputSliders[i]) outputSliders[i] = make_unique<ofxFloatSlider>(obj->outputVolumes[i], sliderWidth);
+	}
+	if(!masterSlider) masterSlider = make_unique<ofxFloatSlider>(obj->masterVol, sliderWidth);
+}
+
+//----------------------------------------------------
+void ofxSoundMatrixMixerRenderer::enableSliders(){
+	if(!bSlidersEnabled){
+		bSlidersEnabled = true;
+		for(auto& s: sliders){
+			for(auto& i: s){
+				for(auto& o: i){
+					if(o){
+						o->registerMouseEvents();
+					}
+				}
+			}
+		}
+	}
+	for(auto& o: outputSliders ){
+		if(o) o->registerMouseEvents();
+	}
+	if(masterSlider)masterSlider->registerMouseEvents();
+	
+}
+//----------------------------------------------------
+void ofxSoundMatrixMixerRenderer::disableSliders(){
+	if(bSlidersEnabled){
+		bSlidersEnabled = false;
+		for(auto& s: sliders){
+			for(auto& i: s){
+				for(auto& o: i){
+					if(o){
+						o->unregisterMouseEvents();
+					}
+				}
+			}
+		}
+	}
+	for(auto& o: outputSliders ){
+		if(o) o->unregisterMouseEvents();
+	}
+	if(masterSlider)masterSlider->unregisterMouseEvents();
+	
+}
+//----------------------------------------------------
+void ofxSoundMatrixMixerRenderer::toggleSliders(){
+	if(bSlidersEnabled){
+		disableSliders();
+	}else{
+		enableSliders();
+	}
+}
+//----------------------------------------------------
+bool ofxSoundMatrixMixerRenderer::isSlidersEnabled(){
+	return bSlidersEnabled;
 }
 
 //----------------------------------------------------
@@ -55,12 +113,16 @@ void ofxSoundMatrixMixerRenderer::draw(){
 		
 		glm::vec2 margin = {20, 80};
 		float leftW = 200;
-		float bottomH = 100;
+		float bottomH = 150;
 		float chanW = 10;
 		ofRectangle leftR (margin.x, margin.y, leftW, ofGetHeight() - margin.y - margin.x - bottomH);
 		ofRectangle bottomR(leftR.getMaxX(), leftR.getMaxY(), ofGetWidth() - margin.x - leftR.getMaxX(),  bottomH);
 		
 		ofRectangle gridR (leftR.getMaxX(), leftR.getMinY(), bottomR.width, leftR.height);
+		
+		
+		ofRectangle bottomLeftR(leftR.x, bottomR.y, leftR.width, bottomR.height);
+		
 		
 		
 		ofRectangle cell;
@@ -74,15 +136,82 @@ void ofxSoundMatrixMixerRenderer::draw(){
 		drawRect(leftR);
 		drawRect(bottomR);
 		drawRect(gridR);
+		drawRect(bottomLeftR);
 		
 		size_t cellCount = 0;
 		ofBitmapFont bf;
 		ofRectangle objR(leftR.x, leftR.y, leftW - chanW, leftR.height / obj->inObjects.size());
 		ofRectangle chanR(objR.getMaxX(), objR.y, chanW, cell.height);
 		
-		
 		initOrResizeNumSliders(cell.width);
 		
+		
+		// start draw output channels 
+		ofRectangle outChanR = bottomR;
+		outChanR.width = bottomR.width/outputSliders.size();
+		glm::vec3 outPos = outChanR.getBottomLeft();
+		if(outputSliders.size()) outPos.y -= outputSliders[0]->getHeight();
+		for(size_t i = 0; i < outputSliders.size(); i++){
+			drawRect(outChanR);
+			 
+			if(outputSliders[i]!= nullptr){				
+				if(outputSliders[i]->getPosition() != outPos){
+					outputSliders[i]->setPosition(outPos);
+				}
+				outPos.x += outChanR.width;
+				outputSliders[i]->draw();
+			}
+			
+			if(obj->bComputeRMSandPeak){
+				auto vuR = outChanR;
+				vuR.y = outChanR.getMaxY();
+				if(outputSliders[i]) vuR.y -= outputSliders[i]->getHeight(); 
+				
+				vuR.y -= chanW;
+				vuR.height = chanW;
+				obj->outVuMeter.drawChannel(i, vuR);
+			}
+			
+			outChanR.x += outChanR.width;
+		}
+		
+		if(masterSlider){
+			auto mp = bottomLeftR.getBottomLeft();
+			mp -= masterSlider->getHeight();
+			if(masterSlider->getPosition() != mp){
+				masterSlider->setPosition(mp);
+			}else{
+				masterSlider->draw();
+			}
+		}
+		
+		std::stringstream oss;
+		oss << " -- OUTPUT -- " <<std::endl;
+		auto * dest = obj->getSignalDestinationObject();
+		if(dest){
+			auto info = ofxSoundUtils::getSoundDeviceInfo(dest->getBuffer().getDeviceID());
+			oss << info.name;// <<std::endl;
+		}
+		ofSetColor(255);
+		ofDrawBitmapString(oss.str(), bottomLeftR.x, bottomLeftR.y + 20);
+		
+		outPos.x =  bottomLeftR.x;
+		outPos.y = bottomLeftR.y + 20;
+		
+		ofPushStyle();
+		ofSetColor(ofColor::yellow);
+		ofSetLineWidth(2);
+		ofDrawLine(outPos.x, outPos.y - 10, outPos.x, outPos.y + 10);
+		ofDrawLine(outPos.x-10, outPos.y, outPos.x + 10, outPos.y);
+		ofPopStyle();
+		
+		
+		
+			
+			
+		// end draw output channels
+		
+		// start draw grid
 		for(size_t idx =0 ; idx < obj->inObjects.size(); idx++ ){
 			auto & v = obj->inObjects[idx].channelsVolumes;
 			
@@ -96,6 +225,8 @@ void ofxSoundMatrixMixerRenderer::draw(){
 			
 			auto sgnlSrc = obj->inObjects[idx].obj->getSignalSourceObject();
 			auto player = dynamic_cast<ofxSoundPlayerObject*>(sgnlSrc);
+			
+			// input object info header rect draw start
 			if(player){
 				auto info = getSoundFileInfo(player->getSoundFile());
 				auto bb = bf.getBoundingBox(info, 0,0);
@@ -117,6 +248,9 @@ void ofxSoundMatrixMixerRenderer::draw(){
 					ofDrawBitmapString(ofToString(v.size()), objR.x, objR.getMaxY() - 20);
 				}
 			}
+			// input object info header rect draw end
+			
+			// draw cells start
 			objR.y += objR.height;
 			ofRectangle rmsR;
 			for(size_t i = 0; i < v.size() && i < sliders[idx].size(); i++){
@@ -144,8 +278,10 @@ void ofxSoundMatrixMixerRenderer::draw(){
 				}
 			}
 			cellCount += v.size();
+			// draw cells start
 			
 		}
+		
 		std::stringstream ss;
 		
 		ss << "Num Output Channels : " << obj->getNumOutputChannels() << std::endl;

@@ -8,11 +8,14 @@
 
 #include "ofxSoundMatrixMixer.h"
 #include "ofxSoundUtils.h"
+#include "ofxSoundPlayerObject.h"
 //----------------------------------------------------
 ofxSoundMatrixMixer::ofxSoundMatrixMixer():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
 	masterVolume = 1.0f;	
 	masterVol.set("Master Vol", 1, 0, 1);
 	masterVol.addListener(this, &ofxSoundMatrixMixer::masterVolChanged);
+	outVuMeter.drawMode = VUMeter::VU_DRAW_HORIZONTAL;
+
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::masterVolChanged(float& f) {
@@ -60,30 +63,31 @@ ofxSoundObject* ofxSoundMatrixMixer::getInputChannelSource(size_t channelNumber)
 //----------------------------------------------------
 void ofxSoundMatrixMixer::disconnectInput(ofxSoundObject * input){
 	ofRemove(inObjects, [&](MatrixInputObject& o){return input == o.obj;});
-//	for (int i =0; i<input.size(); i++) {
-//		if (input == channels[i]) {
-//			channels.erase(channels.begin() + i);
-////			channelVolume.erase(channelVolume.begin() + i);
-//			break;
-//		}
-//	}
+	//	for (int i =0; i<input.size(); i++) {
+	//		if (input == channels[i]) {
+	//			channels.erase(channels.begin() + i);
+	////			channelVolume.erase(channelVolume.begin() + i);
+	//			break;
+	//		}
+	//	}
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::setInput(ofxSoundObject *obj){
 	if(obj){
-	for (int i =0; i<inObjects.size(); i++) {
-		if (obj == inObjects[i].obj) {
-			ofLogNotice("ofxSoundMatrixMixer::setInput") << " already connected" ;
-			return;
+		for (int i =0; i<inObjects.size(); i++) {
+			if (obj == inObjects[i].obj) {
+				ofLogNotice("ofxSoundMatrixMixer::setInput") << " already connected" ;
+				return;
+			}
 		}
-	}
-	inObjects.push_back(MatrixInputObject(obj, numOutputChannels, numInputChannels));
-	updateNumInputChannels();
-//		for(auto & i : inObjects){
-			
-//			i.resize(numInputChannels);
-//			inObjectsVolumes.push_back(std::vector<float>( numInputChannels, 0.0f));
-//		}
+		
+		inObjects.push_back(MatrixInputObject(obj, numOutputChannels, numInputChannels));
+		updateNumInputChannels();
+		//		for(auto & i : inObjects){
+		
+		//			i.resize(numInputChannels);
+		//			inObjectsVolumes.push_back(std::vector<float>( numInputChannels, 0.0f));
+		//		}
 	}
 }
 //----------------------------------------------------
@@ -95,11 +99,17 @@ void ofxSoundMatrixMixer::updateNumOutputChannels(const size_t & nc){
 			i.updateChanVolsSize(numOutputChannels, count);
 			count += i.channelsVolumes.size();
 		}
+		size_t i = outputVolumes.size(); 
+		outputVolumes.resize(numOutputChannels);
+		for( ; i < numOutputChannels; i++){
+			outputVolumes[i].set("out " + ofToString(i), 0, 0, 1);
+		}
+		
 	}
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::updateNumInputChannels(){
-
+	
 	numInputChannels = 0;
 	
 	ofxSoundObject * src = nullptr;
@@ -134,16 +144,20 @@ void ofxSoundMatrixMixer::pullChannel(ofSoundBuffer& buffer, const size_t& chanI
 	if (inObjects[chanIndex].obj != nullptr ) {
 		ofxSoundObject * source = inObjects[chanIndex].obj->getSignalSourceObject();
 		if(source != nullptr){			
-			size_t nc = source->getNumChannels();
-			buffer.resize(nc * numFrames);
-			buffer.setNumChannels(nc);
-			buffer.setSampleRate(sampleRate);
-			inObjects[chanIndex].obj->audioOut(buffer);
-			
-			if(bComputeRMSandPeak){
-				inObjects[chanIndex].vuMeter.calculate(buffer);
+			auto player = dynamic_cast<ofxSoundPlayerObject*>(source);
+			if((player && player->isPlaying()) || !player ){// this is to avoid pulling audio when the player is not playing
+				size_t nc = source->getNumChannels();
+				buffer.resize(nc * numFrames);
+				buffer.setNumChannels(nc);
+				buffer.setSampleRate(sampleRate);
+				inObjects[chanIndex].obj->audioOut(buffer);
+				inObjects[chanIndex].bBufferProcessed = true;
+				if(bComputeRMSandPeak){
+					inObjects[chanIndex].vuMeter.calculate(buffer);
+				}
+			}else{
+				inObjects[chanIndex].bBufferProcessed = false;
 			}
-			
 		}else{
 			std::cout << "cant pullChannel. source is null" << std::endl; 
 		}
@@ -158,13 +172,14 @@ void ofxSoundMatrixMixer::mixChannelBufferIntoOutput(const size_t& idx, ofSoundB
 	if(input.getNumFrames() != output.getNumFrames()){
 		ofLogWarning("ofxSoundMatrixMixer::mixChannelBufferIntoOutput",  "input and output buffers have different number of frames. these should be equal");
 	}
-	
-	for(size_t ic =0; ic < in_nc; ic++){
-		for(size_t oc = 0; oc < out_nc; oc++){
-			auto& v = inObjects[idx].channelsVolumes[ic][oc]; 
-			if( !ofIsFloatEqual(v.get(), 0.0f)){
-				for(size_t i= 0; i < nf; i++){
-					output[i * out_nc + oc] += v* input[i * in_nc +ic];
+	if(inObjects[idx].bBufferProcessed){
+		for(size_t ic =0; ic < in_nc; ic++){
+			for(size_t oc = 0; oc < out_nc; oc++){
+				auto& v = inObjects[idx].channelsVolumes[ic][oc]; 
+				if( !ofIsFloatEqual(v.get(), 0.0f)){
+					for(size_t i= 0; i < nf; i++){
+						output[i * out_nc + oc] += v* input[i * in_nc +ic];
+					}
 				}
 			}
 		}
@@ -182,7 +197,21 @@ void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 			pullChannel(tempBuffer, i, numFrames, samplerate);
 			mixChannelBufferIntoOutput(i, tempBuffer, output);
 		}
+		auto nf = output.getNumFrames();
+		auto nov = outputVolumes.size();
+		for(size_t i =0; i < nov; i++){
+			for(size_t f = 0; f < nf; f++){
+				output[f * nov + i] *= outputVolumes[i].get();
+			}
+		}
+		
+		if(bComputeRMSandPeak){
+			outVuMeter.calculate(output);
+		}
+		
 		output*=masterVolume;
+		
+		
 	}
 }
 //----------------------------------------------------
@@ -202,7 +231,7 @@ void ofxSoundMatrixMixer::load(const std::string& filename){
 		}else{
 			ofLogError("ofxGui") << extension << " not recognized, only .xml and .json supported by now";
 		}
-
+	
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::save(const std::string& filename){
@@ -224,7 +253,7 @@ void ofxSoundMatrixMixer::save(const std::string& filename){
 		}else{
 			ofLogError("ofxGui") << extension << " not recognized, only .xml and .json supported by now";
 		}
-
+	
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::putMatrixVolumesIntoParamGroup(ofParameterGroup & group){
@@ -233,7 +262,7 @@ void ofxSoundMatrixMixer::putMatrixVolumesIntoParamGroup(ofParameterGroup & grou
 	for(size_t idx =0 ; idx < inObjects.size(); idx++ ){	
 		for(size_t ic =0; ic < inObjects[idx].channelsVolumes.size(); ic++){
 			for(size_t oc = 0; oc < inObjects[idx].channelsVolumes[ic].size(); oc++){
-//				std::cout << inObjects[idx].channelsVolumes[ic][oc].getName() << std::endl;
+				//				std::cout << inObjects[idx].channelsVolumes[ic][oc].getName() << std::endl;
 				group.add(inObjects[idx].channelsVolumes[ic][oc]);
 			}
 		}

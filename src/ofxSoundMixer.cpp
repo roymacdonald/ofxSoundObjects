@@ -53,7 +53,7 @@ void ofxSoundMixer::setInput(ofxSoundObject *obj){
     channelVolume.push_back(1);//default volume for channel is 1
 }
 //----------------------------------------------------
-int ofxSoundMixer::getNumChannels(){
+size_t ofxSoundMixer::getNumChannels(){
     return channels.size();
 }
 //----------------------------------------------------

@@ -24,7 +24,7 @@ public:
 	int play();// when play is called and multiplay enabled a new playing instance is setup and it's index returned. If it is not possible to play -1 is returned;
 	void stop(size_t index =0);
 	
-	virtual size_t getNumChannels() const override;
+	virtual size_t getNumChannels() override;
 	
 	void setVolume(float vol, int index =-1 );
 	void setPan(float vol, int index =-1 ); // -1 = left, 1 = right

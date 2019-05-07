@@ -4,7 +4,7 @@
 #include "ofBaseTypes.h"
 #include "ofSoundBuffer.h"
 #include "ofxSoundObjectsConstants.h"
-
+#include "ofSoundStream.h"
 // this #define is for use by addon writers, to conditionally support sound objects in addons
 // (while allowing backwards compatibility with previous versions of openFrameworks)
 #define OF_SOUND_OBJECT_AVAILABLE
@@ -60,7 +60,7 @@ public:
     /// By default it will use the number of channels from the ofSoundBuffer passed by the previous link in the chain.
     /// For a 2 channel setup there should be no need to set this, it is mainly for scenarios with more inputs or outputs.
 //    virtual void setNumChannels(int num);
-    virtual size_t getNumChannels() const;
+	virtual size_t getNumChannels();
 
     ofSoundBuffer& getBuffer();
     const ofSoundBuffer& getBuffer() const;
@@ -70,8 +70,13 @@ public:
 	
 	
 	ofxSoundObjectsMode getMode(){return mode;}
+	
+	void setOutputStream(ofSoundStream& stream);
+	void setOutputStream(ofSoundStream* stream);
+	ofSoundStream* getOutputStream();
 
 protected:
+
 	// this is the previous dsp object in the chain
 	// that feeds this one with input.
 	ofxSoundObject *inputObject = nullptr;
@@ -85,6 +90,8 @@ protected:
 	ofxSoundObjectsType type = OFX_SOUND_OBJECT_PROCESSOR;
 	
 private:
+	ofSoundStream* outputStream = nullptr;
+	
 	// ofxSoundObjects reference their source, not their destination
 	// because it's not needed in a pullthrough audio architecture.
 	// this lets that be set under the hood via connectTo()
@@ -102,7 +109,7 @@ private:
 class ofxSoundInput: public ofBaseSoundInput, public ofxSoundObject {
 public:
 	ofxSoundInput();
-	virtual size_t getNumChannels() const override;
+	virtual size_t getNumChannels() override;
 	// copy audio in to internal buffer
 	virtual void audioIn(ofSoundBuffer &input) override;
 	virtual void audioOut(ofSoundBuffer &output) override;
@@ -112,9 +119,17 @@ public:
 	
 	/// Returns info about the device that is connected to this input
 	ofSoundDevice getDeviceInfo();
+	
+	void setInputStream(ofSoundStream& stream);
+	void setInputStream(ofSoundStream* stream);
+	ofSoundStream* getInputStream();
+	
 
 protected:
 	ofSoundBuffer inputBuffer;
+private:
+	ofSoundStream* inputStream = nullptr;
+	
 };
 
 /**
