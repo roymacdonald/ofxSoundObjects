@@ -86,6 +86,15 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	
+	float x = ofMap(ofGetMouseX(), 0, ofGetWidth(), 0, 1, true);
+	float y = ofMap(ofGetMouseY(), 0, ofGetHeight(), 0, 1, true);
+	//the following sets the volume for the second connection (sound player) for its first input channel and its second output channels based on the mouse x position 
+	mixer.setVolumeForConnectionChannel(x, 1, 0, 0);
+	
+	// the following sets the volume of the matrix channels. In this case it would be the channel number 7 for which you can find out to which sound player it belongs by calling 
+	//mixer.getConnectionIndexAtInputChannel(7);
+	mixer.setVolumeForChannel(y, 7, 1);
+	
 }
 //--------------------------------------------------------------
 void ofApp::draw(){

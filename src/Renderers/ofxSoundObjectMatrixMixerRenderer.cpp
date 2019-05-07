@@ -117,6 +117,13 @@ void ofxSoundMatrixMixerRenderer::setNonSliderMode(bool b){
 bool ofxSoundMatrixMixerRenderer::isNonSliderMode(){
 	return bNonSliderMode;
 }
+void vecToString(std::stringstream & ss, std::vector<size_t>& vec){
+	
+	for(auto& v:vec){
+		ss << v << ", ";
+	}
+	ss << std::endl;
+}
 //----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::draw(){
 	
@@ -301,6 +308,10 @@ void ofxSoundMatrixMixerRenderer::draw(){
 		ss << "Num Output Channels : " << obj->getNumOutputChannels() << std::endl;
 		ss << "Num Input Channels  : " << obj->getNumInputChannels() << std::endl;
 		ss << "Num Input Objects   : " << obj->inObjects.size() << std::endl;
+		
+//		vecToString(ss, obj->matrixInputChannelMap);
+//		vecToString(ss, obj->numConnectionInputChannels);
+//		vecToString(ss, obj->connectionFirstChannel);
 		ofDrawBitmapStringHighlight(ss.str(), margin.x, margin.x);
 	}
 }

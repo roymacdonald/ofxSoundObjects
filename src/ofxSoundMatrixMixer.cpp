@@ -118,7 +118,7 @@ void ofxSoundMatrixMixer::setVolumeForConnectionChannel(const float& volValue, c
 				ofLogWarning("ofxSoundMatrixMixer::setVolumeForConnectionChannel") << "outputChannel index out of bounds";
 			}
 		}else{
-			ofLogWarning("ofxSoundMatrixMixer::setVolumeForConnectionChannel") << "inputChannel index out of bounds";
+			ofLogWarning("ofxSoundMatrixMixer::setVolumeForConnectionChannel") << "inputChannel " << inputChannel << " index out of bounds";
 		}
 	}else{
 		ofLogWarning("ofxSoundMatrixMixer::setVolumeForConnectionChannel") << "connection index out of bounds";
@@ -162,7 +162,7 @@ const float & ofxSoundMatrixMixer::getOutputVolumeForChannel ( const size_t& out
 void ofxSoundMatrixMixer::setVolumeForChannel(const float& volValue, const size_t& inputChannel, const size_t& outputChannel){
 	size_t c = getConnectionIndexAtInputChannel(inputChannel);
 	size_t i = getFirstInputChannelForConnection(c);
-	setVolumeForConnectionChannel(volValue, c, i, outputChannel);
+	setVolumeForConnectionChannel(volValue, c, inputChannel - i, outputChannel);
 	
 }
 //----------------------------------------------------
@@ -230,8 +230,8 @@ void ofxSoundMatrixMixer::updateNumInputChannels(){
 		for(size_t i = 0; i < inObjects.size(); i++){
 			for(size_t j = 0; j < numConnectionInputChannels[i]; j++){
 				matrixInputChannelMap[count + j] = i;
-				count += numConnectionInputChannels[i];
 			}
+			count += numConnectionInputChannels[i];
 		}
 	}
 }
@@ -282,7 +282,7 @@ void ofxSoundMatrixMixer::pullChannel(ofSoundBuffer& buffer, const size_t& chanI
 void ofxSoundMatrixMixer::mixChannelBufferIntoOutput(const size_t& idx, ofSoundBuffer& input, ofSoundBuffer& output){
 	auto nf = output.getNumFrames();
 	auto out_nc = output.getNumChannels();
-	auto  in_nc = input.getNumChannels();
+	auto in_nc = input.getNumChannels();
 	
 	if(input.getNumFrames() != output.getNumFrames()){
 		ofLogWarning("ofxSoundMatrixMixer::mixChannelBufferIntoOutput",  "input and output buffers have different number of frames. these should be equal");
