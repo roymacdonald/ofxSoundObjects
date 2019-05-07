@@ -67,8 +67,12 @@ void ofApp::setup(){
 	
 	
 	stream.setup(settings);
-	stream.setInput(input);
-	stream.setOutput(mixer);
+	
+	input.setInputStream(stream);
+	mixer.setOutputStream(stream);
+	
+//	stream.setInput(input);
+//	stream.setOutput(mixer);
 
 	
 //		mixerRenderer.setObject(&mixer);
@@ -106,6 +110,8 @@ void ofApp::keyReleased(int key){
 		mixer.save(mixerSettingsXmlPath);
 	}else if(key == 'l'){
 		mixer.load(mixerSettingsXmlPath);
+	}else if(key == ' '){
+//		mixerRenderer.bDrawMasterSlider ^=true;
 	}
 	
 }
