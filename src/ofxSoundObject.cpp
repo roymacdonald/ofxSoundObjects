@@ -127,7 +127,18 @@ void ofxSoundObject::setOutputStream(ofSoundStream* stream){
 ofSoundStream* ofxSoundObject::getOutputStream(){
 	return outputStream; 
 }
-
+//--------------------------------------------------------------
+int ofxSoundObject::getDeviceId(){
+	if(getOutputStream()){
+		auto ss = getOutputStream()->getSoundStream();
+		if(ss) return ss->getOutDevice().deviceID;
+	}
+	return getBuffer().getDeviceID();
+}
+//--------------------------------------------------------------
+ofSoundDevice ofxSoundObject::getDeviceInfo(){
+	return ofxSoundUtils::getSoundDeviceInfo(this->getDeviceId());
+}
 //--------------------------------------------------------------
 //  ofxSoundInput
 //--------------------------------------------------------------
@@ -162,10 +173,6 @@ int ofxSoundInput::getDeviceId(){
 }
 
 //--------------------------------------------------------------
-ofSoundDevice ofxSoundInput::getDeviceInfo(){
-	return ofxSoundUtils::getSoundDeviceInfo(getDeviceId());
-}
-//--------------------------------------------------------------
 void ofxSoundInput::setInputStream(ofSoundStream& stream){
 	setInputStream(&stream);
 }
@@ -187,16 +194,5 @@ ofSoundStream* ofxSoundInput::getInputStream(){
 //--------------------------------------------------------------
 ofxSoundOutput::ofxSoundOutput():ofxSoundObject(OFX_SOUND_OBJECT_DESTINATION) {
 }
-//--------------------------------------------------------------
-int ofxSoundOutput::getDeviceId(){
-	if(getOutputStream()){
-		auto ss = getOutputStream()->getSoundStream();
-		if(ss) return ss->getOutDevice().deviceID;
-	}
-	return getBuffer().getDeviceID();
-}
-//--------------------------------------------------------------
-ofSoundDevice ofxSoundOutput::getDeviceInfo(){
-	return ofxSoundUtils::getSoundDeviceInfo(getDeviceId());
-}
+
 //--------------------------------------------------------------

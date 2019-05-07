@@ -75,6 +75,13 @@ public:
 	void setOutputStream(ofSoundStream* stream);
 	ofSoundStream* getOutputStream();
 
+	/// Returns the device ID that is connected to this output
+	virtual int getDeviceId();
+	
+	/// Returns info about the device that is connected to this output
+	virtual ofSoundDevice getDeviceInfo();
+	
+	
 protected:
 
 	// this is the previous dsp object in the chain
@@ -115,10 +122,8 @@ public:
 	virtual void audioOut(ofSoundBuffer &output) override;
 	
 	/// Returns the device ID that is connected to this input
-	int getDeviceId();
+	virtual int getDeviceId() override;
 	
-	/// Returns info about the device that is connected to this input
-	ofSoundDevice getDeviceInfo();
 	
 	void setInputStream(ofSoundStream& stream);
 	void setInputStream(ofSoundStream* stream);
@@ -138,13 +143,6 @@ private:
 class ofxSoundOutput: public ofxSoundObject {
 public:
 	ofxSoundOutput();
-	
-	/// Returns the device ID that is connected to this output
-	int getDeviceId();
-	
-	/// Returns info about the device that is connected to this output
-	ofSoundDevice getDeviceInfo();
-	
 };
 
 
