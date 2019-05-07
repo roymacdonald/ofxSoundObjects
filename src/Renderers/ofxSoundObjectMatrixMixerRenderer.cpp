@@ -50,7 +50,17 @@ void ofxSoundMatrixMixerRenderer::initOrResizeNumSliders(const float & sliderWid
 	for(size_t i = 0; i < outputSliders.size(); i++){
 		if(!outputSliders[i]) outputSliders[i] = make_unique<ofxFloatSlider>(obj->outputVolumes[i], sliderWidth);
 	}
-	if(!masterSlider) masterSlider = make_unique<ofxFloatSlider>(obj->masterVol, sliderWidth);
+	if(!bMasterSliderSetup){
+		masterSlider.setup(obj->masterVol);
+//		masterSlider.setup("Master Vol", 1, 0, 1);
+		bMasterSliderSetup = true;
+	}
+//	if(masterSlider==nullptr){
+//		obj->masterVol.set("Master Vol", 1, 0, 1);
+//	outputSliders.back() = make_unique<ofxFloatSlider>(obj->masterVol, sliderWidth);
+//		masterSlider = make_unique<ofxFloatSlider>(obj->masterVol, sliderWidth);
+//		std::cout<< "masterVol set" << std::endl;
+//	}
 }
 
 //----------------------------------------------------
@@ -70,8 +80,8 @@ void ofxSoundMatrixMixerRenderer::enableSliders(){
 	for(auto& o: outputSliders ){
 		if(o) o->registerMouseEvents();
 	}
-	if(masterSlider)masterSlider->registerMouseEvents();
-	
+//	if(masterSlider)masterSlider->registerMouseEvents();
+	masterSlider.registerMouseEvents();
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::disableSliders(){
@@ -90,8 +100,8 @@ void ofxSoundMatrixMixerRenderer::disableSliders(){
 	for(auto& o: outputSliders ){
 		if(o) o->unregisterMouseEvents();
 	}
-	if(masterSlider)masterSlider->unregisterMouseEvents();
-	
+//	if(masterSlider)masterSlider->unregisterMouseEvents();
+	masterSlider.unregisterMouseEvents();	
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::toggleSliders(){
@@ -154,10 +164,15 @@ void ofxSoundMatrixMixerRenderer::draw(){
 		for(size_t i = 0; i < outputSliders.size(); i++){
 			drawRect(outChanR);
 			 
-			if(outputSliders[i]!= nullptr){				
+			if(outputSliders[i]!= nullptr){			
+//				if(i == outputSliders.size()-1){
+//					outPos = bottomLeftR.getBottomLeft();
+//					outPos.y -= outputSliders[i]->getHeight();
+//				}
 				if(outputSliders[i]->getPosition() != outPos){
 					outputSliders[i]->setPosition(outPos);
 				}
+				
 				outPos.x += outChanR.width;
 				outputSliders[i]->draw();
 			}
@@ -174,41 +189,42 @@ void ofxSoundMatrixMixerRenderer::draw(){
 			
 			outChanR.x += outChanR.width;
 		}
-		
-		if(masterSlider){
-			auto mp = bottomLeftR.getBottomLeft();
-			mp -= masterSlider->getHeight();
-			if(masterSlider->getPosition() != mp){
-				masterSlider->setPosition(mp);
-			}else{
-				masterSlider->draw();
-			}
-		}
+//		
+//		if(masterSlider){
+//			auto mp = bottomLeftR.getBottomLeft();
+//			mp.y -= masterSlider->getHeight();
+//			if(masterSlider->getPosition() != mp){
+//				std::cout << masterSlider->getPosition() << "  ---  " <<  mp << std::endl;
+//				masterSlider->setPosition(mp);
+//			}
+//			if(bDrawMasterSlider){
+//				masterSlider->draw();
+//			}
+//		}else{
+//			std::cout << "masterSlider not set" << std::endl;
+//		}
+
+
+					auto mp = bottomLeftR.getBottomLeft();
+					mp.y -= masterSlider.getHeight();
+					if(masterSlider.getPosition() != mp){
+						masterSlider.setPosition(mp);
+					}
+					masterSlider.draw();
+					
+
 		
 		std::stringstream oss;
 		oss << " -- OUTPUT -- " <<std::endl;
 		auto * dest = obj->getSignalDestinationObject();
 		if(dest){
-			auto info = ofxSoundUtils::getSoundDeviceInfo(dest->getBuffer().getDeviceID());
+			auto info = dest->getDeviceInfo();
 			oss << info.name;// <<std::endl;
 		}
 		ofSetColor(255);
 		ofDrawBitmapString(oss.str(), bottomLeftR.x, bottomLeftR.y + 20);
 		
-		outPos.x =  bottomLeftR.x;
-		outPos.y = bottomLeftR.y + 20;
 		
-		ofPushStyle();
-		ofSetColor(ofColor::yellow);
-		ofSetLineWidth(2);
-		ofDrawLine(outPos.x, outPos.y - 10, outPos.x, outPos.y + 10);
-		ofDrawLine(outPos.x-10, outPos.y, outPos.x + 10, outPos.y);
-		ofPopStyle();
-		
-		
-		
-			
-			
 		// end draw output channels
 		
 		// start draw grid

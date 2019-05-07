@@ -42,23 +42,26 @@ public:
 	//	float getChannelVolume(int channelNumber);
 	//	
 	
-	ofParameter<float> masterVol;
+	
 	
 	void load(const std::string& path);
 	void save(const std::string& path);
 	
 protected:
 	struct MatrixInputObject{//this is just an auxiliary struct to keep things tidier 
-		void updateChanVolsSize(const size_t& numOutChanns, const size_t& chanCount ){
+		bool updateChanVolsSize(const size_t& numOutChanns, const size_t& chanCount ){
+			bool bUpdated = false;
 			if(obj != nullptr){
 				auto src  = obj->getSignalSourceObject();
 				if(src != nullptr){
 					if(channelsVolumes.size() != src->getNumChannels()){
 						channelsVolumes.resize(src->getNumChannels());//, std::vector<ofParameter<float> >(numOutChanns));
+						bUpdated = true;
 					}
 					for(size_t i = 0; i < channelsVolumes.size();i++){
 						if(channelsVolumes[i].size() != numOutChanns){
 							channelsVolumes[i].resize(numOutChanns);
+							bUpdated = true;
 							for(size_t o = 0; o < numOutChanns; o++){
 								channelsVolumes[i][o].set("chan "+ofToString(chanCount + i) + " : " + ofToString(o), 0,0,1);
 							}
@@ -66,6 +69,7 @@ protected:
 					}
 				}
 			}
+			return bUpdated;
 		}
 		MatrixInputObject(ofxSoundObject* _obj, const size_t& numOutChanns, const size_t& chanCount):obj(_obj){
 			updateChanVolsSize(numOutChanns, chanCount);
@@ -82,7 +86,7 @@ protected:
 	VUMeter outVuMeter;
 
 	std::vector<ofParameter<float>> outputVolumes;
-	
+	ofParameter<float> masterVol;
 	//	void setupMixers();
 	//	std::vector<ofxSoundMixer> mixers;
 	void masterVolChanged(float& f);
@@ -97,9 +101,10 @@ protected:
 	void updateNumOutputChannels(const size_t & nc);
 	//	vector<float> channelVolume;
 	//	float masterPan;
+	
 	float masterVolume;
+	
 	void setInput(ofxSoundObject *obj) override;
-	ofMutex mutex;
 	
 	void pullChannel(ofSoundBuffer& buffer, const size_t& n, const size_t &numFrames, const unsigned int & sampleRate);
 	
@@ -109,6 +114,9 @@ protected:
 	bool bComputeRMSandPeak = true;
 	
 	void putMatrixVolumesIntoParamGroup(ofParameterGroup & group);
+private:
+	ofMutex mutex;
+	bool bNeedsInputNumUpdate = true; 
 	
 
 	

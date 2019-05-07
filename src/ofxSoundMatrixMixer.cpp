@@ -11,21 +11,21 @@
 #include "ofxSoundPlayerObject.h"
 //----------------------------------------------------
 ofxSoundMatrixMixer::ofxSoundMatrixMixer():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
-	masterVolume = 1.0f;	
+//	masterVolume = 1.0f;	
 	masterVol.set("Master Vol", 1, 0, 1);
-	masterVol.addListener(this, &ofxSoundMatrixMixer::masterVolChanged);
+//	masterVol.addListener(this, &ofxSoundMatrixMixer::masterVolChanged);
 	outVuMeter.drawMode = VUMeter::VU_DRAW_HORIZONTAL;
 
 }
-//----------------------------------------------------
-void ofxSoundMatrixMixer::masterVolChanged(float& f) {
-	mutex.lock();
-	masterVolume = masterVol;
-	mutex.unlock();
-}
+////----------------------------------------------------
+//void ofxSoundMatrixMixer::masterVolChanged(float& f) {
+//	mutex.lock();
+//	masterVolume = masterVol;
+//	mutex.unlock();
+//}
 //----------------------------------------------------
 ofxSoundMatrixMixer::~ofxSoundMatrixMixer(){
-	masterVol.removeListener(this, &ofxSoundMatrixMixer::masterVolChanged);
+//	masterVol.removeListener(this, &ofxSoundMatrixMixer::masterVolChanged);
 }
 //----------------------------------------------------
 ofxSoundObject* ofxSoundMatrixMixer::getInputObject(size_t objectNumber){
@@ -82,7 +82,8 @@ void ofxSoundMatrixMixer::setInput(ofxSoundObject *obj){
 		}
 		
 		inObjects.push_back(MatrixInputObject(obj, numOutputChannels, numInputChannels));
-		updateNumInputChannels();
+		bNeedsInputNumUpdate = true;
+//		updateNumInputChannels();
 		//		for(auto & i : inObjects){
 		
 		//			i.resize(numInputChannels);
@@ -109,26 +110,28 @@ void ofxSoundMatrixMixer::updateNumOutputChannels(const size_t & nc){
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::updateNumInputChannels(){
-	
-	numInputChannels = 0;
-	
-	ofxSoundObject * src = nullptr;
-	for(auto& i : inObjects){
-		src = i.obj->getSignalSourceObject();
-		if(src != nullptr){
-			numInputChannels += src->getNumChannels();
+	if(bNeedsInputNumUpdate){
+		bNeedsInputNumUpdate = false;
+		numInputChannels = 0;
+		
+		ofxSoundObject * src = nullptr;
+		for(auto& i : inObjects){
+			src = i.obj->getSignalSourceObject();
+			if(src != nullptr){
+				numInputChannels += src->getNumChannels();
+			}
 		}
 	}
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::setMasterVolume(float vol){
 	mutex.lock();
-	masterVolume = vol;
+	masterVol = vol;
 	mutex.unlock();
 }
 //----------------------------------------------------
 float ofxSoundMatrixMixer::getMasterVolume(){
-	return masterVolume;
+	return masterVol.get();
 }
 //----------------------------------------------------
 bool ofxSoundMatrixMixer::isConnected(ofxSoundObject& obj){
@@ -188,6 +191,7 @@ void ofxSoundMatrixMixer::mixChannelBufferIntoOutput(const size_t& idx, ofSoundB
 //----------------------------------------------------
 void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 	updateNumOutputChannels(output.getNumChannels());
+	
 	if(inObjects.size()>0) {
 		output.set(0);
 		size_t numFrames = output.getNumFrames();
@@ -197,6 +201,9 @@ void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 			pullChannel(tempBuffer, i, numFrames, samplerate);
 			mixChannelBufferIntoOutput(i, tempBuffer, output);
 		}
+		
+		updateNumInputChannels();
+		
 		auto nf = output.getNumFrames();
 		auto nov = outputVolumes.size();
 		for(size_t i =0; i < nov; i++){
@@ -209,7 +216,7 @@ void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 			outVuMeter.calculate(output);
 		}
 		
-		output*=masterVolume;
+		output*=masterVol;
 		
 		
 	}
@@ -266,5 +273,8 @@ void ofxSoundMatrixMixer::putMatrixVolumesIntoParamGroup(ofParameterGroup & grou
 				group.add(inObjects[idx].channelsVolumes[ic][oc]);
 			}
 		}
+	}
+	for(auto& o : outputVolumes){
+		group.add(o);
 	}
 }
