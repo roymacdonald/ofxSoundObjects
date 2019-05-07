@@ -42,25 +42,20 @@ void ofxSoundMatrixMixerRenderer::initOrResizeNumSliders(const float & sliderWid
 			for(size_t o = 0; o < sliders[idx][i].size(); o++){
 				if(!sliders[idx][i][o]){
 					sliders[idx][i][o] = make_unique<ofxFloatSlider>(v[i][o], sliderWidth);
+					bSlidersEnabled = true;
 				}					
 			}
 		}
 	}
+	
 	if(outputSliders.size() != obj->getNumOutputChannels()) outputSliders.resize(obj->getNumOutputChannels());
 	for(size_t i = 0; i < outputSliders.size(); i++){
 		if(!outputSliders[i]) outputSliders[i] = make_unique<ofxFloatSlider>(obj->outputVolumes[i], sliderWidth);
 	}
 	if(!bMasterSliderSetup){
-		masterSlider.setup(obj->masterVol);
-//		masterSlider.setup("Master Vol", 1, 0, 1);
+		masterSlider.setup(obj->masterVol);;
 		bMasterSliderSetup = true;
 	}
-//	if(masterSlider==nullptr){
-//		obj->masterVol.set("Master Vol", 1, 0, 1);
-//	outputSliders.back() = make_unique<ofxFloatSlider>(obj->masterVol, sliderWidth);
-//		masterSlider = make_unique<ofxFloatSlider>(obj->masterVol, sliderWidth);
-//		std::cout<< "masterVol set" << std::endl;
-//	}
 }
 
 //----------------------------------------------------
@@ -80,7 +75,6 @@ void ofxSoundMatrixMixerRenderer::enableSliders(){
 	for(auto& o: outputSliders ){
 		if(o) o->registerMouseEvents();
 	}
-//	if(masterSlider)masterSlider->registerMouseEvents();
 	masterSlider.registerMouseEvents();
 }
 //----------------------------------------------------
@@ -100,7 +94,6 @@ void ofxSoundMatrixMixerRenderer::disableSliders(){
 	for(auto& o: outputSliders ){
 		if(o) o->unregisterMouseEvents();
 	}
-//	if(masterSlider)masterSlider->unregisterMouseEvents();
 	masterSlider.unregisterMouseEvents();	
 }
 //----------------------------------------------------
@@ -115,7 +108,15 @@ void ofxSoundMatrixMixerRenderer::toggleSliders(){
 bool ofxSoundMatrixMixerRenderer::isSlidersEnabled(){
 	return bSlidersEnabled;
 }
-
+//----------------------------------------------------
+void ofxSoundMatrixMixerRenderer::setNonSliderMode(bool b){
+	bNonSliderMode = b;
+	if(bNonSliderMode) disableSliders();
+}
+//----------------------------------------------------
+bool ofxSoundMatrixMixerRenderer::isNonSliderMode(){
+	return bNonSliderMode;
+}
 //----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::draw(){
 	
@@ -161,21 +162,21 @@ void ofxSoundMatrixMixerRenderer::draw(){
 		outChanR.width = bottomR.width/outputSliders.size();
 		glm::vec3 outPos = outChanR.getBottomLeft();
 		if(outputSliders.size()) outPos.y -= outputSliders[0]->getHeight();
-		for(size_t i = 0; i < outputSliders.size(); i++){
+		for(size_t i = 0; i < outputSliders.size() && i < obj->outputVolumes.size() ; i++){
 			drawRect(outChanR);
-			 
-			if(outputSliders[i]!= nullptr){			
-//				if(i == outputSliders.size()-1){
-//					outPos = bottomLeftR.getBottomLeft();
-//					outPos.y -= outputSliders[i]->getHeight();
-//				}
-				if(outputSliders[i]->getPosition() != outPos){
-					outputSliders[i]->setPosition(outPos);
+			if(bNonSliderMode){
+				std::stringstream vol;
+				vol << "out " << i <<" : " << obj->outputVolumes[i];
+				ofDrawBitmapString(vol.str(), outPos.x, outPos.y - 3);
+			}else{
+				if(outputSliders[i]!= nullptr){			
+					if(outputSliders[i]->getPosition() != outPos){
+						outputSliders[i]->setPosition(outPos);
+					}	
+					outputSliders[i]->draw();
 				}
-				
-				outPos.x += outChanR.width;
-				outputSliders[i]->draw();
 			}
+			outPos.x += outChanR.width;
 			
 			if(obj->bComputeRMSandPeak){
 				auto vuR = outChanR;
@@ -189,30 +190,21 @@ void ofxSoundMatrixMixerRenderer::draw(){
 			
 			outChanR.x += outChanR.width;
 		}
-//		
-//		if(masterSlider){
-//			auto mp = bottomLeftR.getBottomLeft();
-//			mp.y -= masterSlider->getHeight();
-//			if(masterSlider->getPosition() != mp){
-//				std::cout << masterSlider->getPosition() << "  ---  " <<  mp << std::endl;
-//				masterSlider->setPosition(mp);
-//			}
-//			if(bDrawMasterSlider){
-//				masterSlider->draw();
-//			}
-//		}else{
-//			std::cout << "masterSlider not set" << std::endl;
-//		}
-
-
-					auto mp = bottomLeftR.getBottomLeft();
-					mp.y -= masterSlider.getHeight();
-					if(masterSlider.getPosition() != mp){
-						masterSlider.setPosition(mp);
-					}
-					masterSlider.draw();
-					
-
+		
+		
+		auto mp = bottomLeftR.getBottomLeft();
+		mp.y -= masterSlider.getHeight();
+		if(bNonSliderMode){
+			std::stringstream vol;
+			vol << "Master  " << obj->masterVol.get();
+			ofDrawBitmapString(vol.str(), mp.x, mp.y - 3);
+		}else{
+			if(masterSlider.getPosition() != mp){
+				masterSlider.setPosition(mp);
+			}
+			masterSlider.draw();
+		}		
+		
 		
 		std::stringstream oss;
 		oss << " -- OUTPUT -- " <<std::endl;
@@ -281,20 +273,26 @@ void ofxSoundMatrixMixerRenderer::draw(){
 					drawRect(cell);
 					ofSetColor(255);
 					
-					
-					if(sliders[idx][i][j]){
-						auto p = cell.getBottomLeft();
-						p.y -= sliders[idx][i][j]->getHeight();
-						if(sliders[idx][i][j]->getPosition() != p){
-							sliders[idx][i][j]->setPosition(p);
+					auto p = cell.getBottomLeft();
+					p.y -= 3;// just add a tiny margin
+					if(bNonSliderMode){
+						std::stringstream vol;
+						vol << "[ " << cellCount+ i << ":" << j <<" ]  " << v[i][j];
+						ofDrawBitmapString(vol.str(), p.x, p.y);						
+					}else{
+						if(sliders[idx][i][j]){
+							p.y -= sliders[idx][i][j]->getHeight();
+							if(sliders[idx][i][j]->getPosition() != p){
+								sliders[idx][i][j]->setPosition(p);
+							}
+							sliders[idx][i][j]->draw();
 						}
-						sliders[idx][i][j]->draw();
 					}
-//					ofDrawBitmapString(ofToString(v[i][j]), cell.x, cell.getMaxY());
+					
 				}
 			}
 			cellCount += v.size();
-			// draw cells start
+			// draw cells end
 			
 		}
 		

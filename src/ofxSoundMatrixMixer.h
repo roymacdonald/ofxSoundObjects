@@ -38,10 +38,40 @@ public:
 	void audioOut(ofSoundBuffer &output) override;
 	bool isConnected(ofxSoundObject& obj);
 	
-	//	void setChannelVolume(int channelNumber, float vol);
-	//	float getChannelVolume(int channelNumber);
-	//	
+
+	// this function will set the volume of the channel relative to its parent object (connection)
+	// a connection can have any amount of channels. Connections are the input ofxSoundObject.
+	// This means this means if we have two objects conected, to change the
+	// volume for the first input channel of the second object that goes out to the first output channel 
+	// you would call setVolumeForChannel( volValue, 1, 0, 0);
+	// remember that channels and connections are zero based, meaning that the first is zero.
+	// this same logic applies for the getter.
+	void setVolumeForConnectionChannel(const float& volValue, const size_t& connectionIndex, const size_t& inputChannel, const size_t& outputChannel);
 	
+	const float& getVolumeForConnectionChannel(const size_t& connectionIndex, const size_t& inputChannel, const size_t& outputChannel) const;
+	
+	
+	
+	// this function will set the volume of the channel relative to the overall input channel count.
+	// This means this means if we have two objects conected, each with 2 channels and we want to change the
+	// volume for the first input channel of the second object that goes out to the first output channel 
+	// you would call setVolumeForChannel( volValue, 2, 0);
+	// remember that channels are zero based, meaning that the first is zero.
+	// this same logic applies for the getter.
+	void setVolumeForChannel(const float& volValue, const size_t& inputChannel, const size_t& outputChannel);
+	const float& getVolumeForChannel(const size_t& inputChannel, const size_t& outputChannel) const;
+
+	// returns the connection index of a certain overall channel
+	size_t getConnectionIndexAtInputChannel(const size_t& chan);
+	
+	
+	
+	/// Will return the overall first channel for a connection 
+	size_t getFirstInputChannelForConnection(const size_t& connectionIndex);
+	
+	
+	void setOutputVolumeForChannel (const float & volValue, const size_t& outputChannel);
+	const float & getOutputVolumeForChannel ( const size_t& outputChannel)const;
 	
 	
 	void load(const std::string& path);
@@ -83,24 +113,23 @@ protected:
 		
 	};
 
+	std::vector< size_t > matrixInputChannelMap;
+	std::vector< size_t > numConnectionInputChannels;
+	std::vector< size_t > connectionFirstChannel;
+	
+	
 	VUMeter outVuMeter;
 
 	std::vector<ofParameter<float>> outputVolumes;
 	ofParameter<float> masterVol;
-	//	void setupMixers();
-	//	std::vector<ofxSoundMixer> mixers;
 	void masterVolChanged(float& f);
 	
 	void disconnectInput(ofxSoundObject * input) override;
 	std::vector<MatrixInputObject>inObjects;
-	//	vector<ofxSoundObject*>inObjects;
-	//	std::vector< std::vector<float> >inObjectsVolumes; //[ output channel index ] [ input channel index ] 
 	size_t numInputChannels = 0;
 	size_t numOutputChannels = 0;
 	void updateNumInputChannels();
 	void updateNumOutputChannels(const size_t & nc);
-	//	vector<float> channelVolume;
-	//	float masterPan;
 	
 	float masterVolume;
 	
@@ -118,7 +147,7 @@ private:
 	ofMutex mutex;
 	bool bNeedsInputNumUpdate = true; 
 	
-
+	float dummyFloat;//this is bad practice
 	
 };
 

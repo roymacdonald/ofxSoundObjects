@@ -16,16 +16,21 @@ public:
 	void disableSliders();
 	void toggleSliders();
 	bool isSlidersEnabled();
-//	bool bMasterSlider = false;
+	
+	void setNonSliderMode(bool b);
+	bool isNonSliderMode();
+	
 private:
 	std::vector<std::vector<std::vector< std::unique_ptr<ofxFloatSlider>>>> sliders;
 	std::vector<std::unique_ptr<ofxFloatSlider>> outputSliders;
-//	std::unique_ptr<ofxFloatSlider> masterSlider;
+
 	ofxFloatSlider masterSlider;	
 	void initOrResizeNumSliders(const float & sliderWidth = 200);
 	
 	
 	bool bSlidersEnabled = false;
 	bool bMasterSliderSetup = false;
+	
+	bool bNonSliderMode = false;
 };
 

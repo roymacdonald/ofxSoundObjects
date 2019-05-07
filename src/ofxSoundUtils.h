@@ -24,5 +24,9 @@ namespace ofxSoundUtils{
 	void printInputSoundDevices();
 	void printOutputSoundDevices();
 	
+	template<class T>
+	void resize_vec(std::vector<T>& vec, const size_t& newSize){
+		if(vec.size() != newSize)vec.resize(newSize);
+	}
 	
 };

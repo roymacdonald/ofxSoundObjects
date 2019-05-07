@@ -96,7 +96,35 @@ void ofApp::draw(){
 	stringstream ss;
 	ss << "Press l key to load mixer settings." << endl;
 	ss << "Press s key to save mixer settings." << endl;
-	ofDrawBitmapStringHighlight(ss.str(), 300, 20);
+	ss << "Press e key to toggle slider's mouse interaction." << endl;
+	ss << "Press n key to toggle non-slider mode.";// << endl;
+	
+	
+	ofBitmapFont bf;
+	
+	
+	
+	
+	stringstream ss2;
+	ss2 << "Sliders enabled: " << (mixerRenderer.isSlidersEnabled()?"YES":"NO") << endl;
+	ss2 << "Non Slider Mode: " << (mixerRenderer.isNonSliderMode()?"YES":"NO") << endl;
+	
+	
+	
+	auto r2 = bf.getBoundingBox(ss2.str(), 0, 0);
+	
+	r2.x = ofGetWidth() - 20 - r2.width;
+	
+	ofDrawBitmapStringHighlight(ss2.str(), r2.x, 20);
+	
+	
+	auto r = bf.getBoundingBox(ss.str(), 0, 0);
+	
+	r.x = r2.x - 20 - r.width;
+	
+	ofDrawBitmapStringHighlight(ss.str(), r.x, 20);
+	
+	
 }
 
 //--------------------------------------------------------------
@@ -110,8 +138,10 @@ void ofApp::keyReleased(int key){
 		mixer.save(mixerSettingsXmlPath);
 	}else if(key == 'l'){
 		mixer.load(mixerSettingsXmlPath);
-	}else if(key == ' '){
-//		mixerRenderer.bDrawMasterSlider ^=true;
+	}else if(key == 'e'){
+		mixerRenderer.toggleSliders();
+	}else if(key == 'n'){
+		mixerRenderer.setNonSliderMode(!mixerRenderer.isNonSliderMode());
 	}
 	
 }
