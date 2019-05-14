@@ -35,7 +35,7 @@ std:stringstream ss;
 void ofxSoundMatrixMixerRenderer::initOrResizeNumSliders(const float & sliderWidth){
 	if(sliders.size() != obj->inObjects.size())sliders.resize(obj->inObjects.size());
 	for(size_t idx =0 ; idx < obj->inObjects.size(); idx++ ){
-		auto & v = obj->inObjects[idx].channelsVolumes;
+		auto & v = obj->inObjects[idx]->channelsVolumes;
 		if(sliders[idx].size() != v.size()) sliders[idx].resize(v.size());
 		for(size_t i = 0; i <sliders[idx].size(); i++){
 			if(sliders[idx][i].size() != v[i].size()) sliders[idx][i].resize(v[i].size());
@@ -124,6 +124,9 @@ void vecToString(std::stringstream & ss, std::vector<size_t>& vec){
 	}
 	ss << std::endl;
 }
+void ofxSoundMatrixMixerRenderer::setMinChannelHeight(const float& minHeight){
+	this->minHeight = minHeight;
+}
 //----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::draw(){
 	
@@ -147,8 +150,22 @@ void ofxSoundMatrixMixerRenderer::draw(){
 		cell.x = gridR.getMaxX()  - chanW;
 		cell.y = gridR.y;
 		cell.width = gridR.width/ obj->getNumOutputChannels();
-		cell.height = gridR.height/ obj->getNumInputChannels();  
+//		cell.height = gridR.height/ obj->getNumInputChannels();
+		cell.height = std::max(minHeight, gridR.height/ obj->getNumInputChannels());  
 		
+		bool bDisableTextRendering = (cell.height < 16.0f);
+		
+		
+		
+		//TO-DO this logic needs some love 
+//		if(bDisableTextRendering){
+//			if(bSlidersEnabled){
+//				bSlidersWereEnabled = true;
+//				setNonSliderMode(true);
+//			}
+//		}else if(bSlidersWereEnabled && !bSlidersEnabled){
+//			enableSliders();
+//		}
 		
 		
 		drawRect(leftR);
@@ -185,7 +202,7 @@ void ofxSoundMatrixMixerRenderer::draw(){
 			}
 			outPos.x += outChanR.width;
 			
-			if(obj->bComputeRMSandPeak){
+			if(ofxSoundMatrixMixer::getComputeRMSandPeak()){
 				auto vuR = outChanR;
 				vuR.y = outChanR.getMaxY();
 				if(outputSliders[i]) vuR.y -= outputSliders[i]->getHeight(); 
@@ -228,7 +245,7 @@ void ofxSoundMatrixMixerRenderer::draw(){
 		
 		// start draw grid
 		for(size_t idx =0 ; idx < obj->inObjects.size(); idx++ ){
-			auto & v = obj->inObjects[idx].channelsVolumes;
+			auto & v = obj->inObjects[idx]->channelsVolumes;
 			
 			objR.height = cell.height * v.size();
 			chanR.y = objR.y;
@@ -238,29 +255,33 @@ void ofxSoundMatrixMixerRenderer::draw(){
 			
 			
 			
-			auto sgnlSrc = obj->inObjects[idx].obj->getSignalSourceObject();
+			auto sgnlSrc = obj->inObjects[idx]->obj->getSignalSourceObject();
 			auto player = dynamic_cast<ofxSoundPlayerObject*>(sgnlSrc);
 			
 			// input object info header rect draw start
 			if(player){
-				auto info = getSoundFileInfo(player->getSoundFile());
-				auto bb = bf.getBoundingBox(info, 0,0);
-				ofDrawBitmapString(info, objR.x - bb.x, objR.y - bb.y);
-				
+				if(!bDisableTextRendering){
+					auto info = getSoundFileInfo(player->getSoundFile());
+					auto bb = bf.getBoundingBox(info, 0,0);
+					ofDrawBitmapString(info, objR.x - bb.x, objR.y - bb.y);
+				}
 				ofRectangle posR = objR;
-				posR.height = 10;
+				posR.height = std::max(minHeight, 10.0f);
 				posR.y = objR.getMaxY() - posR.height;
 				posR.width = ofMap(player->getPositionMS(), 0, player->getDurationMS(), 0, objR.width);
 				
 				ofSetColor(100);
 				ofDrawRectangle(posR);
 				
+				
 			}else{
-				auto liveScr = dynamic_cast<ofxSoundInput*>(sgnlSrc);
-				if(liveScr){
-					ofDrawBitmapString(ofxSoundUtils::getSoundDeviceString(liveScr->getDeviceInfo(), true, false), objR.x, objR.getMinY()+20);
-				}else{
-					ofDrawBitmapString(ofToString(v.size()), objR.x, objR.getMaxY() - 20);
+				if(!bDisableTextRendering){
+					auto liveScr = dynamic_cast<ofxSoundInput*>(sgnlSrc);
+					if(liveScr){
+						ofDrawBitmapString(ofxSoundUtils::getSoundDeviceString(liveScr->getDeviceInfo(), true, false), objR.x, objR.getMinY()+20);
+					}else{
+						ofDrawBitmapString(ofToString(v.size()), objR.x, objR.getMaxY() - 20);
+					}
 				}
 			}
 			// input object info header rect draw end
@@ -272,8 +293,8 @@ void ofxSoundMatrixMixerRenderer::draw(){
 				cell.y = gridR.y + (cell.height * (i + cellCount));
 				chanR.y = cell.y;
 				drawRect(chanR);
-				if(obj->bComputeRMSandPeak){
-					obj->inObjects[idx].vuMeter.drawChannel(i, chanR);
+				if(obj->ofxSoundMatrixMixer::getComputeRMSandPeak()){
+					obj->inObjects[idx]->vuMeter.drawChannel(i, chanR);
 				}
 				for(size_t j = 0; j < v[i].size() && i < sliders[idx][i].size(); j++){
 					cell.x = gridR.x + cell.width*j; 	 
@@ -282,20 +303,25 @@ void ofxSoundMatrixMixerRenderer::draw(){
 					
 					auto p = cell.getBottomLeft();
 					p.y -= 3;// just add a tiny margin
-					if(bNonSliderMode){
-						std::stringstream vol;
-						vol << "[ " << cellCount+ i << ":" << j <<" ]  " << v[i][j];
-						ofDrawBitmapString(vol.str(), p.x, p.y);						
+					if(bDisableTextRendering){
+						ofRectangle volR = cell;
+						volR.width = ofMap(v[i][j], 0,1,0, volR.width, true);
+						drawRect(volR);
 					}else{
-						if(sliders[idx][i][j]){
-							p.y -= sliders[idx][i][j]->getHeight();
-							if(sliders[idx][i][j]->getPosition() != p){
-								sliders[idx][i][j]->setPosition(p);
+						if(bNonSliderMode){
+							std::stringstream vol;
+							vol << "[ " << cellCount+ i << ":" << j <<" ]  " << v[i][j];
+							ofDrawBitmapString(vol.str(), p.x, p.y);						
+						}else{
+							if(sliders[idx][i][j]){
+								p.y -= sliders[idx][i][j]->getHeight();
+								if(sliders[idx][i][j]->getPosition() != p){
+									sliders[idx][i][j]->setPosition(p);
+								}
+								sliders[idx][i][j]->draw();
 							}
-							sliders[idx][i][j]->draw();
 						}
 					}
-					
 				}
 			}
 			cellCount += v.size();
@@ -309,9 +335,9 @@ void ofxSoundMatrixMixerRenderer::draw(){
 		ss << "Num Input Channels  : " << obj->getNumInputChannels() << std::endl;
 		ss << "Num Input Objects   : " << obj->inObjects.size() << std::endl;
 		
-//		vecToString(ss, obj->matrixInputChannelMap);
-//		vecToString(ss, obj->numConnectionInputChannels);
-//		vecToString(ss, obj->connectionFirstChannel);
+		//		vecToString(ss, obj->matrixInputChannelMap);
+		//		vecToString(ss, obj->numConnectionInputChannels);
+		//		vecToString(ss, obj->connectionFirstChannel);
 		ofDrawBitmapStringHighlight(ss.str(), margin.x, margin.x);
 	}
 }

@@ -20,6 +20,8 @@ public:
 	void setNonSliderMode(bool b);
 	bool isNonSliderMode();
 	
+	void setMinChannelHeight(const float& minHeight);
+	
 private:
 	std::vector<std::vector<std::vector< std::unique_ptr<ofxFloatSlider>>>> sliders;
 	std::vector<std::unique_ptr<ofxFloatSlider>> outputSliders;
@@ -29,8 +31,11 @@ private:
 	
 	
 	bool bSlidersEnabled = false;
+	bool bSlidersWereEnabled = false;
 	bool bMasterSliderSetup = false;
 	
 	bool bNonSliderMode = false;
+	
+	float minHeight = 1;
 };
 

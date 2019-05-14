@@ -13,11 +13,18 @@
 #include "ofTypes.h"
 #include "VUMeter.h"
 
+//#define OFX_ENABLE_MULTITHREADING 
+#ifdef OFX_ENABLE_MULTITHREADING
+#include "tbb/parallel_for.h"
+#endif
+
 class ofxSoundMatrixMixerRenderer;
+
 class ofxSoundMatrixMixer: public ofxSoundObject{
+	
 public:
 	friend class ofxSoundMatrixMixerRenderer;
-
+	
 	ofxSoundMatrixMixer();
 	virtual ~ofxSoundMatrixMixer();
 	
@@ -73,37 +80,26 @@ public:
 	void setOutputVolumeForChannel (const float & volValue, const size_t& outputChannel);
 	const float & getOutputVolumeForChannel ( const size_t& outputChannel)const;
 	
+	void setOutputVolumeForAllChannels(const float & volValue);
 	
 	void load(const std::string& path);
 	void save(const std::string& path);
 	
+	static ofParameter<bool>& getComputeRMSandPeak();
+	
 protected:
-	struct MatrixInputObject{//this is just an auxiliary struct to keep things tidier 
-		bool updateChanVolsSize(const size_t& numOutChanns, const size_t& chanCount ){
-			bool bUpdated = false;
-			if(obj != nullptr){
-				auto src  = obj->getSignalSourceObject();
-				if(src != nullptr){
-					if(channelsVolumes.size() != src->getNumChannels()){
-						channelsVolumes.resize(src->getNumChannels());//, std::vector<ofParameter<float> >(numOutChanns));
-						bUpdated = true;
-					}
-					for(size_t i = 0; i < channelsVolumes.size();i++){
-						if(channelsVolumes[i].size() != numOutChanns){
-							channelsVolumes[i].resize(numOutChanns);
-							bUpdated = true;
-							for(size_t o = 0; o < numOutChanns; o++){
-								channelsVolumes[i][o].set("chan "+ofToString(chanCount + i) + " : " + ofToString(o), 0,0,1);
-							}
-						}
-					}
-				}
-			}
-			return bUpdated;
-		}
-		MatrixInputObject(ofxSoundObject* _obj, const size_t& numOutChanns, const size_t& chanCount):obj(_obj){
-			updateChanVolsSize(numOutChanns, chanCount);
-		}
+
+	class MatrixInputObject{ 
+	public:
+		friend class ofxSoundMatrixMixer;
+
+		//	
+		//		MatrixInputObject();
+		MatrixInputObject(ofxSoundObject* _obj, const size_t& numOutChanns, const size_t& chanCount);
+		~MatrixInputObject();
+		
+		
+		bool updateChanVolsSize(const size_t& numOutChanns, const size_t& chanCount );
 		
 		ofxSoundObject* obj;
 		
@@ -111,6 +107,18 @@ protected:
 		VUMeter vuMeter;
 		bool bBufferProcessed = false;
 		
+		
+		void pullChannel();
+		
+		
+		ofSoundBuffer & getBuffer();
+		
+		size_t numFramesToProcess;
+		unsigned int sampleRate;
+
+	private:
+
+		ofSoundBuffer buffer;
 	};
 
 	std::vector< size_t > matrixInputChannelMap;
@@ -125,7 +133,7 @@ protected:
 	void masterVolChanged(float& f);
 	
 	void disconnectInput(ofxSoundObject * input) override;
-	std::vector<MatrixInputObject>inObjects;
+	std::vector<std::shared_ptr<MatrixInputObject>>inObjects;
 	size_t numInputChannels = 0;
 	size_t numOutputChannels = 0;
 	void updateNumInputChannels();
@@ -135,14 +143,24 @@ protected:
 	
 	void setInput(ofxSoundObject *obj) override;
 	
-	void pullChannel(ofSoundBuffer& buffer, const size_t& n, const size_t &numFrames, const unsigned int & sampleRate);
-	
-	
-	void mixChannelBufferIntoOutput(const size_t& idx, ofSoundBuffer& input, ofSoundBuffer& output);
 
-	bool bComputeRMSandPeak = true;
-	
+	void mixChannelBufferIntoOutput(const size_t& idx, ofSoundBuffer& input, ofSoundBuffer& output);
+		
 	void putMatrixVolumesIntoParamGroup(ofParameterGroup & group);
+	
+	
+#ifdef OFX_ENABLE_MULTITHREADING
+	struct MatrixInputsCollection{
+		std::vector<std::shared_ptr<MatrixInputObject>> * inObjects;
+		void operator()( const tbb::blocked_range<size_t>& range ) const {
+			for( size_t i = range.begin(); i!=range.end(); ++i ){
+				inObjects->at(i)->pullChannel();		
+			}
+		}
+	};
+#endif
+
+	
 private:
 	ofMutex mutex;
 	bool bNeedsInputNumUpdate = true; 
