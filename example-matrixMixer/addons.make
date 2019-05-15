@@ -1,4 +1,3 @@
 ofxAudioFile
 ofxGui
 ofxSoundObjects
-ofxTbb
