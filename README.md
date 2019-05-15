@@ -26,6 +26,7 @@ Made as addon, improoved and updated by Roy Macdonald.
 ## Dependencies
 * [ofxAudioFile](https://github.com/npisanti/ofxAudioFile)
 * [ofxFft](https://github.com/kylemcdonald/ofxFft) (only needed for the Fftobject)
+* [ofxTbb](https://github.com/roymacdonald/ofxTbb) (only needed if you enable multithreading, which is disabled by default)
 
 ## IMPORTANT.
 ### All platforms
@@ -55,6 +56,16 @@ To be able to use this addon with visual studio you need to do the following whe
 * Press the "Save All" button or keys `ctrl` + `shift` + `s` so you don't need to add the .props file again when opening this project.
 	
 That's all.
+
+## Multithreading
+If you want to use multithreading, currently only implemented in the matrix mixer object, soon should be in the sound mixer too, you will need to use [ofxTbb](https://github.com/roymacdonald/ofxTbb) and in file `ofxSoundObjectsConstants.h` uncomment the line that reads
+
+```
+#define OFX_SOUND_ENABLE_MULTITHREADING
+```
+
+Carefully read the instructions in ofxTbb readme file and add ofxTbb to your project in Project Generator.
+
 
 ## Project Generator
 Create or update your project using openFrameworks' Project Generator and add `ofxSoundObjects`, `ofxGui` and `ofxAudioFile` in the addons section. 
