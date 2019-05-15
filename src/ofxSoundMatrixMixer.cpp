@@ -361,7 +361,7 @@ void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 		for(size_t i = 0; i < inObjects.size(); i++){	
 			inObjects[i]->sampleRate = samplerate;
 			inObjects[i]->numFramesToProcess = numFrames;
-#ifdef OFX_ENABLE_MULTITHREADING
+#ifdef OFX_SOUND_ENABLE_MULTITHREADING
 		}
 		size_t n = inObjects.size();
 		MatrixInputsCollection col;

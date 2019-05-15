@@ -14,7 +14,7 @@
 #include "VUMeter.h"
 #include "ofxSoundObjectsConstants.h"
  
-#ifdef OFX_ENABLE_MULTITHREADING
+#ifdef OFX_SOUND_ENABLE_MULTITHREADING
 #include "tbb/parallel_for.h"
 #endif
 
@@ -151,7 +151,7 @@ protected:
 	void putMatrixVolumesIntoParamGroup(ofParameterGroup & group);
 	
 	
-#ifdef OFX_ENABLE_MULTITHREADING
+#ifdef OFX_SOUND_ENABLE_MULTITHREADING
 	struct MatrixInputsCollection{
 		std::vector<std::shared_ptr<MatrixInputObject>> * inObjects;
 		void operator()( const tbb::blocked_range<size_t>& range ) const {

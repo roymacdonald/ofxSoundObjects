@@ -7,11 +7,12 @@
 
 #pragma once
 
+
+//Uncomment the following line to enable multithreading. You will need the intel Threading Building Blocks for this. Instructions in the readme file
+//#define OFX_SOUND_ENABLE_MULTITHREADING
+
 /// \brief enum that defines the way in which audio is processed through 
 /// 
-
-
-#define OFX_ENABLE_MULTITHREADING
 
 enum ofxSoundObjectsMode{
 	//This is the default mode 
