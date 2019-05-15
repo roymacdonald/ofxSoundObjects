@@ -16,9 +16,7 @@
 
 //----------------------------------------------------
 void ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
-	//void ofxSoundMatrixMixer::MatrixInputObject::pullChannel(ofSoundBuffer& buffer,  const size_t &numFrames, const unsigned int & sampleRate){
 	bBufferProcessed = false;
-
 	if (obj != nullptr ) {
 		ofxSoundObject * source = obj->getSignalSourceObject();
 		if(source != nullptr){			
@@ -33,8 +31,6 @@ void ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
 				if(ofxSoundMatrixMixer::getComputeRMSandPeak()){
 					vuMeter.calculate(buffer);
 				}
-				//			}else{
-				//				bBufferProcessed = false;
 			}
 		}else{
 			std::cout << "cant pullChannel. source is null" << std::endl; 
@@ -42,12 +38,6 @@ void ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
 	}
 }
 
-
-
-
-//ofxSoundMatrixMixer::MatrixInputObject::MatrixInputObject(){
-//	
-//}
 //----------------------------------------------------
 ofxSoundMatrixMixer::MatrixInputObject::MatrixInputObject(ofxSoundObject* _obj, const size_t& numOutChanns, const size_t& chanCount):obj(_obj){
 	updateChanVolsSize(numOutChanns, chanCount);
@@ -338,30 +328,6 @@ bool ofxSoundMatrixMixer::isConnected(ofxSoundObject& obj){
 	}
 	return false;
 }
-////----------------------------------------------------
-//void ofxSoundMatrixMixer::pullChannel(ofSoundBuffer& buffer, const size_t& chanIndex, const size_t &numFrames, const unsigned int & sampleRate){
-//	if (inObjects[chanIndex]->obj != nullptr ) {
-//		ofxSoundObject * source = inObjects[chanIndex]->obj->getSignalSourceObject();
-//		if(source != nullptr){			
-//			auto player = dynamic_cast<ofxSoundPlayerObject*>(source);
-//			if((player && player->isPlaying()) || !player ){// this is to avoid pulling audio when the player is not playing
-//				size_t nc = source->getNumChannels();
-//				buffer.resize(nc * numFrames);
-//				buffer.setNumChannels(nc);
-//				buffer.setSampleRate(sampleRate);
-//				inObjects[chanIndex]->obj->audioOut(buffer);
-//				inObjects[chanIndex]->bBufferProcessed = true;
-//				if(bComputeRMSandPeak){
-//					inObjects[chanIndex]->vuMeter.calculate(buffer);
-//				}
-//			}else{
-//				inObjects[chanIndex]->bBufferProcessed = false;
-//			}
-//		}else{
-//			std::cout << "cant pullChannel. source is null" << std::endl; 
-//		}
-//	}
-//}
 //----------------------------------------------------
 void ofxSoundMatrixMixer::mixChannelBufferIntoOutput(const size_t& idx, ofSoundBuffer& input, ofSoundBuffer& output){
 	auto nf = output.getNumFrames();
@@ -397,26 +363,6 @@ void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 			inObjects[i]->numFramesToProcess = numFrames;
 #ifdef OFX_ENABLE_MULTITHREADING
 		}
-		
-//		for(size_t i = 0; i < inObjects.size(); i++){			
-//			inObjects[i]->getBuffer().setSampleRate(samplerate);
-//			inObjects[i]->thread_ptr = make_unique<std::thread>([&]{
-//				inObjects[i]->pullChannel(numFrames);
-//			});
-//			inObjects[i]->analyze(numFrames);
-			//			inObjects[i]->pullChannel(numFrames);
-			//			mixChannelBufferIntoOutput(i, inObjects[i]->getBuffer(), output);
-//		}
-//		bool bInProcesses = true;
-//		while (bInProcesses) {
-//			for(size_t i = 0; i < inObjects.size(); i++){			
-//				if(!inObjects[i]->hasNewData()) inObjects[i]->update();
-//				if(inObjects[i]->hasNewData())
-//					mixChannelBufferIntoOutput(i, inObjects[i]->getBuffer(), output);
-				
-//				bInProcesses &= !inObjects[i]->hasNewData();
-//			}
-//		}
 		size_t n = inObjects.size();
 		MatrixInputsCollection col;
 		col.inObjects = &inObjects;

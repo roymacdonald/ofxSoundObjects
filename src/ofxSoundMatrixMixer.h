@@ -12,8 +12,8 @@
 #include "ofxSoundObject.h"
 #include "ofTypes.h"
 #include "VUMeter.h"
-
-#define OFX_ENABLE_MULTITHREADING 
+#include "ofxSoundObjectsConstants.h"
+ 
 #ifdef OFX_ENABLE_MULTITHREADING
 #include "tbb/parallel_for.h"
 #endif

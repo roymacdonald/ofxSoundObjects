@@ -10,6 +10,9 @@
 /// \brief enum that defines the way in which audio is processed through 
 /// 
 
+
+#define OFX_ENABLE_MULTITHREADING
+
 enum ofxSoundObjectsMode{
 	//This is the default mode 
 	OFX_SOUND_OBJECT_PULL = 0,
