@@ -10,6 +10,7 @@ public:
 	void setup();
 	void update();
 	void draw();
+	void exit();
 	
 	void keyPressed(int key);
 	void keyReleased(int key);
@@ -30,11 +31,16 @@ public:
 
 	ofxSoundInput input;
 	
-	vector<ofxSoundPlayerObject> players;
+	vector<shared_ptr<ofxSoundPlayerObject>> players;
 	
 	
 	size_t inDeviceIndex, outDeviceIndex;
 		
 	string mixerSettingsXmlPath;
 	bool bSettingsLoaded = false;
+	
+	string loadPath;
+	
+	void loadFolder(const string& path);
+	
 };
