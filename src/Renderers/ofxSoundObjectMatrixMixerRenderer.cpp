@@ -266,7 +266,7 @@ void ofxSoundMatrixMixerRenderer::draw(){
 					ofDrawBitmapString(info, objR.x - bb.x, objR.y - bb.y);
 				}
 				ofRectangle posR = objR;
-				posR.height = std::max(minHeight, 10.0f);
+				posR.height = std::min(cell.height, 10.0f);
 				posR.y = objR.getMaxY() - posR.height;
 				posR.width = ofMap(player->getPositionMS(), 0, player->getDurationMS(), 0, objR.width);
 				
@@ -306,7 +306,9 @@ void ofxSoundMatrixMixerRenderer::draw(){
 					if(bDisableTextRendering){
 						ofRectangle volR = cell;
 						volR.width = ofMap(v[i][j], 0,1,0, volR.width, true);
-						drawRect(volR);
+						
+						ofSetColor(100);
+						ofDrawRectangle(volR);
 					}else{
 						if(bNonSliderMode){
 							std::stringstream vol;

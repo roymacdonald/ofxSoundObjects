@@ -13,7 +13,7 @@
 #include "ofTypes.h"
 #include "VUMeter.h"
 
-//#define OFX_ENABLE_MULTITHREADING 
+#define OFX_ENABLE_MULTITHREADING 
 #ifdef OFX_ENABLE_MULTITHREADING
 #include "tbb/parallel_for.h"
 #endif
@@ -81,6 +81,8 @@ public:
 	const float & getOutputVolumeForChannel ( const size_t& outputChannel)const;
 	
 	void setOutputVolumeForAllChannels(const float & volValue);
+	
+	
 	
 	void load(const std::string& path);
 	void save(const std::string& path);
