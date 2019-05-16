@@ -11,7 +11,7 @@
 template<class ClassToRender>
 ofxSoundObjectBaseRenderer<ClassToRender>::ofxSoundObjectBaseRenderer(ClassToRender* o):obj(o){}
 //--------------------------------------------
-template<class ClassToRender>
-void ofxSoundObjectBaseRenderer<ClassToRender>::setObject(ClassToRender* o){
-	obj = o;
-}
+//template<class ClassToRender>
+//void ofxSoundObjectBaseRenderer<ClassToRender>::setObject(ClassToRender* o){
+//	obj = o;
+//}

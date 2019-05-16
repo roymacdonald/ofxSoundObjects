@@ -15,7 +15,7 @@ public:
 	ofxSoundObjectBaseRenderer(ClassToRender* o);
 	virtual void draw() = 0;
 	
-	void setObject(ClassToRender* o);
+//	virtual void setObject(ClassToRender* o);
 	
 //protected:
 	
