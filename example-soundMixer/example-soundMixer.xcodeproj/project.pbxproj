@@ -9,6 +9,80 @@
 		<string>46</string>
 		<key>objects</key>
 		<dict>
+			<key>E1EB6DBEC22E68C55D8A4EE6</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSoundUtils.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/ofxSoundUtils.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>4D112DC30F41BF74A9CA4C79</key>
+			<dict>
+				<key>fileRef</key>
+				<string>672AFB43A7F281D65425AAEC</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>672AFB43A7F281D65425AAEC</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSoundUtils.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/ofxSoundUtils.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>325B8956037E1EF26E7E0A74</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSoundRecorderObject.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/ofxSoundRecorderObject.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>A951B37B85BE9D9E912D0BD3</key>
+			<dict>
+				<key>fileRef</key>
+				<string>CF643211551EF37A2EECB096</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>CF643211551EF37A2EECB096</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSoundRecorderObject.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/ofxSoundRecorderObject.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>4F565F42275196FC67B85122</key>
 			<dict>
 				<key>explicitFileType</key>
@@ -43,43 +117,6 @@
 				<string>ofxSoundPlayerObject.cpp</string>
 				<key>path</key>
 				<string>../../../addons/ofxSoundObjects/src/ofxSoundPlayerObject.cpp</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>B5F7E28947C6F07328E09C1D</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>4</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>ofxSoundObjectsUtils.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/ofxSoundObjectsUtils.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>69930F292133561E8E277BCF</key>
-			<dict>
-				<key>fileRef</key>
-				<string>F88ABDE7EA40FF80BEB35DCC</string>
-				<key>isa</key>
-				<string>PBXBuildFile</string>
-			</dict>
-			<key>F88ABDE7EA40FF80BEB35DCC</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.cpp.cpp</string>
-				<key>fileEncoding</key>
-				<string>4</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>ofxSoundObjectsUtils.cpp</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/ofxSoundObjectsUtils.cpp</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -276,6 +313,21 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
+			<key>540EDF6E2F1CA24B5211673F</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>VUMeter.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/SoundObjects/VUMeter.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>7E5FAD2B1CAA506583AF8584</key>
 			<dict>
 				<key>explicitFileType</key>
@@ -329,6 +381,7 @@
 					<string>DBF555CF2E50BC6F8C44A805</string>
 					<string>4DDD5A51152F1581BDF9CCCF</string>
 					<string>7E5FAD2B1CAA506583AF8584</string>
+					<string>540EDF6E2F1CA24B5211673F</string>
 					<string>486582E0863B80FABE19AA90</string>
 				</array>
 				<key>isa</key>
@@ -437,10 +490,12 @@
 					<string>1602920CA9506139A0D594F8</string>
 					<string>EB0153789FDCEF9B5303141A</string>
 					<string>C0AFEFB4B45F19694B280408</string>
-					<string>F88ABDE7EA40FF80BEB35DCC</string>
-					<string>B5F7E28947C6F07328E09C1D</string>
 					<string>32760A1072C0D245FD13490D</string>
 					<string>4F565F42275196FC67B85122</string>
+					<string>CF643211551EF37A2EECB096</string>
+					<string>325B8956037E1EF26E7E0A74</string>
+					<string>672AFB43A7F281D65425AAEC</string>
+					<string>E1EB6DBEC22E68C55D8A4EE6</string>
 				</array>
 				<key>isa</key>
 				<string>PBXGroup</string>
@@ -4253,8 +4308,9 @@ fi
 					<string>0C038942B6A701062B7B70F2</string>
 					<string>7840F332D7330DAAD11D2250</string>
 					<string>878C0EFF16E187226B0148FA</string>
-					<string>69930F292133561E8E277BCF</string>
 					<string>7CAF1A5AEF6F06B39340FF34</string>
+					<string>A951B37B85BE9D9E912D0BD3</string>
+					<string>4D112DC30F41BF74A9CA4C79</string>
 				</array>
 				<key>isa</key>
 				<string>PBXSourcesBuildPhase</string>
