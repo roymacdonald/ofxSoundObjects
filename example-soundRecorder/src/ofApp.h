@@ -4,6 +4,7 @@
 #include "ofxSoundObjects.h"
 #include "waveformDraw.h"
 #include "ofxSoundRecorderObject.h"
+
 class ofApp : public ofBaseApp{
 
 	public:
@@ -28,6 +29,9 @@ class ofApp : public ofBaseApp{
 	ofxSoundInput input;
 	ofxSoundOutput output;
 	ofSoundStream stream;
+	ofxSoundMixer mixer;
+	
+	
 	
 	ofxSoundRecorderObject recorder;
 
