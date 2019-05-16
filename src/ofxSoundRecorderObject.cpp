@@ -17,7 +17,7 @@ void ofxSoundRecorderObject::process(ofSoundBuffer &input, ofSoundBuffer &output
 	
 	input.copyTo(output);
 
-	//TO DO: implement all this as part of ofxSoundFile
+	//TO DO: implement all this as part of ofxSoundFile, and implement the write process on a different thread.
 	
 	if(recState == INIT_REC){
 		recState = REC_ON;
