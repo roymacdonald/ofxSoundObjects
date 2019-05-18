@@ -7,27 +7,44 @@
 //
 
 #pragma once
-//#include "ofBaseTypes.h"
-//#include "ofConstants.h"
-#include "ofSoundBuffer.h"
-//#include "ofThread.h"
-#include "ofSoundUtils.h"
-//#include "ofSoundStream.h"
 
 #include "ofxSoundObjects.h"
+#include "ofxSoundObjectsConstants.h"
 #include "dr_wav.h"
-class ofxSoundRecorderObject:  public ofxSoundObject {
+
+#ifdef OFX_SOUND_ENABLE_THREADED_RECORDER
+class ofxSoundRecorderObject:   public ofThread, public ofxSoundObject  {
+#else
+class ofxSoundRecorderObject:  public ofxSoundObject{
+#endif
 public:
 	ofxSoundRecorderObject();
-	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output);
+#ifdef OFX_SOUND_ENABLE_THREADED_RECORDER
+	virtual ~ofxSoundRecorderObject();
+#endif
+	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
 	
 	
 	bool isRecording();
 	void startRecording(const std::string & filename);
 	void stopRecording();
 	
+	
 	const std::string& getFileName();
 	
+	
+	std::string getRecStateString();
+	
+	
+protected:
+	
+#ifdef OFX_SOUND_ENABLE_THREADED_RECORDER
+	virtual void threadedFunction() override;
+	ofThreadChannel<ofSoundBuffer> writeChannel;
+#endif
+	
+	void write(ofSoundBuffer& input);
+
 private:
 	
 	
@@ -38,8 +55,9 @@ private:
 		INIT_REC,
 		REC_ON,
 		DEINIT_REC
-	}recState = IDLE;
+	};
+	std::atomic<RecState> recState;
 
-	std::string filename;
+	std::string filename, filenameBuffer;
 	ofMutex mutex;
 };

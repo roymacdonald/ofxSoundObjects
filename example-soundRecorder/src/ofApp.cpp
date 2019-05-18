@@ -63,7 +63,7 @@ void ofApp::draw(){
 	if(recorder.isRecording()){
 		ss << "Recording to file: " << recorder.getFileName() << endl;
 	}
-	
+	ss << "Recorder State: " << recorder.getRecStateString();
 	
 	ofSetColor(255);
 	ofDrawBitmapString(ss.str(), 20, 20);

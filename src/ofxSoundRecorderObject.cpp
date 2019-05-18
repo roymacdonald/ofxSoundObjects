@@ -9,16 +9,23 @@
 #include "ofxSoundRecorderObject.h"
 
 
-
-ofxSoundRecorderObject::ofxSoundRecorderObject():ofxSoundObject(OFX_SOUND_OBJECT_DESTINATION){
+//--------------------------------------------------------------
+ofxSoundRecorderObject::ofxSoundRecorderObject():ofxSoundObject(OFX_SOUND_OBJECT_DESTINATION), recState(IDLE){
+#ifdef OFX_SOUND_ENABLE_THREADED_RECORDER
+	startThread();
+#endif
 }
-
-void ofxSoundRecorderObject::process(ofSoundBuffer &input, ofSoundBuffer &output){
-	
-	input.copyTo(output);
-
+//--------------------------------------------------------------
+#ifdef OFX_SOUND_ENABLE_THREADED_RECORDER
+ofxSoundRecorderObject::~ofxSoundRecorderObject(){
+	stopRecording();
+	writeChannel.close();
+	if(isThreadRunning()) waitForThread(true);
+}
+#endif
+//--------------------------------------------------------------
+void ofxSoundRecorderObject::write(ofSoundBuffer& input){
 	//TO DO: implement all this as part of ofxSoundFile, and implement the write process on a different thread.
-	
 	if(recState == INIT_REC){
 		recState = REC_ON;
 		
@@ -27,17 +34,17 @@ void ofxSoundRecorderObject::process(ofSoundBuffer &input, ofSoundBuffer &output
 		format.format = DR_WAVE_FORMAT_IEEE_FLOAT;   
 		format.channels = input.getNumChannels();
 		format.sampleRate = input.getSampleRate();
-		format.bitsPerSample = 32;//sizeof(float) * 8;
+		format.bitsPerSample = 32;
 		
 		ofLogVerbose("ofxSoundRecorderObject::process")
-		<< "                        new audiofile: " << filename << endl
+		<< "                        new audiofile: " << filenameBuffer << endl
 		<< "                        channels:      " << format.channels << endl
 		<< "                        sampleRate:    " << format.sampleRate << endl
 		<< "                        bitsPerSample: " << format.bitsPerSample;
 		
-		wav_handle = drwav_open_file_write( filename.c_str(), &format);
+		wav_handle = drwav_open_file_write( filenameBuffer.c_str(), &format);
 	}else if(recState == DEINIT_REC){
-		ofLogVerbose("ofxSoundRecorderObject::process") << "finished recording file " << filename;
+		ofLogVerbose("ofxSoundRecorderObject::process") << "finished recording file " << filenameBuffer;
 		recState = IDLE;
 		drwav_uninit(wav_handle);
 		wav_handle  = NULL;
@@ -50,14 +57,34 @@ void ofxSoundRecorderObject::process(ofSoundBuffer &input, ofSoundBuffer &output
 		}
 	}	
 }
-
-
+//--------------------------------------------------------------
+#ifdef OFX_SOUND_ENABLE_THREADED_RECORDER
+void ofxSoundRecorderObject::threadedFunction(){
+	ofSoundBuffer buffer;
+	while(writeChannel.receive(buffer)){
+		write(buffer);
+	}
+}
+#endif
+//--------------------------------------------------------------
+void ofxSoundRecorderObject::process(ofSoundBuffer &input, ofSoundBuffer &output){
+	input.copyTo(output);
+#ifdef OFX_SOUND_ENABLE_THREADED_RECORDER
+	if(recState != IDLE){
+		writeChannel.send(input);
+	}
+#else
+	write(input);
+#endif
+}
+//--------------------------------------------------------------
 bool ofxSoundRecorderObject::isRecording(){
-	std::lock_guard<std::mutex> lck (mutex);
+//	std::lock_guard<std::mutex> lck (mutex);
 	return recState == REC_ON;
 }
+//--------------------------------------------------------------
 void ofxSoundRecorderObject::startRecording(const std::string & filename){
-	mutex.lock();
+//	std::lock_guard<std::mutex> lck (mutex);
 	if(recState == IDLE){
 		recState = INIT_REC;
 		if(filename.empty()){
@@ -65,17 +92,35 @@ void ofxSoundRecorderObject::startRecording(const std::string & filename){
 		}else{
 			this->filename = filename;
 		}
+		mutex.lock();
+		this->filenameBuffer = this->filename;
+		mutex.unlock();
+		
+	}else{
+		ofLogWarning("ofxSoundRecorderObject::startRecording")<< "can not start recording when there is already another recording happening. Please stop this recording before beggining a new one";
 	}
-	mutex.unlock();
 }
+//--------------------------------------------------------------
 void ofxSoundRecorderObject::stopRecording(){
-	mutex.lock();
+//	std::lock_guard<std::mutex> lck (mutex);
 	if(recState == REC_ON){
 		recState = DEINIT_REC;
 	}
-	mutex.unlock();
 }
+//--------------------------------------------------------------
 const std::string& ofxSoundRecorderObject::getFileName(){
-	std::lock_guard<std::mutex> lck (mutex);
 	return filename;
+}
+//--------------------------------------------------------------
+std::string ofxSoundRecorderObject::getRecStateString(){
+	RecState state;
+	{
+		std::lock_guard<std::mutex> lck (mutex);
+		state = recState;
+	}
+	if(state == IDLE)return "IDLE";
+	if(state == INIT_REC)return "INIT_REC";
+	if(state == REC_ON)return "RECORDING";
+	if(state == DEINIT_REC)return "DEINIT_REC";
+	return "";
 }
