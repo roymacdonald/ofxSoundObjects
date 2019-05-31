@@ -21,7 +21,7 @@ void ofApp::setup(){
 #else
 		// change this path if you want to use another one and not use the system load dialog
 		loadPath = ofToDataPath("../../../../../examples/sound/soundPlayerExample/bin/data/sounds");
-//		loadPath = "/Users/roy/openFrameworks/examples/sound/soundPlayerExample/bin/data/sounds";
+
 #endif
 		
 		loadFolder(loadPath);
