@@ -29,3 +29,11 @@ enum ofxSoundObjectsType{
 	OFX_SOUND_OBJECT_PROCESSOR,
 	OFX_SOUND_OBJECT_DESTINATION
 };
+
+
+enum ofxSoundChannelVisibility{
+	VISIBLE = 0, // it should render the "normal view"
+	MINIMIZED,//it should render the minimized view bwhich should use minimal space, less than normal view but never invisible
+	HIDDEN,//It does not get rendered
+	NUM_VISIBILITY_OPTS//
+};

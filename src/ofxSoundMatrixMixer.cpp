@@ -168,10 +168,10 @@ void ofxSoundMatrixMixer::updateNumOutputChannels(const size_t & nc){
 			i->updateChanVolsSize(numOutputChannels, count);
 			count += i->channelsVolumes.size();
 		}
-		size_t i = outputVolumes.size(); 
-		outputVolumes.resize(numOutputChannels);
+		size_t i = outputChannels.size(); 
+		outputChannels.resize(numOutputChannels);
 		for( ; i < numOutputChannels; i++){
-			outputVolumes[i].set("out " + ofToString(i), 0, 0, 1);
+			outputChannels[i].setup("out " + ofToString(i));
 		}
 		
 	}
@@ -212,21 +212,21 @@ const float& ofxSoundMatrixMixer::getVolumeForConnectionChannel(const size_t& co
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::setOutputVolumeForAllChannels(const float & volValue){
-	for(auto& o: outputVolumes){
-		o = volValue;
+	for(auto& o: outputChannels){
+		o.volume = volValue;
 	}
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::setOutputVolumeForChannel (const float & volValue, const size_t& outputChannel){
-	if(outputChannel < outputVolumes.size()){
-		outputVolumes[outputChannel] = volValue;
+	if(outputChannel < outputChannels.size()){
+		outputChannels[outputChannel].volume = volValue;
 	}else{
 		ofLogWarning("ofxSoundMatrixMixer::setOutputVolumeForChannel") << " outputChannel out of range";
 	}
 }
 const float & ofxSoundMatrixMixer::getOutputVolumeForChannel ( const size_t& outputChannel) const{
-	if(outputChannel < outputVolumes.size()){
-		return outputVolumes[outputChannel].get();
+	if(outputChannel < outputChannels.size()){
+		return outputChannels[outputChannel].volume.get();
 	}
 	ofLogWarning("ofxSoundMatrixMixer::setOutputVolumeForChannel") << " outputChannel out of range";
 	return dummyFloat;
@@ -380,10 +380,10 @@ void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 		updateNumInputChannels();
 		
 		auto nf = output.getNumFrames();
-		auto nov = outputVolumes.size();
+		auto nov = outputChannels.size();
 		for(size_t i =0; i < nov; i++){
 			for(size_t f = 0; f < nf; f++){
-				output[f * nov + i] *= outputVolumes[i].get();
+				output[f * nov + i] *= outputChannels[i].volume.get();
 			}
 		}
 		
@@ -449,7 +449,7 @@ void ofxSoundMatrixMixer::putMatrixVolumesIntoParamGroup(ofParameterGroup & grou
 			}
 		}
 	}
-	for(auto& o : outputVolumes){
+	for(auto& o : outputChannels){
 		group.add(o);
 	}
 }

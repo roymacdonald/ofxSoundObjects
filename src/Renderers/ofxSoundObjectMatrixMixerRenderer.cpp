@@ -50,7 +50,7 @@ void ofxSoundMatrixMixerRenderer::initOrResizeNumSliders(const float & sliderWid
 	
 	if(outputSliders.size() != obj->getNumOutputChannels()) outputSliders.resize(obj->getNumOutputChannels());
 	for(size_t i = 0; i < outputSliders.size(); i++){
-		if(!outputSliders[i]) outputSliders[i] = make_unique<ofxFloatSlider>(obj->outputVolumes[i], sliderWidth);
+		if(!outputSliders[i]) outputSliders[i] = make_unique<ofxFloatSlider>(obj->outputChannels[i].volume, sliderWidth);
 	}
 	if(!bMasterSliderSetup){
 		masterSlider.setup(obj->masterVol);;
@@ -186,11 +186,11 @@ void ofxSoundMatrixMixerRenderer::draw(){
 		outChanR.width = bottomR.width/outputSliders.size();
 		glm::vec3 outPos = outChanR.getBottomLeft();
 		if(outputSliders.size()) outPos.y -= outputSliders[0]->getHeight();
-		for(size_t i = 0; i < outputSliders.size() && i < obj->outputVolumes.size() ; i++){
+		for(size_t i = 0; i < outputSliders.size() && i < obj->outputChannels.size() ; i++){
 			drawRect(outChanR);
 			if(bNonSliderMode){
 				std::stringstream vol;
-				vol << "out " << i <<" : " << obj->outputVolumes[i];
+				vol << "out " << i <<" : " << obj->outputChannels[i].volume.get();
 				ofDrawBitmapString(vol.str(), outPos.x, outPos.y - 3);
 			}else{
 				if(outputSliders[i]!= nullptr){			

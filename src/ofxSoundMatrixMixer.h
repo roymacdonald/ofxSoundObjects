@@ -118,11 +118,31 @@ protected:
 		size_t numFramesToProcess;
 		unsigned int sampleRate;
 
+	protected:
+		ofxSoundChannelVisibility visibility = VISIBLE; 
+		
 	private:
 
 		ofSoundBuffer buffer;
 	};
 
+	class MatrixOutputChannel: public ofParameterGroup{ 
+	public:
+		friend class ofxSoundMatrixMixer;
+
+		void setup(const std::string& name){
+			ofParameterGroup::setName(name);
+			add(volume.set(name + " vol", 0,0,1));
+			add(visibility.set(name + "visibility", 0, 0, 2));
+		}
+		
+		ofParameter<float> volume;  
+		
+	protected:
+		ofParameter<int> visibility; 
+
+	};
+	
 	std::vector< size_t > matrixInputChannelMap;
 	std::vector< size_t > numConnectionInputChannels;
 	std::vector< size_t > connectionFirstChannel;
@@ -130,7 +150,7 @@ protected:
 	
 	VUMeter outVuMeter;
 
-	std::vector<ofParameter<float>> outputVolumes;
+	std::vector<MatrixOutputChannel> outputChannels;
 	ofParameter<float> masterVol;
 	void masterVolChanged(float& f);
 	
