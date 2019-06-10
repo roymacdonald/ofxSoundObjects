@@ -35,13 +35,15 @@ ofxSoundObject &ofxSoundObject::connectTo(ofxSoundObject &soundObject) {
 //--------------------------------------------------------------
 void ofxSoundObject::disconnectInput(ofxSoundObject * input){
     if (inputObject != nullptr) {
-    inputObject = nullptr;
+		inputObject = nullptr;
     }
 }
 //--------------------------------------------------------------
 void ofxSoundObject::disconnect(){
-    outputObjectRef->disconnectInput(this);
-    outputObjectRef =nullptr;
+	if(outputObjectRef != nullptr){
+		outputObjectRef->disconnectInput(this);
+		outputObjectRef =nullptr;
+	}
 }
 //--------------------------------------------------------------
 void ofxSoundObject::setInput(ofxSoundObject *obj) {

@@ -18,13 +18,19 @@
  * of the dsp chain (i.e. an oscillator or a microphone input).
  */
 class ofSoundBuffer;
+class ofxSoundInputMultiplexer;
 
 class ofxSoundObject: public ofBaseSoundOutput {
 public:
 	ofxSoundObject();
 	ofxSoundObject(ofxSoundObjectsType);
-	virtual ~ofxSoundObject() {}
+	virtual ~ofxSoundObject() {
+		disconnect();
+	}
 
+	friend class ofxSoundInputMultiplexer; 
+	
+	
 	/// Connects the output of this ofxSoundObject to the input of the parameter ofxSoundObject
 	ofxSoundObject &connectTo(ofxSoundObject &soundObject);
     void disconnect();
