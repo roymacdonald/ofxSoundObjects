@@ -25,6 +25,7 @@ public:
 	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
 	
 	
+	// This will return true if it is recording. It is thread safe. When recording if you call stopRecording(), isRecording() will return false only when the recorded file has been closed. As the recording task happens on a thread different to the main thread, if you call stopRecording() and then immediatelly check isRecording() it is possible that you might get true, as the recorded file might not be closed yet.
 	bool isRecording();
 	void startRecording(const std::string & filename);
 	void stopRecording();
@@ -36,6 +37,9 @@ public:
 	std::string getRecStateString();
 	
 	
+	// This event gets triggered when the recording has finished and the file has been closed. 
+	// It will get triggered from either the audio thread or the recorder's own thread (if OFX_SOUND_ENABLE_THREADED_RECORDER has been defined in ofxSoundObjectsConstants.h), which in any case are not the main thread so you should be careful about the callback function. 
+	ofEvent<void> recordingEndEvent;
 protected:
 	
 #ifdef OFX_SOUND_ENABLE_THREADED_RECORDER

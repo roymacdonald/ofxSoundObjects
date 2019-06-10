@@ -45,9 +45,10 @@ void ofxSoundRecorderObject::write(ofSoundBuffer& input){
 		wav_handle = drwav_open_file_write( filenameBuffer.c_str(), &format);
 	}else if(recState == DEINIT_REC){
 		ofLogVerbose("ofxSoundRecorderObject::process") << "finished recording file " << filenameBuffer;
-		recState = IDLE;
 		drwav_uninit(wav_handle);
 		wav_handle  = NULL;
+		recState = IDLE;
+		ofNotifyEvent(recordingEndEvent);
 	}
 	
 	if( recState == REC_ON && wav_handle != NULL){
