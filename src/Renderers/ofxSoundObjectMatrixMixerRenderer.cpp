@@ -43,7 +43,7 @@ void ofxSoundMatrixMixerRenderer::initOrResizeNumSliders(const float & sliderWid
 				if(!sliders[idx][i][o]){
 					sliders[idx][i][o] = make_unique<ofxFloatSlider>(v[i][o], sliderWidth);
 					bSlidersEnabled = true;
-				}					
+				}
 			}
 		}
 	}
@@ -296,7 +296,7 @@ void ofxSoundMatrixMixerRenderer::draw(){
 				if(obj->ofxSoundMatrixMixer::getComputeRMSandPeak()){
 					obj->inObjects[idx]->vuMeter.drawChannel(i, chanR);
 				}
-				for(size_t j = 0; j < v[i].size() && i < sliders[idx][i].size(); j++){
+				for(size_t j = 0; j < v[i].size() && j < sliders[idx][i].size(); j++){
 					cell.x = gridR.x + cell.width*j; 	 
 					drawRect(cell);
 					ofSetColor(255);
