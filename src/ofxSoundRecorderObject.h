@@ -40,6 +40,9 @@ public:
 	// This event gets triggered when the recording has finished and the file has been closed. 
 	// It will get triggered from either the audio thread or the recorder's own thread (if OFX_SOUND_ENABLE_THREADED_RECORDER has been defined in ofxSoundObjectsConstants.h), which in any case are not the main thread so you should be careful about the callback function. 
 	ofEvent<void> recordingEndEvent;
+	
+	float getRecordingElapsedTime();
+	
 protected:
 	
 #ifdef OFX_SOUND_ENABLE_THREADED_RECORDER
@@ -64,4 +67,5 @@ private:
 
 	std::string filename, filenameBuffer;
 	ofMutex mutex;
+	float recStartTime = 0.0f;
 };

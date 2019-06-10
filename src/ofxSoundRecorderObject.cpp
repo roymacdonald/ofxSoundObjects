@@ -95,6 +95,7 @@ void ofxSoundRecorderObject::startRecording(const std::string & filename){
 		}
 		mutex.lock();
 		this->filenameBuffer = this->filename;
+		recStartTime = ofGetElapsedTimef();
 		mutex.unlock();
 		
 	}else{
@@ -107,6 +108,14 @@ void ofxSoundRecorderObject::stopRecording(){
 	if(recState == REC_ON){
 		recState = DEINIT_REC;
 	}
+}
+//--------------------------------------------------------------
+float ofxSoundRecorderObject::getRecordingElapsedTime(){
+	if(isRecording()){
+		return  ofGetElapsedTimef() - recStartTime;
+	}
+	return 0.0f;
+
 }
 //--------------------------------------------------------------
 const std::string& ofxSoundRecorderObject::getFileName(){
