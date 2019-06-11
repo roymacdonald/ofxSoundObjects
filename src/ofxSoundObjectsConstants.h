@@ -16,13 +16,6 @@
 
 #define OFX_SOUND_ENABLE_THREADED_RECORDER
 
-enum ofxSoundObjectsMode{
-	//This is the default mode 
-	OFX_SOUND_OBJECT_PULL = 0,
-	OFX_SOUND_OBJECT_PUSH,
-	OFX_SOUND_OBJECT_INDEPENDENT,
-	OFX_SOUND_OBJECT_OFFLINE
-};
 
 enum ofxSoundObjectsType{
 	OFX_SOUND_OBJECT_SOURCE =0,
