@@ -5,7 +5,7 @@
 # for bin folder in root
 /bin/*
 !/bin/data/
-example-soundRecorder/bin/data/*.wav
+*.wav
 
 build/
 obj/
