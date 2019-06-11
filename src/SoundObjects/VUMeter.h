@@ -108,6 +108,27 @@ public:
 		}
 		
 	}
+	
+//--------------------------------------------------------------
+	float getRMSforChannel(size_t channel){
+		if(channel < drawData.rms.size()){
+			return drawData.rms[channel];
+		}
+		return 0;
+	}
+//--------------------------------------------------------------
+	float getPeakforChannel(size_t channel){
+		if(channel < drawData.peak.size()){
+			return drawData.peak[channel];
+		}
+		return 0;
+	}
+//--------------------------------------------------------------
+// You can use the following static functions as setters or getters.
+// if you want to set the color of the RMS value you can do, for example
+//	VUMeter::getRmsColor() = ofColor::blue;
+// or to set the peak release time 
+//	VUMeter::getPeakReleaseTime() = 100;
 //--------------------------------------------------------------
 	static ofColor& getRmsColor(){ 
 		static std::unique_ptr<ofColor> i =  make_unique<ofColor>(100);
