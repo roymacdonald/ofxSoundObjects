@@ -1,4 +1,4 @@
- /*
+/*
  * ofxSoundFile.cpp
  *
  *  Created on: 25/07/2012
@@ -8,18 +8,20 @@
 #include "ofxSoundFile.h"
 #include "ofLog.h"
 #include "ofUtils.h"
+#include "ofxAudioFile.h"
 
 
 using namespace std;
 //--------------------------------------------------------------
 bool ofxLoadSound(ofSoundBuffer &buff, string path){
-    ofxSoundFile sf(path);
-    if(sf.isLoaded()){
-        sf.readTo(buff);
-        return true;
-    }else{
-        return false;
-    }
+	ofxSoundFile sf(path);
+	if(sf.isLoaded()){
+		buff = sf.getBuffer();
+		//        sf.readTo(buff);
+		return true;
+	}else{
+		return false;
+	}
 }
 
 //--------------------------------------------------------------
@@ -37,45 +39,82 @@ bool ofxSaveSound(const ofSoundBuffer &buff,  string path){
 
 
 //--------------------------------------------------------------
-ofxSoundFile::ofxSoundFile() {
-    bCompressed = false;
-//    bLoaded = false;	
-	close();
+ofxSoundFile::ofxSoundFile() {	
+	reset();
 }
-
+//--------------------------------------------------------------
+ofxSoundFile::~ofxSoundFile() {	
+	if(isThreadRunning())waitForThread();
+}
+//--------------------------------------------------------------
+void ofxSoundFile::threadedFunction(){
+	if(isThreadRunning()){
+		loadFile(path, true);
+		ofNotifyEvent(loadAsyncEndEvent);
+	}
+}
 //--------------------------------------------------------------
 ofxSoundFile::ofxSoundFile(string path) {
-    ofxSoundFile();
-    load(path);
+	ofxSoundFile();
+	load(path);
 }
-
-
 //--------------------------------------------------------------
-bool ofxSoundFile::load(string filepath){
-// 	path = ofToDataPath(_path);
-	bool result = false;
-
+bool ofxSoundFile::loadFile(std::string filepath, bool bAsync){
+	if(!bAsync && isThreadRunning()){
+		ofLogError("ofxSoundFile::load") << "Can not load a file while another is loading";
+		return false;
+	}
+	reset();
+	
 	if( ofFile::doesFileExist( filepath ) ){
+		ofxAudioFile audiofile; 
 		audiofile.setVerbose(true);
 		audiofile.load( filepath );
-		result = audiofile.loaded();
-		if (!result){
+		bool bL = audiofile.loaded();
+		if (!bL){
 			ofLogError("ofxSoundFile::load")<<"error loading file, double check the file path";
-		}else{
-			 
-			bCompressed = (ofFilePath::getFileExt(ofToLower(filepath)) == "mp3");
-			ofLogVerbose("ofxSoundFile::load") << "file loaded. is mp3 : "<< (bCompressed?"YES":"NO");  
+			return false;
 		}
+		bool bLocked = false;
+		if(bAsync){
+			bLocked = lock();
+		}
+		numChannels = audiofile.channels();
+		sampleRate =  audiofile.samplerate();
+		numSamples = audiofile.length();
+		
+		buffer.resize(numSamples*numChannels);
+		buffer.copyFrom(audiofile.data(), numSamples, numChannels, sampleRate);
+		
+		audiofile.free();
+		
+		path = filepath;
+		duration = 1000* float(numSamples) / float(sampleRate);
+		
+		bCompressed = (ofFilePath::getFileExt(ofToLower(filepath)) == "mp3");
+		ofLogVerbose("ofxSoundFile::load") << "file loaded. is mp3 : "<< (bCompressed?"YES":"NO");
+		bLoaded = bL;
+		if(bLocked) unlock();
 		
 	}else{
 		ofLogError()<<"input file does not exists";
 	}
-
 	
-	if(result) { // prevent div by zero if file doesn't open.
-		duration = float(audiofile.length()) / float(audiofile.samplerate());
+	return bLoaded;   
+	
+}
+//--------------------------------------------------------------
+bool ofxSoundFile::loadAsync(std::string filepath){
+	if(!isThreadRunning()){
+		path = filepath;
+		startThread();
+		return true;
 	}
-	return result;   
+	return false;
+}
+//--------------------------------------------------------------
+bool ofxSoundFile::load(string filepath){
+	return loadFile(filepath, false);
 }
 
 //--------------------------------------------------------------
@@ -87,73 +126,86 @@ bool ofxSoundFile::save(string path, const ofSoundBuffer &buff, int format){
 		ofLogWarning() << "Can only write wav files - will save file as " << path;
 	}
 	{
-	fstream file(ofToDataPath(path).c_str(), ios::out | ios::binary);
-	if(!file.is_open()) {
-		ofLogError() << "Error opening sound file '" << path << "' for writing";
-		return false;
+		fstream file(ofToDataPath(path).c_str(), ios::out | ios::binary);
+		if(!file.is_open()) {
+			ofLogError() << "Error opening sound file '" << path << "' for writing";
+			return false;
+		}
 	}
-	}
-		
-		SndfileHandle sfile ;
-		
-		sfile = SndfileHandle (ofToDataPath(path, true), SFM_WRITE, SF_FORMAT_WAV | format, buff.getNumChannels(), buff.getSampleRate()) ;
-		
-		sfile.write (&buff.getBuffer()[0], buff.getBuffer().size());
-		
-
+	
+	SndfileHandle sfile ;
+	
+	sfile = SndfileHandle (ofToDataPath(path, true), SFM_WRITE, SF_FORMAT_WAV | format, buff.getNumChannels(), buff.getSampleRate()) ;
+	
+	sfile.write (&buff.getBuffer()[0], buff.getBuffer().size());
+	
+	
 	return true;
 }
 
+
 //--------------------------------------------------------------                  
 //--------------------------------------------------------------
-void ofxSoundFile::close(){
-	audiofile.free();
-	duration = 0; //in secs
+void ofxSoundFile::reset(){
+	std::unique_lock<std::mutex> lock(mutex);
+	buffer.clear();
+	bCompressed = false;
+	bLoaded = false;
+	duration = 0;
+	numChannels = 0;
+	sampleRate = 0;
+	numSamples = 0;
+	path = "";
 }
-
+//--------------------------------------------------------------
+//void ofxSoundFile::close(){
+//	reset();
+//}
 //--------------------------------------------------------------
 const bool ofxSoundFile::isLoaded() const{
-	return audiofile.loaded();
+	return bLoaded;
 }
-
 //--------------------------------------------------------------
 const unsigned int ofxSoundFile::getNumChannels() const{
-	return audiofile.channels();
+	return numChannels; 
 }
-
 //--------------------------------------------------------------
 const uint64_t ofxSoundFile::getDuration() const{
-	return duration*1000;
+	return duration;
 }
-
 //--------------------------------------------------------------
 const unsigned int ofxSoundFile::getSampleRate() const{
-	return audiofile.samplerate();
+	return sampleRate;
 }
-
 //--------------------------------------------------------------
 const uint64_t ofxSoundFile::getNumSamples() const{
-	return audiofile.length();
+	return numSamples;
 }
-
 //--------------------------------------------------------------
 const bool ofxSoundFile::isCompressed() const{
-    return bCompressed;
+	return bCompressed;
 }
-
 //--------------------------------------------------------------
 const string ofxSoundFile::getPath() const{
-	return audiofile.path();
+	return path;
 }
 //--------------------------------------------------------------
-void ofxSoundFile::readTo(ofSoundBuffer & buffer, uint64_t _samples){
-	if(_samples!=0){
-		// will read the requested number of samples
-		// clamp to the number of samples we actually have
-		_samples = min(_samples, getNumSamples());
-	}else{
-		_samples = getNumSamples();
-	}
-	buffer.resize(_samples*getNumChannels());
-	buffer.copyFrom(audiofile.data(), _samples, getNumChannels(), getSampleRate());
+ofSoundBuffer&  ofxSoundFile::getBuffer(){
+	return buffer;
 }
+//--------------------------------------------------------------
+const ofSoundBuffer&  ofxSoundFile::getBuffer() const{
+	return buffer;
+}
+////--------------------------------------------------------------
+//void ofxSoundFile::readTo(ofSoundBuffer & buf, uint64_t _samples){
+//	if(_samples!=0){
+//		// will read the requested number of samples
+//		// clamp to the number of samples we actually have
+//		_samples = min(_samples, getNumSamples());
+//	}else{
+//		_samples = getNumSamples();
+//	}
+//	buf.resize(_samples*getNumChannels());
+//	buf.copyFrom(buffer.getBuffer(), _samples, getNumChannels(), getSampleRate());
+//}

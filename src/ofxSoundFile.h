@@ -7,9 +7,7 @@
 
 #pragma once
 
-#include "ofConstants.h"
-#include "ofSoundBuffer.h"
-#include "ofxAudioFile.h"
+#include "ofMain.h"
 #include <sndfile.hh>
 /// reads a sound file into an ofSoundBuffer.
 /// encoding support varies by platform.
@@ -18,17 +16,19 @@ bool ofxLoadSound(ofSoundBuffer &buffer, std::string path);
 /// writes an ofSoundBuffer as a 16-bit PCM WAV file.
 bool ofxSaveSound(const ofSoundBuffer &buffer, std::string path);
 
-class ofxSoundFile {
+class ofxSoundFile : private ofThread{
 public:
 	ofxSoundFile();
+	~ofxSoundFile();
 	ofxSoundFile(std::string path);
 
-	void close();
+	void reset();
 
-	/// opens a sound file for reading with readTo().
-	/// encoding support varies by platform.
-	/// Windows and OSX use libaudiodecoder for decoding, Linux uses libsndfile
+	/// opens a sound file and put into an ofSoundBuffer
 	bool load(std::string filepath);
+	/// loads a file asynchronusly
+	bool loadAsync(std::string filepath);
+	
 	
 	/// writes an ofSoundBuffer as a PCM WAV file
 	/// Use any of the following values to set the file data format (Default is 16 bits)
@@ -44,23 +44,38 @@ public:
 	
 	/// reads a file into an ofSoundBuffer.
 	/// by default, this will resize the buffer to fit the entire file.
-	/// supplying a "samples" argument will read only the given number of samples
-	void readTo(ofSoundBuffer &buffer, uint64_t samples = 0);
+//	/ supplying a "samples" argument will read only the given number of samples
+//	void readTo(ofSoundBuffer &buffer, uint64_t samples = 0);
 	
 	/// returns sound file duration in milliseconds
-	const uint64_t getDuration() const;
-	const unsigned int getNumChannels() const;
-	const unsigned int getSampleRate() const;
-	const uint64_t getNumSamples() const;
-	const bool isCompressed() const;
-	const bool isLoaded() const;
-	const std::string getPath() const;
+	const uint64_t 		getDuration() const;
+	const unsigned int 	getNumChannels() const;
+	const unsigned int 	getSampleRate() const;
+	const uint64_t 		getNumSamples() const;
+	const bool 			isCompressed() const;
+	const bool 			isLoaded() const;
+	const std::string 	getPath() const;
 
+	ofSoundBuffer&  getBuffer();
+	const ofSoundBuffer&  getBuffer() const;
+	
+	ofEvent<void> loadAsyncEndEvent;
+	
+protected:
+	virtual void threadedFunction() override;
 private:
 	
-	ofxAudioFile audiofile;
+	bool loadFile(std::string filepath, bool bAsync);
 	
-	float duration; //in secs
+	ofSoundBuffer buffer;
+	
+	
 	bool bCompressed;
+	bool bLoaded;
+	uint64_t duration;
+	unsigned int numChannels;
+	unsigned int sampleRate;
+	uint64_t numSamples;
+	std::string path;
 
 };
