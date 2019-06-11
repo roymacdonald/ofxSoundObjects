@@ -41,8 +41,10 @@ public:
 	void setMasterVolume(float vol);
 	float getMasterVolume();
 	
-	
+	// dont call this function. It is used internally
 	void audioOut(ofSoundBuffer &output) override;
+	
+	// Returns true if the passed object is connected to the mixer
 	bool isConnected(ofxSoundObject& obj);
 	
 
@@ -57,8 +59,6 @@ public:
 	
 	const float& getVolumeForConnectionChannel(const size_t& connectionIndex, const size_t& inputChannel, const size_t& outputChannel) const;
 	
-	
-	
 	// this function will set the volume of the channel relative to the overall input channel count.
 	// This means this means if we have two objects conected, each with 2 channels and we want to change the
 	// volume for the first input channel of the second object that goes out to the first output channel 
@@ -72,6 +72,8 @@ public:
 	size_t getConnectionIndexAtInputChannel(const size_t& chan);
 	
 	
+	size_t getConnectionNumberOfChannels(const size_t& connectionIndex);
+	
 	
 	/// Will return the overall first channel for a connection 
 	size_t getFirstInputChannelForConnection(const size_t& connectionIndex);
@@ -81,6 +83,12 @@ public:
 	const float & getOutputVolumeForChannel ( const size_t& outputChannel)const;
 	
 	void setOutputVolumeForAllChannels(const float & volValue);
+	
+	
+	// get the VUMeter object for the connection at connectionIndex
+	const VUMeter& getVUMeterForConnection(const size_t& connectionIndex);
+	// get the VUMeter object that is in the output of the mixer.
+	const VUMeter& getOutputVUMeter();
 	
 	
 	
@@ -110,7 +118,7 @@ protected:
 		bool bBufferProcessed = false;
 		
 		
-		void pullChannel();
+		bool pullChannel();
 		
 		
 		ofSoundBuffer & getBuffer();

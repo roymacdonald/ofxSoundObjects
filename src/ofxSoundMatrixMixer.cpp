@@ -15,7 +15,7 @@
 //--------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------
-void ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
+bool ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
 	bBufferProcessed = false;
 	if (obj != nullptr ) {
 		ofxSoundObject * source = obj->getSignalSourceObject();
@@ -31,11 +31,13 @@ void ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
 				if(ofxSoundMatrixMixer::getComputeRMSandPeak()){
 					vuMeter.calculate(buffer);
 				}
+				return true;
 			}
 		}else{
-			std::cout << "cant pullChannel. source is null" << std::endl; 
+			std::cout << "cant pullChannel. source is null" << std::endl;
 		}
 	}
+	return false;
 }
 
 //----------------------------------------------------
@@ -162,6 +164,7 @@ void ofxSoundMatrixMixer::setInput(ofxSoundObject *obj){
 //----------------------------------------------------
 void ofxSoundMatrixMixer::updateNumOutputChannels(const size_t & nc){
 	if(numOutputChannels != nc){
+		cout << "numOutputChannels " << numOutputChannels << "   nc " << nc << endl;
 		numOutputChannels = nc;
 		size_t count = 0;
 		for(auto& i : inObjects){
@@ -175,6 +178,18 @@ void ofxSoundMatrixMixer::updateNumOutputChannels(const size_t & nc){
 		}
 		
 	}
+}
+//----------------------------------------------------
+const VUMeter& ofxSoundMatrixMixer::getVUMeterForConnection(const size_t& connectionIndex){
+	if(connectionIndex < inObjects.size()){
+		return inObjects[connectionIndex]->vuMeter;
+	}
+	ofLogWarning("ofxSoundMatrixMixer::getVUMeterForConnection") << "Connection index is out of bounds. ";
+	return outVuMeter;
+}
+//----------------------------------------------------
+const VUMeter& ofxSoundMatrixMixer::getOutputVUMeter(){
+	return outVuMeter;
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::setVolumeForConnectionChannel(const float& volValue, const size_t& connectionIndex, const size_t& inputChannel, const size_t& outputChannel){
@@ -209,6 +224,14 @@ const float& ofxSoundMatrixMixer::getVolumeForConnectionChannel(const size_t& co
 	}
 	
 	return dummyFloat;
+}
+//----------------------------------------------------
+size_t ofxSoundMatrixMixer::getConnectionNumberOfChannels(const size_t& connectionIndex){
+	if(connectionIndex < inObjects.size()){
+		return inObjects[connectionIndex]->channelsVolumes.size();
+	}
+	ofLogWarning("ofxSoundMatrixMixer::getConnectionNumberOfChannels") << "connection index out of bounds";
+	return 0;
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::setOutputVolumeForAllChannels(const float & volValue){
@@ -335,11 +358,21 @@ void ofxSoundMatrixMixer::mixChannelBufferIntoOutput(const size_t& idx, ofSoundB
 	auto in_nc = input.getNumChannels();
 	
 	if(input.getNumFrames() != output.getNumFrames()){
-		ofLogWarning("ofxSoundMatrixMixer::mixChannelBufferIntoOutput",  "input and output buffers have different number of frames. these should be equal");
+		ofLogWarning("ofxSoundMatrixMixer::mixChannelBufferIntoOutput") <<  "input and output buffers have different number of frames. these should be equal. in: " << input.getNumFrames() << " out: " << output.getNumFrames();
 	}
+	auto & v = inObjects[idx]->channelsVolumes;
+	if(in_nc != v.size()){
+		cout << "in_nc " << in_nc << "  "<< v.size() << endl;
+	}else{
+		if(out_nc != v[in_nc].size()){
+			cout << "idx " << idx << " out_nc " << out_nc << "  " << v[in_nc].size() << endl;
+		}
+	}
+	
 	if(inObjects[idx]->bBufferProcessed){
 		for(size_t ic =0; ic < in_nc; ic++){
 			for(size_t oc = 0; oc < out_nc; oc++){
+				
 				auto& v = inObjects[idx]->channelsVolumes[ic][oc]; 
 				if( !ofIsFloatEqual(v.get(), 0.0f)){
 					for(size_t i= 0; i < nf; i++){
@@ -358,6 +391,7 @@ void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 		output.set(0);
 		size_t numFrames = output.getNumFrames();
 		unsigned int samplerate = output.getSampleRate();
+		updateNumInputChannels();
 		for(size_t i = 0; i < inObjects.size(); i++){	
 			inObjects[i]->sampleRate = samplerate;
 			inObjects[i]->numFramesToProcess = numFrames;
@@ -372,12 +406,13 @@ void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 			mixChannelBufferIntoOutput(i, inObjects[i]->getBuffer(), output);
 		}
 #else
-			inObjects[i]->pullChannel();
-			mixChannelBufferIntoOutput(i, inObjects[i]->getBuffer(), output);
+			if(inObjects[i]->pullChannel()){
+				mixChannelBufferIntoOutput(i, inObjects[i]->getBuffer(), output);
+			}
 		}
 #endif
 		
-		updateNumInputChannels();
+		
 		
 		auto nf = output.getNumFrames();
 		auto nov = outputChannels.size();
