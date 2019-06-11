@@ -44,20 +44,29 @@ void ofApp::setup(){
 	outDeviceIndex = 0;
 	
 
+	cout << "========================" << endl;
+	cout << ofxSoundUtils::getSoundDeviceString(inDevices[inDeviceIndex], true, true) << endl;
+	
+	cout << "========================" << endl;
+	
 	// Setup the sound stream.
 	ofSoundStreamSettings settings;
 	settings.bufferSize = 256;
 	settings.numBuffers = 1;
 	settings.numInputChannels =  inDevices[inDeviceIndex].inputChannels;
 	settings.numOutputChannels = outDevices[outDeviceIndex].outputChannels;
-	
-	if(players.size()){
-		// we setup the samplerate of the sound stream according to the one of the first player
-		if(players[0])
-			settings.sampleRate = players[0]->getSoundFile().getSampleRate();
-	}else{
-		ofLogWarning("ofApp::setup", "could not set sample rate for soundstream") ;
+	auto  sr = inDevices[inDeviceIndex].sampleRates;
+	if(sr.size()){
+		settings.sampleRate  =sr[0];
 	}
+//	settings.sampleRate = inDevices[inDeviceIndex].sampleRates[0];
+//	if(players.size()){
+//		// we setup the samplerate of the sound stream according to the one of the first player
+//		if(players[0])
+//			settings.sampleRate = players[0]->getSoundFile().getSampleRate();
+//	}else{
+//		ofLogWarning("ofApp::setup", "could not set sample rate for soundstream") ;
+//	}
 	
 	
 	settings.setInDevice(inDevices[inDeviceIndex]);
@@ -81,6 +90,9 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::loadFolder(const string& path){
 	ofFile f(path);
+	
+	//set bLoadAsync to true if you want to load the audio files on a different thread. 
+	bool bLoadAsync = false;
 	if(f.isDirectory()){
 		ofDirectory dir(path);
 		dir.allowExt("wav");
@@ -91,11 +103,21 @@ void ofApp::loadFolder(const string& path){
 		players.resize( startIndex + dir.size());
 		for (int i = 0; i < dir.size(); i++) {
 			players[startIndex + i] = make_shared<ofxSoundPlayerObject>();
-			if(players[startIndex + i]->load(dir.getPath(i))){
-				players[startIndex + i]->connectTo(mixer);
-				players[startIndex + i]->play();
-				players[startIndex + i]->setLoop(true);
+			
+			if(!bLoadAsync){
+				if(players[startIndex + i]->load(dir.getPath(i))){
+					players[startIndex + i]->connectTo(mixer);
+					players[startIndex + i]->play();
+				}
+			}else{
+				if(players[startIndex + i]->loadAsync(dir.getPath(i), true)){	
+					players[startIndex + i]->connectTo(mixer);
+					//				players[startIndex + i]->play();// dont call play immediately after calling load Async. 
+					// instead set to true the second argument of ofxSoundPlayerObject::loadAsync (few lines above)
+					// when this argument is set to true it will start playing immediately after loading, otherwise it will not.	
+				}
 			}
+			players[startIndex + i]->setLoop(true);
 		}
 	}	
 }
