@@ -15,11 +15,13 @@
 #include "ofSoundStream.h"
 #include "ofEvents.h"
 #include "ofxSoundObjects.h"
+//#include "ofxSoundFileThreadedLoader.h"
 
 class ofxSoundPlayerObject:  public ofxSoundObject {
 public:
 	ofxSoundPlayerObject();
 	bool load(std::filesystem::path filePath, bool stream = false);
+	bool loadAsync(std::filesystem::path filePath, bool bAutoplay);
 	void unload();
 	int play();// when play is called and multiplay enabled a new playing instance is setup and it's index returned. If it is not possible to play -1 is returned;
 	void stop(size_t index =0);
@@ -53,6 +55,7 @@ public:
 
 	ofEvent<ofSoundBuffer> newBufferE;
     ofEvent<size_t> endEvent;
+//	ofEvent<bool> threadedLoadingEndEvent;
 
     const ofxSoundFile& getSoundFile() const {return soundFile;}
 	ofxSoundFile& getSoundFile() { return soundFile;}
@@ -79,7 +82,20 @@ public:
 	bool canPlayInstance();
 	void drawDebug(float x, float y);
 	size_t getNumInstances() { return instances.size(); }
+	
 private:
+	enum State{
+		UNLOADED = 0,
+		LOADING_ASYNC,
+		LOADING_ASYNC_AUTOPLAY,
+		LOADED
+//		PLAYING
+	};
+	std::atomic<State> state;
+	
+	void init();
+	
+	
 	void audioOutBuffersChanged( int nFrames, int nChannels, int sampleRate );
 	virtual void audioOut(ofSoundBuffer& outputBuffer) override;
 	void updatePositions(int numFrames);
@@ -91,18 +107,25 @@ private:
 	static int maxSoundsTotal;
 	static int maxSoundsPerPlayer;
 	int maxSounds;
-	ofSoundBuffer buffer, resampledBuffer;
+	ofSoundBuffer buffer; 
+	ofSoundBuffer resampledBuffer;
 	ofxSoundFile soundFile;
 	bool bStreaming = false;
 	bool bMultiplay = false;
-	bool bIsLoaded = false;
+//	bool bIsLoaded = false;
 	bool bIsPlayingAny = false;
 	vector<soundPlayInstance> instances;
 
 	void checkPaused();
     
     void updateInstance(std::function<void(soundPlayInstance& inst)> func, int index, string methodName);
-
+	ofMutex mutex;
+//	bool bLoadingAsync = false;
+//	bool bAsyncAutoplay = false;
+//	
+//	unique_ptr<ofxSoundFileThreadedLoader> threadedLoader;
+//	ofEventListener threadedLoaderListener;
+	
 };
 
 
