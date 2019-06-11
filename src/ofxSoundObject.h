@@ -75,7 +75,6 @@ public:
 	ofxSoundObjectsType getType(){return type;}
 	
 	
-	ofxSoundObjectsMode getMode(){return mode;}
 	
 	void setOutputStream(ofSoundStream& stream);
 	void setOutputStream(ofSoundStream* stream);
@@ -87,30 +86,40 @@ public:
 	/// Returns info about the device that is connected to this output
 	virtual ofSoundDevice getDeviceInfo();
 	
-	
+
 protected:
 
+
+	
+	
 	// this is the previous dsp object in the chain
 	// that feeds this one with input.
 	ofxSoundObject *inputObject = nullptr;
     ofxSoundObject *outputObjectRef = nullptr;
     virtual void setInput(ofxSoundObject *obj);
 	
-	ofxSoundObjectsMode mode = OFX_SOUND_OBJECT_PULL;
-    
-//    int numChannels = 0;
-
 	ofxSoundObjectsType type = OFX_SOUND_OBJECT_PROCESSOR;
 	
 private:
 	ofSoundStream* outputStream = nullptr;
 	
-	// ofxSoundObjects reference their source, not their destination
-	// because it's not needed in a pullthrough audio architecture.
-	// this lets that be set under the hood via connectTo()
-
 	// a spare buffer to pass from one sound object to another
 	ofSoundBuffer workingBuffer;
+	
+	//this functions sets whether the data is being pushed or pulled.
+	//This happens automatically.
+	void setSignalFlowMode();
+
+	enum ofxSoundObjectsMode{
+		//This is the default mode 
+		OFX_SOUND_OBJECT_PULL = 0,
+		OFX_SOUND_OBJECT_PUSH,
+//		OFX_SOUND_OBJECT_INDEPENDENT,
+//		OFX_SOUND_OBJECT_OFFLINE
+	} signalFlowMode;
+
+	
+	
 };
 
 //--------------------------------------------------------------
