@@ -10,6 +10,7 @@
 
 #include "ofxSoundObject.h"
 #include <map>
+#include <set>
 //--------------------------------------------------------------
 //  ofxSoundInputMultiplexer
 //--------------------------------------------------------------
@@ -25,12 +26,14 @@ public:
 	ofxSoundObject& getOrCreateChannel(int channel);
     
     bool deleteChannelGroup(const std::vector<int>& group);
-    
+    bool deleteChannel(int chan);
+	
     std::map < std::vector<int>, ofxSoundObject>& getChannelGroups();
     
     const std::map < std::vector<int>, ofxSoundObject>& getChannelGroups() const ;
 protected:
     std::map < std::vector<int>, ofxSoundObject> channelsMap;
+	std::set<int> channelsSet;
 	
 };
 
@@ -39,7 +42,10 @@ protected:
 //--------------------------------------------------------------
 class ofxSoundInputMultiplexer: public ofxSoundBaseMultiplexer, public ofxSoundInput{
 public:
-	ofxSoundInputMultiplexer(){}
+	ofxSoundInputMultiplexer():ofxSoundInput(){
+		chanMod = OFX_SOUND_OBJECT_CHAN_DEMUX;
+	}
+	virtual  std::string getName() override{ return "Sound Input Multiplexer";}
 	/// this will connect a specific channel to the passes sound object.
 	/// It will work as a kind of splitter.
 	ofxSoundObject &connectChannelTo(int channel,ofxSoundObject &soundObject);
@@ -58,7 +64,11 @@ protected:
 //--------------------------------------------------------------
 class ofxSoundOutputMultiplexer: public ofxSoundBaseMultiplexer, public ofxSoundOutput{
 public:
-	ofxSoundOutputMultiplexer(){}
+	ofxSoundOutputMultiplexer():ofxSoundOutput(){
+		chanMod = OFX_SOUND_OBJECT_CHAN_MUX;
+	}
+	virtual size_t getNumChannels() override;
+	virtual  std::string getName() override{ return "Sound Output Multiplexer";}
 	virtual void audioOut(ofSoundBuffer &output) override;
 private:
 
