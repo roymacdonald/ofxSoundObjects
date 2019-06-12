@@ -42,5 +42,8 @@ public:
 	string loadPath;
 	
 	void loadFolder(const string& path);
+
+	int selectedConnection = 0;
+	int selectedChannel = 0;
 	
 };

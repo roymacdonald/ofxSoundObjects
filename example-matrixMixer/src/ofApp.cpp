@@ -40,7 +40,7 @@ void ofApp::setup(){
 	// the index is the number printed in the console inside [ ] before the interface name 
 	// You can use a different input and output device.
 	
-	inDeviceIndex = 0;
+	inDeviceIndex = 1;
 	outDeviceIndex = 0;
 	
 
@@ -59,14 +59,6 @@ void ofApp::setup(){
 	if(sr.size()){
 		settings.sampleRate  =sr[0];
 	}
-//	settings.sampleRate = inDevices[inDeviceIndex].sampleRates[0];
-//	if(players.size()){
-//		// we setup the samplerate of the sound stream according to the one of the first player
-//		if(players[0])
-//			settings.sampleRate = players[0]->getSoundFile().getSampleRate();
-//	}else{
-//		ofLogWarning("ofApp::setup", "could not set sample rate for soundstream") ;
-//	}
 	
 	
 	settings.setInDevice(inDevices[inDeviceIndex]);
@@ -149,7 +141,9 @@ void ofApp::draw(){
 	ss << "Press l key to load mixer settings." << endl;
 	ss << "Press s key to save mixer settings." << endl;
 	ss << "Press e key to toggle slider's mouse interaction." << endl;
-	ss << "Press n key to toggle non-slider mode.";
+	ss << "Press n key to toggle non-slider mode." << endl;
+	ss << "Press up or down arrow keys to inc/dec selected connection"<< endl;
+	ss << "Press left or right arrow keys to inc/dec selected Channel";
 #ifdef OFX_SOUND_ENABLE_MULTITHREADING 
 	ss << endl << "Press the space bar to load more audio file players";
 #endif
@@ -160,15 +154,14 @@ void ofApp::draw(){
 	
 	stringstream ss2;
 	ss2 << "Sliders enabled: " << (mixerRenderer.isSlidersEnabled()?"YES":"NO") << endl;
-	ss2 << "Non Slider Mode: " << (mixerRenderer.isNonSliderMode()?"YES":"NO") << endl;
-	
+	ss2 << "Non Slider Mode: " << (mixerRenderer.isNonSliderMode()?"YES":"NO");
 	
 	
 	auto r2 = bf.getBoundingBox(ss2.str(), 0, 0);
 	
 	r2.x = ofGetWidth() - 20 - r2.width;
-	
-	ofDrawBitmapStringHighlight(ss2.str(), r2.x, 20);
+	r2.y = 20;
+	ofDrawBitmapStringHighlight(ss2.str(), r2.x, r2.y);
 	
 	
 	auto r = bf.getBoundingBox(ss.str(), 0, 0);
@@ -176,6 +169,43 @@ void ofApp::draw(){
 	r.x = r2.x - 20 - r.width;
 	
 	ofDrawBitmapStringHighlight(ss.str(), r.x, 20);
+	
+	
+	// Use the selected connection and channel to draw its rms and peak values taken from the mixer VUMeter
+	
+	auto rms = mixer.getVUMeterForConnection(selectedConnection).getRmsForChannel(selectedChannel);
+	auto peak = mixer.getVUMeterForConnection(selectedConnection).getPeakForChannel(selectedChannel);
+	
+	
+	stringstream ss3;
+	ss3 << "Selected Connection " << selectedConnection << endl; 
+	ss3 << "Selected Channel    " << selectedChannel;
+	
+	auto r3 = bf.getBoundingBox(ss3.str(), 0, 0);
+	r3.x = r2.x;
+	r3.y = r2.getMaxY() + 10;
+	ofDrawBitmapStringHighlight(ss3.str(), r3.x, r3.y);
+	
+	r3.y = r3.getMaxY() + 8;
+	r3.x -= 4;
+	r3.height = r.getMaxY() - r3.y;
+	
+	auto rRms = r3;
+	auto rPeak = r3;
+	rPeak.width = ofMap(peak, -1, 1, 0, r3.width);
+	rRms.width = ofMap(rms, -1, 1, 0, r3.width);
+	
+	ofPushStyle();
+	ofSetColor(ofColor::yellow);
+	ofDrawRectangle(rPeak);
+	
+	
+	ofSetColor(ofColor::red);
+	ofDrawRectangle(rRms);
+	
+	ofPopStyle();
+	
+	
 	
 	
 }
@@ -197,8 +227,18 @@ void ofApp::keyReleased(int key){
 		mixerRenderer.setNonSliderMode(!mixerRenderer.isNonSliderMode());
 	}else if(key == ' '){
 		loadFolder(loadPath);
-	}
 	
+	}else if(key == OF_KEY_UP){
+		(++selectedConnection)%= mixer.getNumInputObjects();
+	}else if(key == OF_KEY_DOWN){
+		--selectedConnection;
+		if(selectedConnection < 0) selectedConnection = mixer.getNumInputObjects() - 1;
+	}else if(key == OF_KEY_LEFT){
+		--selectedChannel;
+		if(selectedChannel < 0) selectedChannel = mixer.getConnectionNumberOfChannels(selectedConnection) - 1;
+	}else if(key == OF_KEY_RIGHT){
+		(++selectedChannel)%= mixer.getConnectionNumberOfChannels(selectedConnection);
+	}
 	
 }
 
