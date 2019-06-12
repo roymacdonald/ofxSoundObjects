@@ -11,6 +11,7 @@ public:
 	ofxSoundMixer();
     virtual ~ofxSoundMixer();
 
+	virtual  std::string getName() override{ return "Sound Mixer";}
 	ofxSoundObject* getChannelSource(int channelNumber);
 	size_t getNumChannels() override;
 
