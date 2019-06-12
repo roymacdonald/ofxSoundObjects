@@ -22,6 +22,7 @@
 class LowPassFilter: public ofxSoundObject {
 	
 public:
+	virtual std::string getName() override{ return "LowPassFilter";}
 	LowPassFilter():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
 		res = 0;
 		fc = 1;

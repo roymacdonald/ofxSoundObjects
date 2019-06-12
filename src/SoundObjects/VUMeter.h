@@ -14,6 +14,7 @@
 class VUMeter: public ofRectangle, public ofxSoundObject{
 public:
 	VUMeter():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){}
+	virtual  std::string getName() override{ return "VUMeter";}
 //--------------------------------------------------------------
 	VUMeter(const VUMeter& a):ofRectangle(a), ofxSoundObject(a){}
 //--------------------------------------------------------------
@@ -110,14 +111,14 @@ public:
 	}
 	
 //--------------------------------------------------------------
-	float getRMSforChannel(size_t channel){
+	float getRMSforChannel(size_t channel) const{
 		if(channel < drawData.rms.size()){
 			return drawData.rms[channel];
 		}
 		return 0;
 	}
 //--------------------------------------------------------------
-	float getPeakforChannel(size_t channel){
+	float getPeakforChannel(size_t channel) const{
 		if(channel < drawData.peak.size()){
 			return drawData.peak[channel];
 		}

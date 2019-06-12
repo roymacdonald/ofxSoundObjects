@@ -3,6 +3,7 @@
 #include "ofxSoundObject.h"
 class waveformDraw: public ofRectangle, public ofxSoundObject{
 public:
+	virtual  std::string getName() override{ return "waveForm";}
 	waveformDraw():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){}
     waveformDraw(const waveformDraw& a):ofRectangle(a), ofxSoundObject(a){}
 //--------------------------------------------------------------
