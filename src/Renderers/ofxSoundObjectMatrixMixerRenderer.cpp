@@ -132,18 +132,11 @@ void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 	
 	if(obj != nullptr){
 		
-//		glm::vec2 margin = {20, 80};
-		float leftW = 200;
-		float bottomH = 50;
-		float chanW = 10;
-		ofRectangle leftR (mixerRect.x, mixerRect.y, leftW, mixerRect.height - bottomH);
-//		ofRectangle leftR (margin.x, margin.y, leftW, ofGetHeight() - margin.y - margin.x - bottomH);
-		ofRectangle bottomR(leftR.getMaxX(), leftR.getMaxY(), mixerRect.width - leftR.width,  bottomH);
-		
-		ofRectangle gridR (leftR.getMaxX(), leftR.getMinY(), bottomR.width, leftR.height);
-		
-		
-		ofRectangle bottomLeftR(leftR.x, bottomR.y, leftR.width, bottomR.height);
+			
+		leftR.set (mixerRect.x, mixerRect.y, leftW, mixerRect.height - bottomH);
+		bottomR.set(leftR.getMaxX(), leftR.getMaxY(), mixerRect.width - leftR.width,  bottomH);
+		gridR.set (leftR.getMaxX(), leftR.getMinY(), bottomR.width, leftR.height);
+		bottomLeftR.set(leftR.x, bottomR.y, leftR.width, bottomR.height);
 		
 		
 		

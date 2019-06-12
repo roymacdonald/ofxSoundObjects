@@ -22,6 +22,28 @@ public:
 	
 	void setMinChannelHeight(const float& minHeight);
 	
+	ofRectangle& 		getLeftRect(){return leftR;}
+	const ofRectangle&  getLeftRect() const {return leftR;}
+	ofRectangle& 		getBottomRect(){return bottomR;}
+	const ofRectangle&  getBottomRect() const {return bottomR;}
+	ofRectangle& 		getGridRect(){return gridR;}
+	const ofRectangle&  getGridRect() const {return gridR;}
+	ofRectangle& 		getBottomLeftRect(){return bottomLeftR;}
+	const ofRectangle&  getBottomLeftRect() const {return bottomLeftR;}
+
+	
+
+protected:
+
+	ofRectangle leftR;
+	ofRectangle bottomR;
+	ofRectangle gridR;
+	ofRectangle bottomLeftR;
+
+	float leftW = 200;
+	float bottomH = 50;
+	float chanW = 10;
+
 private:
 	std::vector<std::vector<std::vector< std::unique_ptr<ofxFloatSlider>>>> sliders;
 	std::vector<std::unique_ptr<ofxFloatSlider>> outputSliders;
