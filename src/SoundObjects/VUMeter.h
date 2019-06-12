@@ -111,14 +111,14 @@ public:
 	}
 	
 //--------------------------------------------------------------
-	float getRMSforChannel(size_t channel) const{
+	float getRmsForChannel(size_t channel) const{
 		if(channel < drawData.rms.size()){
 			return drawData.rms[channel];
 		}
 		return 0;
 	}
 //--------------------------------------------------------------
-	float getPeakforChannel(size_t channel) const{
+	float getPeakForChannel(size_t channel) const{
 		if(channel < drawData.peak.size()){
 			return drawData.peak[channel];
 		}
