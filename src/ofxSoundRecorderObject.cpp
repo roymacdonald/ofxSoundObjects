@@ -81,7 +81,7 @@ void ofxSoundRecorderObject::process(ofSoundBuffer &input, ofSoundBuffer &output
 //--------------------------------------------------------------
 bool ofxSoundRecorderObject::isRecording(){
 //	std::lock_guard<std::mutex> lck (mutex);
-	return recState == REC_ON;
+	return recState != IDLE;
 }
 //--------------------------------------------------------------
 void ofxSoundRecorderObject::startRecording(const std::string & filename){

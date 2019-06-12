@@ -364,6 +364,7 @@ int ofxSoundPlayerObject::getPositionMS(size_t index) const{
 }
 //--------------------------------------------------------------
 bool ofxSoundPlayerObject::isPlaying(int index) const{
+	if(state != LOADED) return false;
 	if (index <= -1){
 		for (auto& i : instances) {
 			if (i.bIsPlaying)return true;
