@@ -2,10 +2,12 @@
 
 */bin/*
 !*/bin/data/
+*/bin/data/*.wav
+*/bin/data/*.xml
 # for bin folder in root
 /bin/*
 !/bin/data/
-*.wav
+
 
 build/
 obj/
