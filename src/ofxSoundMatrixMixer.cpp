@@ -83,6 +83,7 @@ bool ofxSoundMatrixMixer::MatrixInputObject::updateChanVolsSize(const size_t& nu
 //----------------------------------------   ofxSoundMatrixMixer  ---------------------------------------- 
 //--------------------------------------------------------------------------------------------------------
 ofxSoundMatrixMixer::ofxSoundMatrixMixer():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
+	chanMod = OFX_SOUND_OBJECT_CHAN_MIXER;
 	//	masterVolume = 1.0f;	
 	masterVol.set("Master Vol", 1, 0, 1);
 	//	masterVol.addListener(this, &ofxSoundMatrixMixer::masterVolChanged);
