@@ -24,7 +24,7 @@ void ofApp::setup(){
 
 #endif
 		
-		loadFolder(loadPath);
+		loadFolder(loadPath, false);
 #ifdef USE_LOAD_DIALOG
 	}
 #endif
@@ -80,26 +80,32 @@ void ofApp::setup(){
 	
 }
 //--------------------------------------------------------------
-void ofApp::loadFolder(const string& path){
+void ofApp::loadFolder(const string& path, bool bReload){
 	ofFile f(path);
 	
 	//set bLoadAsync to true if you want to load the audio files on a different thread. 
-	bool bLoadAsync = false;
+	bool bLoadAsync = true;
 	if(f.isDirectory()){
 		ofDirectory dir(path);
 		dir.allowExt("wav");
 		dir.allowExt("aiff");
 		dir.allowExt("mp3");
 		dir.listDir();
-		auto startIndex = players.size();
-		players.resize( startIndex + dir.size());
+		size_t startIndex = 0;
+		if(!bReload) {
+			startIndex = players.size();
+			players.resize( startIndex + dir.size());
+		}
 		for (int i = 0; i < dir.size(); i++) {
+		if(!bReload) {
 			players[startIndex + i] = make_shared<ofxSoundPlayerObject>();
-			
+		}
 			if(!bLoadAsync){
 				if(players[startIndex + i]->load(dir.getPath(i))){
 					players[startIndex + i]->connectTo(mixer);
+		
 					players[startIndex + i]->play();
+			
 				}
 			}else{
 				if(players[startIndex + i]->loadAsync(dir.getPath(i), true)){	
@@ -237,8 +243,9 @@ void ofApp::keyReleased(int key){
 	}else if(key == 'n'){
 		mixerRenderer.setNonSliderMode(!mixerRenderer.isNonSliderMode());
 	}else if(key == ' '){
-		loadFolder(loadPath);
-	
+		loadFolder(loadPath, false);
+	}else if(key == 'r'){
+		loadFolder(loadPath, true);
 	}else if(key == OF_KEY_UP){
 		(++selectedConnection)%= mixer.getNumInputObjects();
 	}else if(key == OF_KEY_DOWN){
