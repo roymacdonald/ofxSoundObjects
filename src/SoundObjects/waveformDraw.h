@@ -11,7 +11,7 @@ public:
         this->set(x, y, w, h);
     }
 //--------------------------------------------------------------
-    void process(ofSoundBuffer &input, ofSoundBuffer &output) {
+    void process(ofSoundBuffer &input, ofSoundBuffer &output) override{
        	if(input.size()!=buffer.size()) {
             ofLogVerbose("waveformDraw") << "working buffer size != output buffer size.";
             buffer.resize(input.size());
