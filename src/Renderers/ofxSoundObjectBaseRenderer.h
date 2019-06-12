@@ -7,13 +7,13 @@
 //
 
 #pragma once
-
+#include "ofRectangle.h"
 template<class ClassToRender>
 class ofxSoundObjectBaseRenderer{
 public:
 	ofxSoundObjectBaseRenderer(){}
 	ofxSoundObjectBaseRenderer(ClassToRender* o);
-	virtual void draw() = 0;
+	virtual void draw(const ofRectangle& drawRect) = 0;
 	
 //	virtual void setObject(ClassToRender* o);
 	

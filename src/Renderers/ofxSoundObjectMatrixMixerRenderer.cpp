@@ -128,16 +128,17 @@ void ofxSoundMatrixMixerRenderer::setMinChannelHeight(const float& minHeight){
 	this->minHeight = minHeight;
 }
 //----------------------------------------------------
-void ofxSoundMatrixMixerRenderer::draw(){
+void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 	
 	if(obj != nullptr){
 		
-		glm::vec2 margin = {20, 80};
+//		glm::vec2 margin = {20, 80};
 		float leftW = 200;
-		float bottomH = 150;
+		float bottomH = 50;
 		float chanW = 10;
-		ofRectangle leftR (margin.x, margin.y, leftW, ofGetHeight() - margin.y - margin.x - bottomH);
-		ofRectangle bottomR(leftR.getMaxX(), leftR.getMaxY(), ofGetWidth() - margin.x - leftR.getMaxX(),  bottomH);
+		ofRectangle leftR (mixerRect.x, mixerRect.y, leftW, mixerRect.height - bottomH);
+//		ofRectangle leftR (margin.x, margin.y, leftW, ofGetHeight() - margin.y - margin.x - bottomH);
+		ofRectangle bottomR(leftR.getMaxX(), leftR.getMaxY(), mixerRect.width - leftR.width,  bottomH);
 		
 		ofRectangle gridR (leftR.getMaxX(), leftR.getMinY(), bottomR.width, leftR.height);
 		
@@ -340,6 +341,6 @@ void ofxSoundMatrixMixerRenderer::draw(){
 		//		vecToString(ss, obj->matrixInputChannelMap);
 		//		vecToString(ss, obj->numConnectionInputChannels);
 		//		vecToString(ss, obj->connectionFirstChannel);
-		ofDrawBitmapStringHighlight(ss.str(), margin.x, margin.x);
+		ofDrawBitmapStringHighlight(ss.str(), 20, 20);
 	}
 }
