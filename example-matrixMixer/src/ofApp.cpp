@@ -136,7 +136,7 @@ void ofApp::draw(){
 	
 	
 
-	mixerRenderer.draw();
+	
 	stringstream ss;
 	ss << "Press l key to load mixer settings." << endl;
 	ss << "Press s key to save mixer settings." << endl;
@@ -183,12 +183,14 @@ void ofApp::draw(){
 	
 	auto r3 = bf.getBoundingBox(ss3.str(), 0, 0);
 	r3.x = r2.x;
-	r3.y = r2.getMaxY() + 10;
-	ofDrawBitmapStringHighlight(ss3.str(), r3.x, r3.y);
+	auto tempY = r2.getMaxY() + 10;
+	r3.y += tempY;
+	ofDrawBitmapStringHighlight(ss3.str(), r3.x, tempY);
 	
-	r3.y = r3.getMaxY() + 8;
+	r3.y += r3.height + 5;
 	r3.x -= 4;
-	r3.height = r.getMaxY() - r3.y;
+	r3.height = r.getMaxY() + 20  - r3.y;
+	
 	
 	auto rRms = r3;
 	auto rPeak = r3;
@@ -205,6 +207,15 @@ void ofApp::draw(){
 	
 	ofPopStyle();
 	
+	
+	ofRectangle mixRect;
+	mixRect.x = 20;
+	mixRect.y = 20 + r.y + r.height +20; 
+	mixRect.width = ofGetWidth() - 40;
+	mixRect.height = ofGetHeight() - mixRect.y -20; 
+	
+	
+	mixerRenderer.draw(mixRect);
 	
 	
 	
