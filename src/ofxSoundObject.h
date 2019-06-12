@@ -30,7 +30,7 @@ public:
 
 	friend class ofxSoundInputMultiplexer; 
 	
-	
+	virtual std::string getName() {return "ofxSoundObject";}
 	/// Connects the output of this ofxSoundObject to the input of the parameter ofxSoundObject
 	ofxSoundObject &connectTo(ofxSoundObject &soundObject);
     void disconnect();
@@ -62,10 +62,10 @@ public:
 	ofxSoundObject * getSignalDestinationObject();
 	
 	
-    /// This sets/gets the number of channels that this sound object should process.
+	
+	
+    /// This gets the number of channels that this sound object should process.
     /// By default it will use the number of channels from the ofSoundBuffer passed by the previous link in the chain.
-    /// For a 2 channel setup there should be no need to set this, it is mainly for scenarios with more inputs or outputs.
-//    virtual void setNumChannels(int num);
 	virtual size_t getNumChannels();
 
     ofSoundBuffer& getBuffer();
@@ -89,9 +89,6 @@ public:
 
 protected:
 
-
-	
-	
 	// this is the previous dsp object in the chain
 	// that feeds this one with input.
 	ofxSoundObject *inputObject = nullptr;
@@ -99,6 +96,9 @@ protected:
     virtual void setInput(ofxSoundObject *obj);
 	
 	ofxSoundObjectsType type = OFX_SOUND_OBJECT_PROCESSOR;
+	
+	ofxSoundObjectsChannelCountModifier chanMod = OFX_SOUND_OBJECT_CHAN_UNCHAGED; 
+	 
 	
 private:
 	ofSoundStream* outputStream = nullptr;

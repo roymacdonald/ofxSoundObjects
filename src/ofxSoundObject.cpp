@@ -67,23 +67,29 @@ bool ofxSoundObject::checkForInfiniteLoops() {
 }
 //--------------------------------------------------------------
 ofxSoundObject* ofxSoundObject::getSignalSourceObject(){
-	if(type == OFX_SOUND_OBJECT_SOURCE)return this;
-	if(inputObject != nullptr){
+	if(type == OFX_SOUND_OBJECT_SOURCE )return this;
+	//I kinda dont like this. It needs some reworking.
+	if(chanMod == OFX_SOUND_OBJECT_CHAN_MUX || chanMod == OFX_SOUND_OBJECT_CHAN_MIXER) return this;
+	if(inputObject == nullptr){
+		// there's nothing connected to this object so it should be the first, although this does not assure it is a source object. 
+		return this;
+	}else{
 		return inputObject->getSignalSourceObject();
 	}
-	ofLogWarning("ofxSoundObject::getSignalSourceObject", "There is no source on your signal chain so most probaly you will get no sound");
+	ofLogWarning("ofxSoundObject::getSignalSourceObject", "There is no source on your signal chain so most probaly you will get no sound " + this->getName());
 	return nullptr;
 }
 //--------------------------------------------------------------
 ofxSoundObject* ofxSoundObject::getSignalDestinationObject(){
-	if(type == OFX_SOUND_OBJECT_DESTINATION)return this; // it is a destination object like an ofSoundOutput 
+	if(type == OFX_SOUND_OBJECT_DESTINATION)return this; // it is a destination object like an ofSoundOutput
+
 	if(outputObjectRef == nullptr) return this; // it is at the end of the signal chain, so it most probably is the output.
 	
 	return outputObjectRef->getSignalDestinationObject();
 	
 	
-//	ofLogWarning("ofxSoundObject::getSignalDestinationObject", "There is no destination on your signal chain so most probaly you will get no sound");
-//	return nullptr;
+	ofLogWarning("ofxSoundObject::getSignalDestinationObject", "There is no destination on your signal chain so most probaly you will get no sound");
+	return nullptr;
 }
 //--------------------------------------------------------------
 // this pulls the audio through from earlier links in the chain
@@ -94,10 +100,6 @@ void ofxSoundObject::audioOut(ofSoundBuffer &output) {
 	}
 	this->process(workingBuffer, output);
 }
-////--------------------------------------------------------------
-//void ofxSoundObject::setNumChannels(int num){
-//    numChannels = num;
-//}
 //--------------------------------------------------------------
 size_t ofxSoundObject::getNumChannels(){
 	if(getOutputStream()){
