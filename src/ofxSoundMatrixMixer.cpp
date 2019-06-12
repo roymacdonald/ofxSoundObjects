@@ -361,14 +361,6 @@ void ofxSoundMatrixMixer::mixChannelBufferIntoOutput(const size_t& idx, ofSoundB
 	if(input.getNumFrames() != output.getNumFrames()){
 		ofLogWarning("ofxSoundMatrixMixer::mixChannelBufferIntoOutput") <<  "input and output buffers have different number of frames. these should be equal. in: " << input.getNumFrames() << " out: " << output.getNumFrames();
 	}
-	auto & v = inObjects[idx]->channelsVolumes;
-	if(in_nc != v.size()){
-		cout << "in_nc " << in_nc << "  "<< v.size() << endl;
-	}else{
-		if(out_nc != v[in_nc].size()){
-			cout << "idx " << idx << " out_nc " << out_nc << "  " << v[in_nc].size() << endl;
-		}
-	}
 	
 	if(inObjects[idx]->bBufferProcessed){
 		for(size_t ic =0; ic < in_nc; ic++){
