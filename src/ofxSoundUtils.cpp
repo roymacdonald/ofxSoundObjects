@@ -157,7 +157,7 @@ bool ofxSoundUtils::getBufferPeaks(ofSoundBuffer& buffer, std::vector<float>& cu
 		currentPeaks[c] = 0;
 		for(size_t f = 0; f < nf; f++){
 			i = f * nc + c;
-			if( currentPeaks[c] < b[i])currentPeaks[c] = b[i];	
+			if( currentPeaks[c] < fabs(b[i]))currentPeaks[c] = b[i];	
 			if( currentPeaks[c] >= prevPeaks[c]) bNewPeak = true;
 		}
 	}
