@@ -363,10 +363,11 @@ void ofxSoundMatrixMixer::mixChannelBufferIntoOutput(const size_t& idx, ofSoundB
 	}
 	
 	if(inObjects[idx]->bBufferProcessed){
-		for(size_t ic =0; ic < in_nc; ic++){
-			for(size_t oc = 0; oc < out_nc; oc++){
+		auto& cv = inObjects[idx]->channelsVolumes;
+		for(size_t ic =0; ic < in_nc && ic < cv.size(); ic++){
+			for(size_t oc = 0; oc < out_nc && oc < cv[ic].size(); oc++){
 				
-				auto& v = inObjects[idx]->channelsVolumes[ic][oc]; 
+				auto& v = cv[ic][oc]; 
 				if( !ofIsFloatEqual(v.get(), 0.0f)){
 					for(size_t i= 0; i < nf; i++){
 						output[i * out_nc + oc] += v* input[i * in_nc +ic];

@@ -41,12 +41,14 @@ bool ofxSoundPlayerObject::loadAsync(std::filesystem::path filePath, bool bAutop
 //	bLoadingAsync = true;
 //	bAsyncAutoplay = true;
 	bStreaming = false;
+	if(isLoaded())unload();
 	soundFile.loadAsync(filePath.string());
 	ofAddListener(soundFile.loadAsyncEndEvent, this, &ofxSoundPlayerObject::init);
 
 }
 //--------------------------------------------------------------
 bool ofxSoundPlayerObject::load(std::filesystem::path filePath, bool _stream){
+	if(isLoaded())unload();
 	if(soundFile.load(filePath.string())){
 		//	bStreaming = _stream;
 		bStreaming = false; // temporarily unavailable, until properly implementing in ofxSoundFile
