@@ -165,7 +165,7 @@ void ofxSoundMatrixMixer::setInput(ofxSoundObject *obj){
 //----------------------------------------------------
 void ofxSoundMatrixMixer::updateNumOutputChannels(const size_t & nc){
 	if(numOutputChannels != nc){
-		cout << "numOutputChannels " << numOutputChannels << "   nc " << nc << endl;
+//		cout << "numOutputChannels " << numOutputChannels << "   nc " << nc << endl;
 		numOutputChannels = nc;
 		size_t count = 0;
 		for(auto& i : inObjects){
