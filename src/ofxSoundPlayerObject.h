@@ -83,6 +83,9 @@ public:
 	void drawDebug(float x, float y);
 	size_t getNumInstances() { return instances.size(); }
 	
+	
+	virtual  std::string getName() override{ return "Player";}
+	
 private:
 	enum State{
 		UNLOADED = 0,

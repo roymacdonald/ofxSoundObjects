@@ -31,6 +31,8 @@ public:
 	void stopRecording();
 	
 	
+	virtual  std::string getName() override{ return "Recorder";}
+	
 	const std::string& getFileName();
 	
 	
