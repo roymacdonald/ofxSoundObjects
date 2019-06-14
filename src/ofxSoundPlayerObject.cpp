@@ -9,38 +9,36 @@
 
 #include <float.h>
 
-int ofxSoundPlayerObject::maxSoundsTotal=128;
-int ofxSoundPlayerObject::maxSoundsPerPlayer=16;
+//int ofxSoundPlayerObject::maxSoundsTotal=128;
+//int ofxSoundPlayerObject::maxSoundsPerPlayer=16;
 
 //--------------------------------------------------------------
 ofxSoundPlayerObject::ofxSoundPlayerObject():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE) {
-	{
-	std::lock_guard<std::mutex> lock(mutex);
+	
 	bStreaming = false;
 	bMultiplay = false;
-//	bIsLoaded = false;
 	bIsPlayingAny = false;
 	
-	instances.resize(1);
-	maxSounds = maxSoundsPerPlayer;
-	volume.set("Volumen", 1, 0, 1);	
+//	maxSounds = maxSoundsPerPlayer;
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		instances.resize(1);
+		volume.set("Volumen", 1, 0, 1);	
 	}
 	setState(UNLOADED);
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setState(State newState){
-	std::lock_guard<std::mutex> lock(mutex);
 	state = newState;
 }
 //--------------------------------------------------------------
 bool ofxSoundPlayerObject::isState(State compState){
-	std::lock_guard<std::mutex> lock(mutex);
 	return state == compState;
 }
 //--------------------------------------------------------------
 bool ofxSoundPlayerObject::canPlayInstance(){
-	if (instances.size() < maxSounds -1) {
-		return true;
+	if (!instances.size()){// < maxSounds -1) {
+		return false;
 	}
 	for(auto& i: instances){
 		if(!i.bIsPlaying){
@@ -131,12 +129,11 @@ void ofxSoundPlayerObject::audioOutBuffersChanged(int nFrames, int nChannels, in
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::unload(){
+	bIsPlayingAny = false;
+	setState(UNLOADED);
 	std::lock_guard<std::mutex> lock(mutex);
 	buffer.clear();
 	soundFile.reset();
-	state = UNLOADED;
-	bIsPlayingAny = false;
-//	bIsLoaded = false;
 	instances.resize(1);
 }
 //--------------------------------------------------------------
@@ -144,7 +141,7 @@ int ofxSoundPlayerObject::play() {
 	size_t index = 0;
 	if (isLoaded()) {
 
-		bool bCanPlay = true;
+//		bool bCanPlay = true;
 		if (bMultiplay){
 			bool bFound = false;
 			for (auto& i : instances) {
@@ -155,13 +152,13 @@ int ofxSoundPlayerObject::play() {
 					break;
 				}
 			}
-			if(!bFound && maxSounds > instances.size()){
+			if(!bFound){// && maxSounds > instances.size()){
 				instances.push_back(soundPlayInstance());
 				index =instances.size() - 1;
 				instances.back().id = index;
 				setSpeed(1, index);
-			} else {
-				bCanPlay = false;
+//			} else {
+//				bCanPlay = false;
 			}
 		} else {
 			if (instances.size() == 0) {
@@ -172,11 +169,11 @@ int ofxSoundPlayerObject::play() {
 			setSpeed(1, 0);
 			index = 0;
 		}
-		if(bCanPlay){
+//		if(bCanPlay){
 //			cout << "playing" << endl;
 			setPaused(false, index);
 			return index;
-		}
+//		}
 	}
 	return -1;
 }
@@ -346,12 +343,12 @@ void ofxSoundPlayerObject::setPosition(float pct, size_t index){
 void ofxSoundPlayerObject::setPositionMS(int ms, size_t index){
 	setPosition(float(buffer.getSampleRate() * ms)/ (1000.0f* soundFile.getNumSamples() ), index);
 }
-//--------------------------------------------------------------
-void ofxSoundPlayerObject::setMaxSoundsTotal(int max){ maxSoundsTotal = max; }
-//--------------------------------------------------------------
-void ofxSoundPlayerObject::setMaxSoundsPerPlayer(int max){ maxSoundsPerPlayer = max; }
-//--------------------------------------------------------------
-void ofxSoundPlayerObject::setMaxSounds(int max){ maxSounds = max; }
+////--------------------------------------------------------------
+//void ofxSoundPlayerObject::setMaxSoundsTotal(int max){ maxSoundsTotal = max; }
+////--------------------------------------------------------------
+//void ofxSoundPlayerObject::setMaxSoundsPerPlayer(int max){ maxSoundsPerPlayer = max; }
+////--------------------------------------------------------------
+//void ofxSoundPlayerObject::setMaxSounds(int max){ maxSounds = max; }
 //========================GETTERS===============================
 float ofxSoundPlayerObject::getPosition(size_t index) const{ 
 	if(index < instances.size()){
@@ -367,7 +364,7 @@ int ofxSoundPlayerObject::getPositionMS(size_t index) const{
 	return 0;
 }
 //--------------------------------------------------------------
-bool ofxSoundPlayerObject::isPlaying(int index) {
+bool ofxSoundPlayerObject::isPlaying(int index) const {
 	if(!isLoaded()) return false;
 	if (index <= -1){
 		for (auto& i : instances) {
@@ -402,8 +399,7 @@ float ofxSoundPlayerObject::getPan(size_t index) const{
 	return 0;
 }
 //--------------------------------------------------------------
-bool ofxSoundPlayerObject::isLoaded() { 
-	std::lock_guard<std::mutex> lock(mutex);
+bool ofxSoundPlayerObject::isLoaded() const{
 	return state == LOADED; 
 }
 //--------------------------------------------------------------
@@ -451,4 +447,8 @@ void ofxSoundPlayerObject::updateInstance(std::function<void(soundPlayInstance& 
 //--------------------------------------------------------------
 size_t ofxSoundPlayerObject::getNumChannels() {
 	return soundFile.getNumChannels();
+}
+//--------------------------------------------------------------
+ofEvent<void>& ofxSoundPlayerObject::getAsyncLoadEndEvent(){
+	return soundFile.loadAsyncEndEvent;
 }
