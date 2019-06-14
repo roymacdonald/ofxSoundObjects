@@ -9,6 +9,7 @@
 
 #include "ofMain.h"
 #include <sndfile.hh>
+#include "ofxAudioFile.h"
 /// reads a sound file into an ofSoundBuffer.
 /// encoding support varies by platform.
 bool ofxLoadSound(ofSoundBuffer &buffer, std::string path);
@@ -16,7 +17,7 @@ bool ofxLoadSound(ofSoundBuffer &buffer, std::string path);
 /// writes an ofSoundBuffer as a 16-bit PCM WAV file.
 bool ofxSaveSound(const ofSoundBuffer &buffer, std::string path);
 
-class ofxSoundFile : private ofThread{
+class ofxSoundFile{
 public:
 	ofxSoundFile();
 	~ofxSoundFile();
@@ -62,12 +63,32 @@ public:
 	ofEvent<void> loadAsyncEndEvent;
 	
 protected:
-	virtual void threadedFunction() override;
-private:
 	
-	bool loadFile(std::string filepath, bool bAsync);
+	
+private:
+	class ThreadHelper : public ofThread{
+	public:
+		ThreadHelper(ofxSoundFile & sndFile):soundFile(sndFile){
+			startThread();
+		}
+		~ThreadHelper(){
+			if(isThreadRunning()) waitForThread(true);
+		}
+		virtual void threadedFunction() override;
+		ofxSoundFile& soundFile;
+	};
+	void removeThreadHelper(ofEventArgs&);
+	
+	
+	shared_ptr<ThreadHelper> threadHelper = nullptr;
+	
+	
+	bool loadFile( bool bAsync);
 	
 	ofSoundBuffer buffer;
+	
+	void setFromAudioFile(ofxAudioFile& audioFile);
+	
 	
 	
 	bool bCompressed;
@@ -77,5 +98,6 @@ private:
 	unsigned int sampleRate;
 	uint64_t numSamples;
 	std::string path;
+//	ofMutex mtx;
 
 };

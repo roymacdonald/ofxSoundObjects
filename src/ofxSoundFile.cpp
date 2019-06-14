@@ -8,7 +8,7 @@
 #include "ofxSoundFile.h"
 #include "ofLog.h"
 #include "ofUtils.h"
-#include "ofxAudioFile.h"
+
 
 
 using namespace std;
@@ -43,13 +43,20 @@ ofxSoundFile::ofxSoundFile() {
 	reset();
 }
 //--------------------------------------------------------------
-ofxSoundFile::~ofxSoundFile() {	
-	if(isThreadRunning())waitForThread();
+ofxSoundFile::~ofxSoundFile() {}
+//--------------------------------------------------------------
+void ofxSoundFile::ThreadHelper::threadedFunction(){
+	if(isThreadRunning()){
+		ofAddListener(ofEvents().update, &soundFile, &ofxSoundFile::removeThreadHelper);
+		soundFile.loadFile(true);
+	}
 }
 //--------------------------------------------------------------
-void ofxSoundFile::threadedFunction(){
-	if(isThreadRunning()){
-		loadFile(path, true);
+void ofxSoundFile::removeThreadHelper(ofEventArgs&){
+	if(threadHelper && !threadHelper->isThreadRunning()){
+		ofRemoveListener(ofEvents().update, this, &ofxSoundFile::removeThreadHelper);
+		threadHelper.reset();
+		threadHelper = nullptr;
 		ofNotifyEvent(loadAsyncEndEvent);
 	}
 }
@@ -59,42 +66,55 @@ ofxSoundFile::ofxSoundFile(string path) {
 	load(path);
 }
 //--------------------------------------------------------------
-bool ofxSoundFile::loadFile(std::string filepath, bool bAsync){
-	if(!bAsync && isThreadRunning()){
+void ofxSoundFile::setFromAudioFile(ofxAudioFile& audiofile){
+	if(!audiofile.loaded()){
+		return;
+	}
+	auto tempPath =  path;
+	reset();
+	numChannels = audiofile.channels();
+	sampleRate =  audiofile.samplerate();
+	numSamples = audiofile.length();
+	
+	buffer.resize(numSamples*numChannels);
+	buffer.copyFrom(audiofile.data(), numSamples, numChannels, sampleRate);
+	
+	audiofile.free();
+	
+	path = tempPath;
+
+	duration = 1000* float(numSamples) / float(sampleRate);
+	
+	bCompressed = (ofFilePath::getFileExt(ofToLower(path)) == "mp3");
+	
+	ofLogVerbose("ofxSoundFile::load") << "file loaded. is mp3 : " << (bCompressed?"YES":"NO");
+	bLoaded = true;
+}
+//--------------------------------------------------------------
+bool ofxSoundFile::loadFile( bool bAsync){
+	if(!bAsync && threadHelper != nullptr){
 		ofLogError("ofxSoundFile::load") << "Can not load a file while another is loading";
 		return false;
 	}
-	reset();
+
 	
-	if( ofFile::doesFileExist( filepath ) ){
+	if( ofFile::doesFileExist( path ) ){
 		ofxAudioFile audiofile; 
 		audiofile.setVerbose(true);
-		audiofile.load( filepath );
+		audiofile.load( path );
 		bool bL = audiofile.loaded();
 		if (!bL){
 			ofLogError("ofxSoundFile::load")<<"error loading file, double check the file path";
 			return false;
 		}
-		bool bLocked = false;
+		
 		if(bAsync){
-			bLocked = lock();
+			static ofMutex mutex;
+			std::lock_guard<std::mutex> lck (mutex);
+			setFromAudioFile(audiofile);
+		}else{
+			setFromAudioFile(audiofile);
 		}
-		numChannels = audiofile.channels();
-		sampleRate =  audiofile.samplerate();
-		numSamples = audiofile.length();
-		
-		buffer.resize(numSamples*numChannels);
-		buffer.copyFrom(audiofile.data(), numSamples, numChannels, sampleRate);
-		
-		audiofile.free();
-		
-		path = filepath;
-		duration = 1000* float(numSamples) / float(sampleRate);
-		
-		bCompressed = (ofFilePath::getFileExt(ofToLower(filepath)) == "mp3");
-		ofLogVerbose("ofxSoundFile::load") << "file loaded. is mp3 : "<< (bCompressed?"YES":"NO");
-		bLoaded = bL;
-		if(bLocked) unlock();
 		
 	}else{
 		ofLogError()<<"input file does not exists";
@@ -105,16 +125,19 @@ bool ofxSoundFile::loadFile(std::string filepath, bool bAsync){
 }
 //--------------------------------------------------------------
 bool ofxSoundFile::loadAsync(std::string filepath){
-	if(!isThreadRunning()){
+	if(threadHelper == nullptr){
 		path = filepath;
-		startThread();
+
+		threadHelper = make_shared<ThreadHelper>(*this);
+		
 		return true;
 	}
 	return false;
 }
 //--------------------------------------------------------------
 bool ofxSoundFile::load(string filepath){
-	return loadFile(filepath, false);
+	path = filepath;
+	return loadFile(false);
 }
 
 //--------------------------------------------------------------
@@ -147,7 +170,6 @@ bool ofxSoundFile::save(string path, const ofSoundBuffer &buff, int format){
 //--------------------------------------------------------------                  
 //--------------------------------------------------------------
 void ofxSoundFile::reset(){
-	std::unique_lock<std::mutex> lock(mutex);
 	buffer.clear();
 	bCompressed = false;
 	bLoaded = false;
