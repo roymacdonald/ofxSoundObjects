@@ -39,10 +39,10 @@ public:
 
 	float getPosition(size_t index =0) const;
 	int getPositionMS(size_t index =0) const;
-	bool isPlaying(int index = -1) const;
+	bool isPlaying(int index = -1) ;
 	float getSpeed(size_t index =0) const;
 	float getPan(size_t index =0) const;
-	bool isLoaded() const;
+	bool isLoaded();
 	float getVolume(size_t index =0) const;
 	bool getIsLooping(size_t index =0) const;
 	unsigned long getDurationMS();
@@ -92,9 +92,10 @@ private:
 		LOADING_ASYNC,
 		LOADING_ASYNC_AUTOPLAY,
 		LOADED
-//		PLAYING
 	};
-	std::atomic<State> state;
+	State state;
+	void setState(State newState);
+	bool isState(State compState);
 	
 	void init();
 	
@@ -115,7 +116,7 @@ private:
 	ofxSoundFile soundFile;
 	bool bStreaming = false;
 	bool bMultiplay = false;
-//	bool bIsLoaded = false;
+
 	bool bIsPlayingAny = false;
 	vector<soundPlayInstance> instances;
 
@@ -123,11 +124,9 @@ private:
     
     void updateInstance(std::function<void(soundPlayInstance& inst)> func, int index, string methodName);
 	ofMutex mutex;
-//	bool bLoadingAsync = false;
-//	bool bAsyncAutoplay = false;
-//	
-//	unique_ptr<ofxSoundFileThreadedLoader> threadedLoader;
-//	ofEventListener threadedLoaderListener;
+	
+
+
 	
 };
 

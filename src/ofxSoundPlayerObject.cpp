@@ -14,14 +14,28 @@ int ofxSoundPlayerObject::maxSoundsPerPlayer=16;
 
 //--------------------------------------------------------------
 ofxSoundPlayerObject::ofxSoundPlayerObject():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE) {
+	{
+	std::lock_guard<std::mutex> lock(mutex);
 	bStreaming = false;
 	bMultiplay = false;
 //	bIsLoaded = false;
 	bIsPlayingAny = false;
-	state = UNLOADED;
+	
 	instances.resize(1);
 	maxSounds = maxSoundsPerPlayer;
-	volume.set("Volumen", 1, 0, 1);
+	volume.set("Volumen", 1, 0, 1);	
+	}
+	setState(UNLOADED);
+}
+//--------------------------------------------------------------
+void ofxSoundPlayerObject::setState(State newState){
+	std::lock_guard<std::mutex> lock(mutex);
+	state = newState;
+}
+//--------------------------------------------------------------
+bool ofxSoundPlayerObject::isState(State compState){
+	std::lock_guard<std::mutex> lock(mutex);
+	return state == compState;
 }
 //--------------------------------------------------------------
 bool ofxSoundPlayerObject::canPlayInstance(){
@@ -37,11 +51,9 @@ bool ofxSoundPlayerObject::canPlayInstance(){
 }
 //--------------------------------------------------------------
 bool ofxSoundPlayerObject::loadAsync(std::filesystem::path filePath, bool bAutoplay){
-	state = (bAutoplay?LOADING_ASYNC_AUTOPLAY:LOADING_ASYNC);
-//	bLoadingAsync = true;
-//	bAsyncAutoplay = true;
+	if(isLoaded())unload();	
+	setState(bAutoplay?LOADING_ASYNC_AUTOPLAY:LOADING_ASYNC);
 	bStreaming = false;
-	if(isLoaded())unload();
 	soundFile.loadAsync(filePath.string());
 	ofAddListener(soundFile.loadAsyncEndEvent, this, &ofxSoundPlayerObject::init);
 
@@ -51,6 +63,7 @@ bool ofxSoundPlayerObject::load(std::filesystem::path filePath, bool _stream){
 	if(isLoaded())unload();
 	if(soundFile.load(filePath.string())){
 		//	bStreaming = _stream;
+		
 		bStreaming = false; // temporarily unavailable, until properly implementing in ofxSoundFile
 		init();
 		
@@ -61,38 +74,31 @@ bool ofxSoundPlayerObject::load(std::filesystem::path filePath, bool _stream){
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::init(){
+	
 	bool bLoaded = soundFile.isLoaded();
-	if(bLoaded){
+	if(bLoaded){	
 		stringstream ss;
-		std::unique_lock<std::mutex> lock(mutex);
-		if(state == LOADING_ASYNC ||
-		   state == LOADING_ASYNC_AUTOPLAY){
-			ss << "removed listener\n"; 
+
+		if(isState(LOADING_ASYNC) ||
+		   isState(LOADING_ASYNC_AUTOPLAY)){ 
 			ofRemoveListener(soundFile.loadAsyncEndEvent, this, &ofxSoundPlayerObject::init);
 		}
-		
-//		instances.clear();
 		instances.resize(1);
-//		if(ofGetLogLevel() == OF_LOG_VERBOSE){
+		if(ofGetLogLevel() == OF_LOG_VERBOSE){
 			ss << "Loading file : " << soundFile.getPath() << "\n";
 			ss << "Duration     : " << soundFile.getDuration() << "\n";
 			ss << "Channels     : " << soundFile.getNumChannels() << "\n";
 			ss << "SampleRate   : " << soundFile.getSampleRate() << "\n";
 			ss << "Num Samples  : " << soundFile.getNumSamples() << "\n";
+		}
 			
-			if(state == UNLOADED){ ss << "UNLOADED\n";}
-			else if(state == LOADING_ASYNC){ ss << "LOADING_ASYNC\n";}
-			else if(state == LOADING_ASYNC_AUTOPLAY){ ss << "LOADING_ASYNC_AUTOPLAY\n";}
-			else if(state == LOADED){ ss << "LOADED\n";}
-			
-//		}
 		if(!bStreaming){
 			
 			buffer = soundFile.getBuffer(); 
 			
-//			if(ofGetLogLevel() == OF_LOG_VERBOSE){
+			if(ofGetLogLevel() == OF_LOG_VERBOSE){
 				ss << "Not streaming; Reading whole file into memory!\n";
-//			}
+			}
 		}
 		volume.setName(ofFilePath::getBaseName(soundFile.getPath()));
 		playerNumChannels = soundFile.getNumChannels();
@@ -100,18 +106,15 @@ void ofxSoundPlayerObject::init(){
 		
 		
 		
-		if(state == LOADING_ASYNC_AUTOPLAY){
-//			if(ofGetLogLevel() == OF_LOG_VERBOSE){
-//				ss << "autoplay" << std::endl;
-//			}
-			state = LOADED;
+		if(isState(LOADING_ASYNC_AUTOPLAY)){
+			setState(LOADED);
 			play();
+		}else{
+			setState(LOADED);
 		}
-		state = LOADED;	
-//		if(ofGetLogLevel() == OF_LOG_VERBOSE){
-//			ofLogVerbose("ofxSoundPlayerObject::init\n") << ss.str();
-		std::cout << "ofxSoundPlayerObject::init\n" << ss.str() << std::endl;
-//		}
+
+		ofLogVerbose("ofxSoundPlayerObject::init\n") << ss.str();
+
 			
 	}
 }
@@ -128,18 +131,19 @@ void ofxSoundPlayerObject::audioOutBuffersChanged(int nFrames, int nChannels, in
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::unload(){
+	std::lock_guard<std::mutex> lock(mutex);
 	buffer.clear();
 	soundFile.reset();
 	state = UNLOADED;
 	bIsPlayingAny = false;
 //	bIsLoaded = false;
-	instances.clear();
+	instances.resize(1);
 }
 //--------------------------------------------------------------
 int ofxSoundPlayerObject::play() {
 	size_t index = 0;
 	if (isLoaded()) {
-//		cout << "play" << endl;
+
 		bool bCanPlay = true;
 		if (bMultiplay){
 			bool bFound = false;
@@ -363,8 +367,8 @@ int ofxSoundPlayerObject::getPositionMS(size_t index) const{
 	return 0;
 }
 //--------------------------------------------------------------
-bool ofxSoundPlayerObject::isPlaying(int index) const{
-	if(state != LOADED) return false;
+bool ofxSoundPlayerObject::isPlaying(int index) {
+	if(!isLoaded()) return false;
 	if (index <= -1){
 		for (auto& i : instances) {
 			if (i.bIsPlaying)return true;
@@ -398,7 +402,10 @@ float ofxSoundPlayerObject::getPan(size_t index) const{
 	return 0;
 }
 //--------------------------------------------------------------
-bool ofxSoundPlayerObject::isLoaded() const{ return state == LOADED; }
+bool ofxSoundPlayerObject::isLoaded() { 
+	std::lock_guard<std::mutex> lock(mutex);
+	return state == LOADED; 
+}
 //--------------------------------------------------------------
 float ofxSoundPlayerObject::getVolume(size_t index) const{ 
 	if(index < instances.size()){
