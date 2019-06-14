@@ -80,12 +80,11 @@ void ofxSoundRecorderObject::process(ofSoundBuffer &input, ofSoundBuffer &output
 }
 //--------------------------------------------------------------
 bool ofxSoundRecorderObject::isRecording(){
-//	std::lock_guard<std::mutex> lck (mutex);
 	return recState != IDLE;
 }
 //--------------------------------------------------------------
 void ofxSoundRecorderObject::startRecording(const std::string & filename){
-//	std::lock_guard<std::mutex> lck (mutex);
+
 	if(recState == IDLE){
 		recState = INIT_REC;
 		if(filename.empty()){
@@ -93,10 +92,11 @@ void ofxSoundRecorderObject::startRecording(const std::string & filename){
 		}else{
 			this->filename = filename;
 		}
-		mutex.lock();
-		this->filenameBuffer = this->filename;
-		recStartTime = ofGetElapsedTimef();
-		mutex.unlock();
+		{
+			std::lock_guard<std::mutex> lck (mutex);		
+			this->filenameBuffer = this->filename;
+			recStartTime = ofGetElapsedTimef();
+		}
 		
 	}else{
 		ofLogWarning("ofxSoundRecorderObject::startRecording")<< "can not start recording when there is already another recording happening. Please stop this recording before beggining a new one";
@@ -104,7 +104,6 @@ void ofxSoundRecorderObject::startRecording(const std::string & filename){
 }
 //--------------------------------------------------------------
 void ofxSoundRecorderObject::stopRecording(){
-//	std::lock_guard<std::mutex> lck (mutex);
 	if(recState == REC_ON){
 		recState = DEINIT_REC;
 	}
@@ -124,10 +123,8 @@ const std::string& ofxSoundRecorderObject::getFileName(){
 //--------------------------------------------------------------
 std::string ofxSoundRecorderObject::getRecStateString(){
 	RecState state;
-	{
-		std::lock_guard<std::mutex> lck (mutex);
-		state = recState;
-	}
+	state = recState;
+
 	if(state == IDLE)return "IDLE";
 	if(state == INIT_REC)return "INIT_REC";
 	if(state == REC_ON)return "RECORDING";
