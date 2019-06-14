@@ -25,7 +25,7 @@ public:
 
 	
     ofxSoundMixer mixer;
-	vector<ofxSoundPlayerObject> players;
+	vector<unique_ptr<ofxSoundPlayerObject>> players;
     vector<ofParameter<float> > playersVolume;
 
     ofParameterGroup volumeGroup;

@@ -22,12 +22,24 @@ void ofApp::setup(){
     volumeGroup.setName("PLAYER VOLUME");
 
 	players.resize(dir.size());
+	
+	// change bLoadAsync to load files asynchronously. This means that files are loaded on a different thread, thus not blocking the thread from where you are loading these. 
+	bool bLoadAsync = true;
+	
     for(int i = 0; i < dir.size(); i++){
 		cout << dir.getPath(i) << endl;
-        players[i].load(ofToDataPath(dir.getPath(i)));
-        players[i].connectTo(mixer);
-        players[i].play();
-		players[i].setLoop(true);// this has to go after calling play.
+        players[i] = make_unique<ofxSoundPlayerObject>();
+		players[i]->setLoop(true);
+		if(bLoadAsync){
+		//when you use loadAsync you will not be able to call play immediately after calling loadAsync, as it will not allow for such.
+		// so if you want to play the file immediately after it has finished loading you can pass a boolean as a second argument to loadAsync. True means play once loaded
+			players[i]->loadAsync(ofToDataPath(dir.getPath(i)), true);
+		}else{
+			players[i]->load(ofToDataPath(dir.getPath(i)));
+			players[i]->play();
+		}
+		players[i]->connectTo(mixer);
+		
         playersVolume.push_back(1);
         volumeGroup.add(playersVolume.back().set("Player " + ofToString(i), 1, 0, 1));
     }
@@ -52,7 +64,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 	if(players.size()){
-		players[0].drawDebug(gui.getShape().getMaxX(), gui.getShape().y);
+		players[0]->drawDebug(gui.getShape().getMaxX(), gui.getShape().y);
 	}
     gui.draw();
     
