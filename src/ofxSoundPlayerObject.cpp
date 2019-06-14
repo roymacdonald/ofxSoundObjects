@@ -6,7 +6,7 @@
  */
 
 #include "ofxSoundPlayerObject.h"
-
+#include <algorithm>
 #include <float.h>
 
 //int ofxSoundPlayerObject::maxSoundsTotal=128;
@@ -18,7 +18,7 @@ ofxSoundPlayerObject::ofxSoundPlayerObject():ofxSoundObject(OFX_SOUND_OBJECT_SOU
 	bStreaming = false;
 	bMultiplay = false;
 	bIsPlayingAny = false;
-	
+	bListeningUpdate = false;
 //	maxSounds = maxSoundsPerPlayer;
 	{
 		std::lock_guard<std::mutex> lock(mutex);
@@ -135,6 +135,8 @@ void ofxSoundPlayerObject::unload(){
 	buffer.clear();
 	soundFile.reset();
 	instances.resize(1);
+	clearInstanceEndNotificationQueue();
+	
 }
 //--------------------------------------------------------------
 int ofxSoundPlayerObject::play() {
@@ -184,6 +186,33 @@ void ofxSoundPlayerObject::stop(size_t index){
 	setPosition(0);
 }
 //--------------------------------------------------------------
+void ofxSoundPlayerObject::clearInstanceEndNotificationQueue(){
+	updateListener.unsubscribe();
+	bListeningUpdate = false;
+	std::lock_guard<std::mutex> lock(mutex);
+	endedInstancesToNotify.clear();
+}
+//--------------------------------------------------------------
+void ofxSoundPlayerObject::addInstanceEndNotification(const size_t & id){
+	{
+		std::lock_guard<std::mutex> lock(mutex);
+		endedInstancesToNotify.push_back(id);
+	}
+	if(!bListeningUpdate){
+		updateListener = ofEvents().update.newListener(this, &ofxSoundPlayerObject::update);
+	}
+}
+//--------------------------------------------------------------
+void ofxSoundPlayerObject::update(ofEventArgs&){
+	if(endedInstancesToNotify.size()){
+		for(auto& i: endedInstancesToNotify){
+			ofNotifyEvent(endEvent, i);
+		}
+		clearInstanceEndNotificationQueue();
+	}
+}
+
+//--------------------------------------------------------------
 void ofxSoundPlayerObject::updatePositions(int nFrames){
 	if (isLoaded()) {
 		for (auto& i : instances){
@@ -192,10 +221,12 @@ void ofxSoundPlayerObject::updatePositions(int nFrames){
 				if (i.loop) {
 					i.position %= buffer.getNumFrames();
 				} else {
-					i.position = ofClamp(i.position, 0, buffer.getNumFrames());
-					if (i.position == buffer.getNumFrames()) {	// finished?
+					i.position = ofClamp(i.position, 0, buffer.getNumFrames()-1);
+					if (i.position == buffer.getNumFrames()-1) {	// finished?
 						setPaused(true, i.id);
-						ofNotifyEvent(endEvent, i.id);
+//						ofNotifyEvent(endEvent, i.id);
+						addInstanceEndNotification(i.id);
+						
 					}
 				}
 			}

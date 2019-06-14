@@ -126,8 +126,12 @@ private:
 	ofMutex mutex;
 	
 	
-	
-
+	void update(ofEventArgs&);
+	ofEventListener updateListener;
+	std::atomic<bool> bListeningUpdate;
+	std::vector<size_t> endedInstancesToNotify;
+	void addInstanceEndNotification(const size_t & id);
+	void clearInstanceEndNotificationQueue();
 	
 };
 
