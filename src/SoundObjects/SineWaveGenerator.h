@@ -13,7 +13,7 @@ public:
         currentPhase = phase;
     }
     virtual  std::string getName() override{ return "Sine Wave Gen";}
-    void process(ofSoundBuffer &in, ofSoundBuffer &out) {
+    void process(ofSoundBuffer &in, ofSoundBuffer &out) override{
         float m = TWO_PI* freq / in.getSampleRate();
 //        frameIndex*myBuffer.getNumChannels()) + channelIndex
         int numFrames = out.getNumFrames();
