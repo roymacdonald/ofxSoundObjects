@@ -254,14 +254,14 @@ void ofxSoundPlayerObject::drawDebug(float x, float y){
 		ss << "    pan: " << instances[i].pan << endl;
 		ss << "    relativeSpeed: " << instances[i].relativeSpeed << endl;
 		ss << "    position: " << instances[i].position << endl;
-		ss << "	   position Norm: " << getPosition(i) <<endl;
-		ss << "	   position MS: " << getPositionMS(i) <<endl; 
+		ss << "    position Norm: " << getPosition(i) <<endl;
+		ss << "    position MS: " << getPositionMS(i) <<endl; 
 		ss << "    volumeLeft: " << instances[i].volumeLeft << endl;
 		ss << "    volumeRight: " << instances[i].volumeRight << endl;
 		ss << "    id: " << instances[i].id << endl;
 	}
 	
-	ofDrawBitmapStringHighlight(ss.str(), 10,20);
+	ofDrawBitmapString(ss.str(), x, y);
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
