@@ -38,6 +38,12 @@ public:
 	void panChanged(float&f);
 
 	
-	vector<ofMesh> waveforms;
+//	vector<ofMesh> waveforms;
+	
+	waveformDraw fullFileWaveform;
+	
+	ofEventListener playerEndListener;
+	void playerEnded(size_t & id);
+	
 	
 };
