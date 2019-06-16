@@ -21,41 +21,48 @@ void ofxSoundMixer::masterVolChanged(float& f) {
 }
 //----------------------------------------------------
 ofxSoundMixer::~ofxSoundMixer(){
-	channels.clear();
-	channelVolume.clear();
+	connections.clear();
+	connectionVolume.clear();
+}
+//----------------------------------------------------
+ofxSoundObject* ofxSoundMixer::getConnectionSource(int connectionNumber){
+	if (connectionNumber < connections.size()) {
+		return connections[connectionNumber];
+	}else{
+		return nullptr;
+	}
 }
 //----------------------------------------------------
 ofxSoundObject* ofxSoundMixer::getChannelSource(int channelNumber){
-    if (channelNumber < channels.size()) {
-        return channels[channelNumber];
-    }else{
-        return nullptr;
-    }
+	return getConnectionSource(channelNumber);
 }
 //----------------------------------------------------
 void ofxSoundMixer::disconnectInput(ofxSoundObject * input){
-    for (int i =0; i<channels.size(); i++) {
-        if (input == channels[i]) {
-            channels.erase(channels.begin() + i);
-            channelVolume.erase(channelVolume.begin() + i);
+    for (int i =0; i<connections.size(); i++) {
+        if (input == connections[i]) {
+            connections.erase(connections.begin() + i);
+            connectionVolume.erase(connectionVolume.begin() + i);
             break;
         }
     }
 }
 //----------------------------------------------------
 void ofxSoundMixer::setInput(ofxSoundObject *obj){
-    for (int i =0; i<channels.size(); i++) {
-        if (obj == channels[i]) {
+    for (int i =0; i<connections.size(); i++) {
+        if (obj == connections[i]) {
             ofLogNotice("ofxSoundMixer::setInput") << " already connected" << endl;
             return;
         }
     }
-    channels.push_back(obj);
-    channelVolume.push_back(1);//default volume for channel is 1
+    connections.push_back(obj);
+    connectionVolume.push_back(1);//default volume for channel is 1
 }
 //----------------------------------------------------
 size_t ofxSoundMixer::getNumChannels(){
-    return channels.size();
+	return connections.size();
+}
+size_t ofxSoundMixer::getNumConnections(){
+    return connections.size();
 }
 //----------------------------------------------------
 void ofxSoundMixer::setMasterVolume(float vol){
@@ -79,8 +86,8 @@ void ofxSoundMixer::setMasterPan(float pan){
 }
 //----------------------------------------------------
 bool ofxSoundMixer::isConnectedTo(ofxSoundObject& obj){
-    for (int i =0; i<channels.size(); i++) {
-        if (&obj == channels[i]) {
+    for (int i =0; i<connections.size(); i++) {
+        if (&obj == connections[i]) {
             return true;
         }
     }
@@ -88,14 +95,22 @@ bool ofxSoundMixer::isConnectedTo(ofxSoundObject& obj){
 }
 //----------------------------------------------------
 void ofxSoundMixer::setChannelVolume(int channelNumber, float vol){
-    if (channelNumber < channelVolume.size()) {
-        channelVolume[channelNumber] = vol;
-    }
+	setConnectionVolume(channelNumber, vol);
+}
+//----------------------------------------------------
+void  ofxSoundMixer::setConnectionVolume(int channelNumber, float vol){
+	if (channelNumber < connectionVolume.size()) {
+		connectionVolume[channelNumber] = vol;
+	}
 }
 //----------------------------------------------------
 float ofxSoundMixer::getChannelVolume(int channelNumber){
-    if (channelNumber < channelVolume.size()) {
-        return channelVolume[channelNumber];
+	return getConnectionVolume(channelNumber);
+}
+//----------------------------------------------------
+float ofxSoundMixer::getConnectionVolume(int channelNumber){
+    if (channelNumber < connectionVolume.size()) {
+        return connectionVolume[channelNumber];
     }
     return 0;
 }
@@ -103,17 +118,17 @@ float ofxSoundMixer::getChannelVolume(int channelNumber){
 //----------------------------------------------------
 // this pulls the audio through from earlier links in the chain and sums up the total output
 void ofxSoundMixer::audioOut(ofSoundBuffer &output) {
-    if(channels.size()>0) {
+    if(connections.size()>0) {
 		output.set(0);//clears the output buffer as its memory might come with junk
-        for(int i = 0; i < channels.size(); i++){
-            if (channels[i] != nullptr && channelVolume[i] > 0) {
+        for(int i = 0; i < connections.size(); i++){
+            if (connections[i] != nullptr && connectionVolume[i] > 0) {
                 ofSoundBuffer tempBuffer;
                 tempBuffer.resize(output.size());
                 tempBuffer.setNumChannels(output.getNumChannels());
                 tempBuffer.setSampleRate(output.getSampleRate());
-                channels[i]->audioOut(tempBuffer);
+                connections[i]->audioOut(tempBuffer);
                 
-                float v = channelVolume[i];
+                float v = connectionVolume[i];
                 for (int j = 0; j < tempBuffer.size(); j++) {
                     output.getBuffer()[j] += tempBuffer.getBuffer()[j] * v;
                 }

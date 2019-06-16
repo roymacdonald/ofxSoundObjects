@@ -12,12 +12,19 @@ public:
     virtual ~ofxSoundMixer();
 
 	virtual  std::string getName() override{ return "Sound Mixer";}
-	ofxSoundObject* getChannelSource(int channelNumber);
-	size_t getNumChannels() override;
-
+	OF_DEPRECATED_MSG("Use getConnectionSource instead",ofxSoundObject* getChannelSource(int channelIndex));
+	
+	/// returns the connected object at the specified index
+	ofxSoundObject* getConnectionSource(int connectionIndex);
+	/// get the number of connected objects.
+	OF_DEPRECATED_MSG("Use getNumConnections() instead", size_t getNumChannels() override;)
+	size_t getNumConnections();
+	
+	
+	
 	/// sets output volume multiplier.
 	/// a volume of 1 means "full volume", 0 is muted.
-	void setMasterVolume(float vol);
+	void  setMasterVolume(float vol);
 	float getMasterVolume();
 
 	/// sets output stereo panning.
@@ -29,25 +36,18 @@ public:
 	void audioOut(ofSoundBuffer &output) override;
 	bool isConnectedTo(ofxSoundObject& obj);
 
-    void setChannelVolume(int channelNumber, float vol);
-    float getChannelVolume(int channelNumber);
+    OF_DEPRECATED_MSG("Use setConnectionVolume", void  setChannelVolume(int channelNumber, float vol));
+    OF_DEPRECATED_MSG("Use getConnectionVolume", float getChannelVolume(int channelNumber));
 	
-//	virtual void print(string prefix = "") {
-//		cout << prefix << " " << "MIXER: " << channels.size() << endl;
-//		prefix += "----";
-//		for (int i = 0; i < channels.size(); i ++) {
-//			if (channels[i] != nullptr) {
-//				channels[i]->print(prefix);
-//			}
-//		}
-//	}
-
+	void  setConnectionVolume(int channelNumber, float vol);
+	float getConnectionVolume(int channelNumber);
+	
 	ofParameter<float> masterVol;
 protected:
 	void masterVolChanged(float& f);
 	void disconnectInput(ofxSoundObject * input) override;
-	vector<ofxSoundObject*>channels;
-    vector<float> channelVolume;
+	vector<ofxSoundObject*> connections;
+    vector<float> connectionVolume;
     float masterPan;
 	float masterVolume;
 	void setInput(ofxSoundObject *obj) override;
