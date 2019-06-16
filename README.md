@@ -77,7 +77,7 @@ Create or update your project using openFrameworks' Project Generator and add `o
 * It has an input and and output.
 * By itself does nothing, it will just passthrough audio, yet it will buffer the audio data instead of passing it straight out. 
 * It is intended to be extended uppon to become useful.
-* Any two ofxAudioObject inherited classes can connect between them. 
+* Any two ofxSoundObject inherited classes can connect between them. 
 
 
 ### Usage
