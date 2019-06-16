@@ -5,13 +5,30 @@
 void ofApp::setup(){
 	ofSetLogLevel(OF_LOG_VERBOSE);
 	
-	ofFileDialogResult result = ofSystemLoadDialog();
-	if (result.bSuccess) {
-        player.load(result.getPath());
+//	ofFileDialogResult result = ofSystemLoadDialog();
+//	if (result.bSuccess) {
+//        player.load(result.getPath());
+	player.load("/Users/roy/Downloads/jun12/2019-06-12-18-02-41-602_chan_15.wav");
 		
 		
 		//----- Sound stream setup begin -------.
 		// the sound stream is in charge of dealing with your computers audio device.
+		// lets print to the console the sound devices that can output sound.
+		ofxSoundUtils::printOutputSoundDevices();
+		
+		auto outDevices = ofxSoundUtils::getOutputSoundDevices();
+		
+		// IMPORTANT!!!
+		// The following two lines of code is where you set which audio interface to use.
+		// the index is the number printed in the console inside [ ] before the interface name 
+		// You can use a different input and output device.
+		
+		
+		int outDeviceIndex = 0;
+		
+		cout << ofxSoundUtils::getSoundDeviceString(outDevices[outDeviceIndex], false, true) << endl;
+		
+		
 		ofSoundStreamSettings soundSettings;
 		soundSettings.numInputChannels = 0;
 		soundSettings.numOutputChannels = 2;
@@ -21,9 +38,11 @@ void ofApp::setup(){
 		
         stream.setup(soundSettings);
 		
+		
 		// it is important to set up which object is going to deliver the audio data to the sound stream.
 		// thus, we need to set the stream's output. The output object is going to be the last one of the audio signal chain, which is set up further down
 		stream.setOutput(output);
+//		stream.setOutput(player);
 		//-------Sound stream setup end -------.
 		
 		// the waveformDraw receives the rectangle where it is going to be drawn
@@ -34,7 +53,8 @@ void ofApp::setup(){
 		
 		// Audio signal chain setup.
 		// Each of our objects need to connect to each other in order to create a signal chain, which ends with the output; the object that we set as the sound stream output.
-        player.connectTo(wave).connectTo(output);
+//		player.connectTo(wave).connectTo(output);
+		player.connectTo(output);
         
 		
 
@@ -90,7 +110,7 @@ void ofApp::setup(){
 			// if the player is not looping you can register  to the end event, which will get triggered when the player reaches the end of the file. 
 			playerEndListener = player.endEvent.newListener(this, &ofApp::playerEnded);
 		}
-	}
+//	}
 	
 }
 //--------------------------------------------------------------
