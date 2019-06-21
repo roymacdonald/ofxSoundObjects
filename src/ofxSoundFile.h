@@ -10,6 +10,7 @@
 #include "ofMain.h"
 #include <sndfile.hh>
 #include "ofxAudioFile.h"
+#include "dr_wav.h"
 /// reads a sound file into an ofSoundBuffer.
 /// encoding support varies by platform.
 bool ofxLoadSound(ofSoundBuffer &buffer, std::string path);
@@ -24,12 +25,14 @@ public:
 	ofxSoundFile(std::string path);
 
 	void reset();
-
+	
+	void close();
 	/// opens a sound file and put into an ofSoundBuffer
 	bool load(std::string filepath);
 	/// loads a file asynchronusly
 	bool loadAsync(std::string filepath);
-	
+	/// opens a file but it does not read its contents. use this for opening a file for streming its data on demand. 
+	bool openFileStream(std::string filepath);
 	
 	/// writes an ofSoundBuffer as a PCM WAV file
 	/// Use any of the following values to set the file data format (Default is 16 bits)
@@ -44,9 +47,10 @@ public:
 
 	
 	/// reads a file into an ofSoundBuffer.
-	/// by default, this will resize the buffer to fit the entire file.
-//	/ supplying a "samples" argument will read only the given number of samples
-//	void readTo(ofSoundBuffer &buffer, uint64_t samples = 0);
+	/// if the file was open on non streaming mode (using load or loadAsync), this will resize the buffer to fit the entire file.
+	/// supplying a "samples" argument will read only the given number of samples
+	/// on streaming mode it will read from the file on the disk
+	size_t readTo(ofSoundBuffer &buffer, uint64_t samples = 0, bool bLoop = true);
 	
 	/// returns sound file duration in milliseconds
 	const uint64_t 		getDuration() const;
@@ -56,7 +60,8 @@ public:
 	const bool 			isCompressed() const;
 	const bool 			isLoaded() const;
 	const std::string 	getPath() const;
-
+	const bool          isStreaming() const;
+	
 	ofSoundBuffer&  getBuffer();
 	const ofSoundBuffer&  getBuffer() const;
 	
@@ -98,6 +103,10 @@ private:
 	unsigned int sampleRate;
 	uint64_t numSamples;
 	std::string path;
+//	bool bStreaming;
+	
+	std::unique_ptr<drwav> dr_wav_ptr = nullptr;
+	void closeDrWavPtr();
 //	ofMutex mtx;
 
 };

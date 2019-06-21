@@ -43,7 +43,9 @@ ofxSoundFile::ofxSoundFile() {
 	reset();
 }
 //--------------------------------------------------------------
-ofxSoundFile::~ofxSoundFile() {}
+ofxSoundFile::~ofxSoundFile() {
+	closeDrWavPtr();
+}
 //--------------------------------------------------------------
 void ofxSoundFile::ThreadHelper::threadedFunction(){
 	if(isThreadRunning()){
@@ -82,10 +84,11 @@ void ofxSoundFile::setFromAudioFile(ofxAudioFile& audiofile){
 	audiofile.free();
 	
 	path = tempPath;
-
+	
 	duration = 1000* float(numSamples) / float(sampleRate);
 	
 	bCompressed = (ofFilePath::getFileExt(ofToLower(path)) == "mp3");
+	
 	
 	ofLogVerbose("ofxSoundFile::load") << "file loaded. is mp3 : " << (bCompressed?"YES":"NO");
 	bLoaded = true;
@@ -96,9 +99,11 @@ bool ofxSoundFile::loadFile( bool bAsync){
 		ofLogError("ofxSoundFile::load") << "Can not load a file while another is loading";
 		return false;
 	}
-
+	
 	
 	if( ofFile::doesFileExist( path ) ){
+		closeDrWavPtr();
+		
 		ofxAudioFile audiofile; 
 		audiofile.setVerbose(true);
 		audiofile.load( path );
@@ -120,14 +125,53 @@ bool ofxSoundFile::loadFile( bool bAsync){
 		ofLogError()<<"input file does not exists";
 	}
 	
-	return bLoaded;   
+	return bLoaded;   	
+}
+//--------------------------------------------------------------
+void ofxSoundFile::closeDrWavPtr(){
+	if(dr_wav_ptr != nullptr){
+		drwav_uninit(dr_wav_ptr.get());
+		dr_wav_ptr.reset();
+	}
+}
+//--------------------------------------------------------------
+bool ofxSoundFile::openFileStream(std::string filepath){
+	if(ofFilePath::getFileExt(ofToLower(path)) != "wav"){
+		ofLogError("ofxSoundFile::openFileStream") << "files for streaming have to be of uncompressed type.";
+		return false;
+	}
+	
+	closeDrWavPtr();
+	dr_wav_ptr = make_unique<drwav>();
+	
+	if (!drwav_init_file_ex(dr_wav_ptr.get(), ofToDataPath(filepath, true).c_str(), NULL, NULL, DRWAV_SEQUENTIAL)) {
+		closeDrWavPtr();
+		ofLogVerbose("ofxSoundFile::openFileStream") << "failed opening file for streaming.";
+		return false;
+	}
+	reset();
+	sampleRate = dr_wav_ptr->sampleRate;
+	numChannels = dr_wav_ptr->channels;
+	numSamples = dr_wav_ptr->totalPCMFrameCount;
+	
+	path = filepath;
+	
+	duration = 1000* float(numSamples) / float(sampleRate);
+	
+	bCompressed = false;
+	bLoaded = true;
+	
+	//	drwav_int32* pDecodedInterleavedSamples = malloc(wav.totalPCMFrameCount * wav.channels * sizeof(drwav_int32));
+	//	size_t numberOfSamplesActuallyDecoded = drwav_read_pcm_frames_s32(&wav, wav.totalPCMFrameCount, pDecodedInterleavedSamples);
+	
+	//	drwav_uninit(&wav);
 	
 }
 //--------------------------------------------------------------
 bool ofxSoundFile::loadAsync(std::string filepath){
 	if(threadHelper == nullptr){
 		path = filepath;
-
+		
 		threadHelper = make_shared<ThreadHelper>(*this);
 		
 		return true;
@@ -170,6 +214,7 @@ bool ofxSoundFile::save(string path, const ofSoundBuffer &buff, int format){
 //--------------------------------------------------------------                  
 //--------------------------------------------------------------
 void ofxSoundFile::reset(){
+	//	closeDrWavPtr();
 	buffer.clear();
 	bCompressed = false;
 	bLoaded = false;
@@ -179,10 +224,6 @@ void ofxSoundFile::reset(){
 	numSamples = 0;
 	path = "";
 }
-//--------------------------------------------------------------
-//void ofxSoundFile::close(){
-//	reset();
-//}
 //--------------------------------------------------------------
 const bool ofxSoundFile::isLoaded() const{
 	return bLoaded;
@@ -219,15 +260,32 @@ ofSoundBuffer&  ofxSoundFile::getBuffer(){
 const ofSoundBuffer&  ofxSoundFile::getBuffer() const{
 	return buffer;
 }
+//--------------------------------------------------------------
+const bool ofxSoundFile::isStreaming() const{
+	return (dr_wav_ptr != nullptr);
+}
 ////--------------------------------------------------------------
-//void ofxSoundFile::readTo(ofSoundBuffer & buf, uint64_t _samples){
-//	if(_samples!=0){
-//		// will read the requested number of samples
-//		// clamp to the number of samples we actually have
-//		_samples = min(_samples, getNumSamples());
-//	}else{
-//		_samples = getNumSamples();
-//	}
-//	buf.resize(_samples*getNumChannels());
-//	buf.copyFrom(buffer.getBuffer(), _samples, getNumChannels(), getSampleRate());
-//}
+size_t ofxSoundFile::readTo(ofSoundBuffer & buf, uint64_t _samples, bool bLoop ){
+	if(isLoaded()){
+		if (isStreaming()){
+			buf.resize(_samples*getNumChannels());
+			size_t readSamples = drwav_read_pcm_frames_f32(dr_wav_ptr.get(), _samples, buf.getBuffer().data());
+			while(bLoop && readSamples < _samples && readSamples > 0){
+				readSamples += drwav_read_pcm_frames_f32(dr_wav_ptr.get(), _samples - readSamples , &buf.getBuffer()[readSamples]);
+			}
+			return readSamples;
+		}else{
+			if(_samples!=0){
+				// will read the requested number of samples
+				// clamp to the number of samples we actually have
+				_samples = min(_samples, getNumSamples());
+			}else{
+				_samples = getNumSamples();
+			}
+			buf.resize(_samples*getNumChannels());
+			buf.copyFrom(buffer.getBuffer(), getNumChannels(), getSampleRate());
+			return _samples;
+		}
+	}
+	return 0;
+}
