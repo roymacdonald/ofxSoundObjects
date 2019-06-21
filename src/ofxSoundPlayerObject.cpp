@@ -59,14 +59,20 @@ bool ofxSoundPlayerObject::loadAsync(std::filesystem::path filePath, bool bAutop
 //--------------------------------------------------------------
 bool ofxSoundPlayerObject::load(std::filesystem::path filePath, bool _stream){
 	if(isLoaded())unload();
-	if(soundFile.load(filePath.string())){
-		//	bStreaming = _stream;
+	if(_stream){
+		bStreaming = true;
+		return soundFile.openFileStream(filePath.string());
+	}else{
+		if(soundFile.load(filePath.string())){
+			
+//		bStreaming = _stream;
 		
-		bStreaming = false; // temporarily unavailable, until properly implementing in ofxSoundFile
-		init();
+		bStreaming = false;
+			init();
 		
 		
-		return isLoaded();
+			return isLoaded();
+		}
 	}
 	return false;
 }
@@ -117,16 +123,6 @@ void ofxSoundPlayerObject::init(){
 	}
 }
 
-//--------------------------------------------------------------
-void ofxSoundPlayerObject::audioOutBuffersChanged(int nFrames, int nChannels, int sampleRate){
-	if(bStreaming){
-		ofLogVerbose("ofxSoundPlayerObject::audioOutBuffersChanged") << "Resizing buffer ";
-		buffer.resize(nFrames*nChannels,0);
-	}
-	playerNumFrames = nFrames;
-	playerNumChannels = nChannels;
-	playerSampleRate = sampleRate;
-}
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::unload(){
 	bIsPlayingAny = false;
@@ -264,27 +260,37 @@ void ofxSoundPlayerObject::drawDebug(float x, float y){
 	ofDrawBitmapString(ss.str(), x, y);
 }
 //--------------------------------------------------------------
-void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
+void ofxSoundPlayerObject::process(ofSoundBuffer &inputBuffer, ofSoundBuffer &outputBuffer) {
+	//clear the passed buffer, because it might contain junk data
+	outputBuffer.set(0);
 	if(isLoaded() && bIsPlayingAny){
 		
 		auto nFrames = outputBuffer.getNumFrames();
 		auto nChannels = outputBuffer.getNumChannels();
-		if (playerNumChannels != nChannels || playerNumFrames != nFrames || playerSampleRate != outputBuffer.getSampleRate()) {
-			audioOutBuffersChanged(nFrames, nChannels, outputBuffer.getSampleRate());
+		auto buffSR = outputBuffer.getSampleRate();
+		
+
+		
+		if (playerSampleRate != outputBuffer.getSampleRate()) {
+			ofLogVerbose("ofxSoundPlayerObject::process") << "player sample rate and output sample rate differ. Sample rate conversion is being applied. It is always better to avoid sample rate conversion. When ever possible,try to setup the soundstream to have the same sample rate as the sound file player. player sample rate: " << playerSampleRate  << "  output sample rate: " << outputBuffer.getSampleRate() ;
+				playerSampleRate = outputBuffer.getSampleRate();
+			for(auto& i : instances){
+				i.relativeSpeed = i.speed*(double(soundFile.getSampleRate())/double(playerSampleRate));
+			}			
 		}
 		if(bStreaming){
-			//			int samplesRead = soundFile.readTo(buffer,nFrames);
-			//			if ( samplesRead==0 ){
-			//				stop();
-			//			}else{
-			//				buffer.copyTo(outputBuffer);
-			//			//	newBufferE.notify(this,buffer);// is there any need to notify this?
-			//			}
+						
+						auto samplesRead = soundFile.readTo(buffer, nFrames, getIsLooping());
+						if ( samplesRead == 0 ){
+							stop();
+						}else{
+							buffer.copyTo(outputBuffer);
+						//	newBufferE.notify(this,buffer);// is there any need to notify this?
+						}
 		}else{
 			if (buffer.size()) {
 				auto processBuffers = [&](ofSoundBuffer& buf, soundPlayInstance& i){
-					//assert( resampledBuffer.getNumFrames() == bufferSize*relativeSpeed[i] );
-					if (abs(i.speed - 1) < FLT_EPSILON) {
+					if (ofIsFloatEqual(i.relativeSpeed, 1.0f)){
 						buffer.copyTo(buf, nFrames, nChannels, i.position, i.loop);
 					}
 					else {
@@ -292,26 +298,22 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
 					}
 					if(buf.getNumChannels() == 2){
 						buf.stereoPan(i.volumeLeft*volume,i.volumeRight*volume);
+					}else{
+						buf *= volume.get();
 					}
 				};
-				if (instances.size() == 1){
-					processBuffers(outputBuffer, instances[0]);
+				for(auto& inst : instances){
+					processBuffers(auxBuffer, inst);
+					auxBuffer.addTo(outputBuffer, 0, inst.loop);
 				}
-				else {
-					for(auto& inst : instances){
-						processBuffers(resampledBuffer, inst);
-						//					newBufferE.notify(this, resampledBuffer);
-						resampledBuffer.addTo(outputBuffer, 0, inst.loop);
-					}
-				}
+				//this might seem weird but the point is that inputBuffer is the ofxSoundObject::workingBuffer, which is returned when calling getCurrentBuffer()
+//				outputBuffer.copyTo(inputBuffer);
 				updatePositions(nFrames);
 			}
 			else {
 				setPaused(-1);
 			}
 		}
-	}else{
-		outputBuffer.set(0);//if not playing clear the passed buffer, because it might contain junk data
 	}
 }
 
@@ -449,7 +451,7 @@ ofSoundBuffer & ofxSoundPlayerObject::getCurrentBuffer(){
 	if(bStreaming){
 		return buffer;
 	}else{
-		return resampledBuffer;
+		return ofxSoundObject::getBuffer();
 	}
 }
 //--------------------------------------------------------------

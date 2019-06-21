@@ -68,7 +68,7 @@ public:
 		float volume = 1;
 		bool bIsPlaying =false;
 		bool loop = false;
-		float speed;
+		float speed =1;
 		float pan = 0;
 		float relativeSpeed =1;
 		unsigned int position=0;
@@ -86,6 +86,8 @@ public:
 	
 	virtual  std::string getName() override{ return "Player";}
 	
+	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
+	
 private:
 	enum State{
 		UNLOADED = 0,
@@ -100,19 +102,13 @@ private:
 	void init();
 	
 	
-	void audioOutBuffersChanged( int nFrames, int nChannels, int sampleRate );
-	virtual void audioOut(ofSoundBuffer& outputBuffer) override;
 	void updatePositions(int numFrames);
 	
 	size_t playerSampleRate;
-	size_t playerNumFrames;
 	size_t playerNumChannels;
 
-//	static int maxSoundsTotal;
-//	static int maxSoundsPerPlayer;
-//	int maxSounds;
 	ofSoundBuffer buffer; 
-	ofSoundBuffer resampledBuffer;
+	ofSoundBuffer auxBuffer;
 	ofxSoundFile soundFile;
 	std::atomic<bool> bStreaming;
 	std::atomic<bool> bMultiplay;
