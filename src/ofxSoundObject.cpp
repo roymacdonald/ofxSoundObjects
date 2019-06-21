@@ -19,10 +19,10 @@ ofxSoundObject::ofxSoundObject(ofxSoundObjectsType t){
 }
 //--------------------------------------------------------------
 ofxSoundObject &ofxSoundObject::connectTo(ofxSoundObject &soundObject) {
-    if (outputObjectRef != nullptr) {
+    if (outputObject != nullptr) {
         disconnect();
     }
-    outputObjectRef = &soundObject;
+    outputObject = &soundObject;
 	soundObject.setInput(this);
 
 	// if we find an infinite loop, we want to disconnect and provide an error
@@ -30,6 +30,7 @@ ofxSoundObject &ofxSoundObject::connectTo(ofxSoundObject &soundObject) {
 		ofLogError("ofxSoundObject") << "There's an infinite loop in your chain of ofxSoundObjects";
 		disconnect();
 	}
+	checkSignalFlowMode();
 	return soundObject;
 }
 //--------------------------------------------------------------
@@ -40,9 +41,9 @@ void ofxSoundObject::disconnectInput(ofxSoundObject * input){
 }
 //--------------------------------------------------------------
 void ofxSoundObject::disconnect(){
-	if(outputObjectRef != nullptr){
-		outputObjectRef->disconnectInput(this);
-		outputObjectRef =nullptr;
+	if(outputObject != nullptr){
+		outputObject->disconnectInput(this);
+		outputObject =nullptr;
 	}
 }
 //--------------------------------------------------------------
@@ -52,6 +53,10 @@ void ofxSoundObject::setInput(ofxSoundObject *obj) {
 //--------------------------------------------------------------
 ofxSoundObject *ofxSoundObject::getInputObject() {
 	return inputObject;
+}
+//--------------------------------------------------------------
+ofxSoundObject *ofxSoundObject::getOutputObject(){
+	return outputObject;
 }
 //--------------------------------------------------------------
 bool ofxSoundObject::checkForInfiniteLoops() {
@@ -83,9 +88,9 @@ ofxSoundObject* ofxSoundObject::getSignalSourceObject(){
 ofxSoundObject* ofxSoundObject::getSignalDestinationObject(){
 	if(type == OFX_SOUND_OBJECT_DESTINATION)return this; // it is a destination object like an ofSoundOutput
 
-	if(outputObjectRef == nullptr) return this; // it is at the end of the signal chain, so it most probably is the output.
+	if(outputObject == nullptr) return this; // it is at the end of the signal chain, so it most probably is the output.
 	
-	return outputObjectRef->getSignalDestinationObject();
+	return outputObject->getSignalDestinationObject();
 	
 	
 	ofLogWarning("ofxSoundObject::getSignalDestinationObject", "There is no destination on your signal chain so most probaly you will get no sound");
@@ -94,11 +99,26 @@ ofxSoundObject* ofxSoundObject::getSignalDestinationObject(){
 //--------------------------------------------------------------
 // this pulls the audio through from earlier links in the chain
 void ofxSoundObject::audioOut(ofSoundBuffer &output) {
-    ofxSoundUtils::checkBuffers(output, workingBuffer);
-	if(inputObject!=nullptr) {
-		inputObject->audioOut(workingBuffer);
+	if(signalFlowMode == OFX_SOUND_OBJECT_PULL){
+		ofxSoundUtils::checkBuffers(output, workingBuffer);
+		if(inputObject!=nullptr) {
+			inputObject->audioOut(workingBuffer);
+		}
+		this->process(workingBuffer, output);
 	}
-	this->process(workingBuffer, output);
+}
+//--------------------------------------------------------------
+// this pulls the audio through from earlier links in the chain
+void ofxSoundObject::audioIn(ofSoundBuffer &input) {
+	ofxSoundUtils::checkBuffers(input, inputBuffer);
+	if(signalFlowMode == OFX_SOUND_OBJECT_PUSH){
+		this->process(input, inputBuffer);
+		if(outputObject!=nullptr) {
+			outputObject->audioIn(inputBuffer);
+		}
+	}else{
+		input.copyTo(inputBuffer);
+	}
 }
 //--------------------------------------------------------------
 size_t ofxSoundObject::getNumChannels(){
@@ -131,8 +151,34 @@ void ofxSoundObject::setOutputStream(ofSoundStream* stream){
 ofSoundStream* ofxSoundObject::getOutputStream(){
 	return outputStream; 
 }
+
 //--------------------------------------------------------------
-int ofxSoundObject::getDeviceId(){
+void ofxSoundObject::setInputStream(ofSoundStream& stream){
+	setInputStream(&stream);
+}
+//--------------------------------------------------------------
+void ofxSoundObject::setInputStream(ofSoundStream* stream){
+	if(stream != nullptr){
+		inputStream = stream;
+		inputStream->setInput(this);
+	}
+}
+//--------------------------------------------------------------
+ofSoundStream* ofxSoundObject::getInputStream(){
+	return inputStream;
+}
+
+//--------------------------------------------------------------
+int ofxSoundObject::getInputDeviceId(){
+	if(getInputStream()){
+		auto ss = getInputStream()->getSoundStream();
+		if(ss) return ss->getInDevice().deviceID;
+	}
+	return inputBuffer.getDeviceID();
+
+}
+//--------------------------------------------------------------
+int ofxSoundObject::getOutputDeviceId(){
 	if(getOutputStream()){
 		auto ss = getOutputStream()->getSoundStream();
 		if(ss) return ss->getOutDevice().deviceID;
@@ -140,14 +186,44 @@ int ofxSoundObject::getDeviceId(){
 	return getBuffer().getDeviceID();
 }
 //--------------------------------------------------------------
-ofSoundDevice ofxSoundObject::getDeviceInfo(){
-	return ofxSoundUtils::getSoundDeviceInfo(this->getDeviceId());
+ofSoundDevice ofxSoundObject::getInputDeviceInfo(){
+	return ofxSoundUtils::getSoundDeviceInfo(this->getInputDeviceId());
+}
+//--------------------------------------------------------------
+ofSoundDevice ofxSoundObject::getOutputDeviceInfo(){
+	return ofxSoundUtils::getSoundDeviceInfo(this->getOutputDeviceId());
+}
+//--------------------------------------------------------------
+void ofxSoundObject::setSignalFlowMode(const  ofxSoundObjectsMode & newMode){
+	signalFlowMode = newMode;
+	if(signalFlowMode == OFX_SOUND_OBJECT_PULL && inputObject != nullptr){
+		inputObject->setSignalFlowMode(signalFlowMode);
+		return;
+	}
+	if(signalFlowMode == OFX_SOUND_OBJECT_PUSH && outputObject != nullptr){
+		outputObject->setSignalFlowMode(signalFlowMode);
+		return;
+	}
+}
+//--------------------------------------------------------------
+void ofxSoundObject::checkSignalFlowMode(){
+	ofxSoundObject* dest = getSignalDestinationObject();
+	if(dest != nullptr){
+		if(dest->getType() == OFX_SOUND_OBJECT_DESTINATION){
+			dest->setSignalFlowMode(OFX_SOUND_OBJECT_PULL);
+			return;
+		}
+	}
+	ofxSoundObject* src = getSignalSourceObject();
+	if(src != nullptr){
+		if(src->getType() == OFX_SOUND_OBJECT_SOURCE){
+			src->setSignalFlowMode(OFX_SOUND_OBJECT_PUSH);
+			return;
+		}
+	}
 }
 //--------------------------------------------------------------
 //  ofxSoundInput
-//--------------------------------------------------------------
-ofxSoundInput::ofxSoundInput():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE) {
-}
 //--------------------------------------------------------------
 size_t ofxSoundInput::getNumChannels(){
 	if(getInputStream()){
@@ -167,36 +243,11 @@ void ofxSoundInput::audioOut(ofSoundBuffer &output) {
     ofxSoundUtils::checkBuffers(output, inputBuffer);
 	inputBuffer.copyTo(output);
 }
-//--------------------------------------------------------------
-int ofxSoundInput::getDeviceId(){
-	if(getInputStream()){
-		auto ss = getInputStream()->getSoundStream();
-		if(ss) return ss->getInDevice().deviceID;
-	}
-	return inputBuffer.getDeviceID();
-}
-
-//--------------------------------------------------------------
-void ofxSoundInput::setInputStream(ofSoundStream& stream){
-	setInputStream(&stream);
-}
-//--------------------------------------------------------------
-void ofxSoundInput::setInputStream(ofSoundStream* stream){
-	if(stream != nullptr){
-		inputStream = stream;
-		inputStream->setInput(this);
-	}
-}
-//--------------------------------------------------------------
-ofSoundStream* ofxSoundInput::getInputStream(){
-	return inputStream;
-}
-
 
 //--------------------------------------------------------------
 //  ofxSoundOutput
 //--------------------------------------------------------------
-ofxSoundOutput::ofxSoundOutput():ofxSoundObject(OFX_SOUND_OBJECT_DESTINATION) {
-}
+//ofxSoundOutput::ofxSoundOutput():ofxSoundObject(OFX_SOUND_OBJECT_DESTINATION) {
+//}
 
 //--------------------------------------------------------------

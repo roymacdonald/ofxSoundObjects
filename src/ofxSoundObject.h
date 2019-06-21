@@ -20,7 +20,7 @@
 class ofSoundBuffer;
 class ofxSoundInputMultiplexer;
 
-class ofxSoundObject: public ofBaseSoundOutput {
+class ofxSoundObject: public ofBaseSoundOutput, public ofBaseSoundInput {
 public:
 	ofxSoundObject();
 	ofxSoundObject(ofxSoundObjectsType);
@@ -47,13 +47,16 @@ public:
 	/// like signal splitters, sidechains etc.
 	virtual void audioOut(ofSoundBuffer &output) override;
 
+	virtual void audioIn(ofSoundBuffer &input) override;
+	
+	
 	/// this checks the dsp chain to ensure there are no infinite loops
 	/// - might want to override this if you make a splitter
 	/// returns true if there are no infinite loops.
 	virtual bool checkForInfiniteLoops();
 	ofxSoundObject *getInputObject();
-
 	
+	ofxSoundObject *getOutputObject();
 	///this returns the object that is at the begining of the objects chain. It should be an audio input, a sound file player or some kind of signal generator, like a synth.
 	ofxSoundObject * getSignalSourceObject();
 	
@@ -79,20 +82,34 @@ public:
 	void setOutputStream(ofSoundStream& stream);
 	void setOutputStream(ofSoundStream* stream);
 	ofSoundStream* getOutputStream();
-
-	/// Returns the device ID that is connected to this output
-	virtual int getDeviceId();
 	
+	void setInputStream(ofSoundStream& stream);
+	void setInputStream(ofSoundStream* stream);
+	ofSoundStream* getInputStream();
+
 	/// Returns info about the device that is connected to this output
-	virtual ofSoundDevice getDeviceInfo();
+	virtual ofSoundDevice getInputDeviceInfo();
+	virtual ofSoundDevice getOutputDeviceInfo();
 	
-
+	/// Returns the device ID that is connected
+	virtual int getOutputDeviceId();
+	virtual int getInputDeviceId();
+	
+	
+	std::string getSignalFlowModeAsString(){
+		switch(signalFlowMode){
+			case OFX_SOUND_OBJECT_PULL: return "OFX_SOUND_OBJECT_PULL";
+			case OFX_SOUND_OBJECT_PUSH: return "OFX_SOUND_OBJECT_PUSH";
+		}
+		return "";
+	}
+	
 protected:
 
 	// this is the previous dsp object in the chain
 	// that feeds this one with input.
 	ofxSoundObject *inputObject = nullptr;
-    ofxSoundObject *outputObjectRef = nullptr;
+    ofxSoundObject *outputObject = nullptr;
     virtual void setInput(ofxSoundObject *obj);
 	
 	ofxSoundObjectsType type = OFX_SOUND_OBJECT_PROCESSOR;
@@ -101,23 +118,23 @@ protected:
 	 
 	
 private:
+	ofSoundStream* inputStream = nullptr;
 	ofSoundStream* outputStream = nullptr;
 	
 	// a spare buffer to pass from one sound object to another
 	ofSoundBuffer workingBuffer;
+	ofSoundBuffer inputBuffer;
 	
-	//this functions sets whether the data is being pushed or pulled.
-	//This happens automatically.
-	void setSignalFlowMode();
-
 	enum ofxSoundObjectsMode{
 		//This is the default mode 
 		OFX_SOUND_OBJECT_PULL = 0,
 		OFX_SOUND_OBJECT_PUSH,
 //		OFX_SOUND_OBJECT_INDEPENDENT,
 //		OFX_SOUND_OBJECT_OFFLINE
-	} signalFlowMode;
+	} signalFlowMode = OFX_SOUND_OBJECT_PULL;
 
+	void setSignalFlowMode(const  ofxSoundObjectsMode & newMode);
+	void checkSignalFlowMode();
 	
 	
 };
@@ -128,27 +145,15 @@ private:
 /**
  * This class represents input from the sound card in your dsp chain.
  */
-class ofxSoundInput: public ofBaseSoundInput, public ofxSoundObject {
+class ofxSoundInput: public ofxSoundObject {
 public:
-	ofxSoundInput();
+	ofxSoundInput():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE) {}
 	virtual size_t getNumChannels() override;
-	// copy audio in to internal buffer
 	virtual void audioIn(ofSoundBuffer &input) override;
 	virtual void audioOut(ofSoundBuffer &output) override;
-	
-	/// Returns the device ID that is connected to this input
-	virtual int getDeviceId() override;
-	
-	
-	void setInputStream(ofSoundStream& stream);
-	void setInputStream(ofSoundStream* stream);
-	ofSoundStream* getInputStream();
-	
 
 protected:
 	ofSoundBuffer inputBuffer;
-private:
-	ofSoundStream* inputStream = nullptr;
 	
 };
 
@@ -157,7 +162,9 @@ private:
  */
 class ofxSoundOutput: public ofxSoundObject {
 public:
-	ofxSoundOutput();
+	ofxSoundOutput():ofxSoundObject(OFX_SOUND_OBJECT_DESTINATION) {}
+//	virtual size_t getNumChannels() override;
+	
 };
 
 
