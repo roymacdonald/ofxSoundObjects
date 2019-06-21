@@ -9,6 +9,98 @@
 		<string>46</string>
 		<key>objects</key>
 		<dict>
+			<key>239A8F908236AE479E5DAD9A</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>VUMeter.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/soundProcessors/VUMeter.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>F12A354BB3F401B61CCF9115</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>SineWaveGenerator.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/soundProcessors/SineWaveGenerator.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>1907BB3F6FF259AC8DC8D05C</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>NoiseGenerator.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/soundProcessors/NoiseGenerator.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>35B879E634473E85429D21A9</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>LowPassFilter.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/soundProcessors/LowPassFilter.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>115AA5B9BBE7EFA2D47EDD0A</key>
+			<dict>
+				<key>children</key>
+				<array>
+					<string>56870AE7ED394E1E32E40320</string>
+					<string>35B879E634473E85429D21A9</string>
+					<string>1907BB3F6FF259AC8DC8D05C</string>
+					<string>F12A354BB3F401B61CCF9115</string>
+					<string>239A8F908236AE479E5DAD9A</string>
+				</array>
+				<key>isa</key>
+				<string>PBXGroup</string>
+				<key>name</key>
+				<string>soundProcessors</string>
+				<key>sourceTree</key>
+				<string>&lt;group&gt;</string>
+			</dict>
+			<key>56870AE7ED394E1E32E40320</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>DigitalDelay.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/soundProcessors/DigitalDelay.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>E1EB6DBEC22E68C55D8A4EE6</key>
 			<dict>
 				<key>explicitFileType</key>
@@ -335,7 +427,7 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
-			<key>486582E0863B80FABE19AA90</key>
+			<key>83CAB18A96AEDC0C3BCD7A58</key>
 			<dict>
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
@@ -346,100 +438,7 @@
 				<key>name</key>
 				<string>waveformDraw.h</string>
 				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/SoundObjects/waveformDraw.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>540EDF6E2F1CA24B5211673F</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>4</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>VUMeter.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/SoundObjects/VUMeter.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>7E5FAD2B1CAA506583AF8584</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>4</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>SineWaveGenerator.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/SoundObjects/SineWaveGenerator.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>4DDD5A51152F1581BDF9CCCF</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>4</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>NoiseGenerator.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/SoundObjects/NoiseGenerator.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>DBF555CF2E50BC6F8C44A805</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>4</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>LowPassFilter.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/SoundObjects/LowPassFilter.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>F458332A72530CBF5B51D7B7</key>
-			<dict>
-				<key>children</key>
-				<array>
-					<string>08102CADCDFED739CB531D60</string>
-					<string>DBF555CF2E50BC6F8C44A805</string>
-					<string>4DDD5A51152F1581BDF9CCCF</string>
-					<string>7E5FAD2B1CAA506583AF8584</string>
-					<string>540EDF6E2F1CA24B5211673F</string>
-					<string>486582E0863B80FABE19AA90</string>
-				</array>
-				<key>isa</key>
-				<string>PBXGroup</string>
-				<key>name</key>
-				<string>SoundObjects</string>
-				<key>sourceTree</key>
-				<string>&lt;group&gt;</string>
-			</dict>
-			<key>08102CADCDFED739CB531D60</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>4</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>DigitalDelay.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/SoundObjects/DigitalDelay.h</string>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/waveformDraw.h</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -503,6 +502,7 @@
 					<string>404DA65FD7204024A8A15803</string>
 					<string>CE32325B7AC136FE083E72EB</string>
 					<string>6E855C4504BF9FE548126EEE</string>
+					<string>83CAB18A96AEDC0C3BCD7A58</string>
 				</array>
 				<key>isa</key>
 				<string>PBXGroup</string>
@@ -516,7 +516,6 @@
 				<key>children</key>
 				<array>
 					<string>E4C2833BEB24063CF3644AD9</string>
-					<string>F458332A72530CBF5B51D7B7</string>
 					<string>1517C892632CE73885FA803C</string>
 					<string>0E08C3779A6B40C22BD6ADEC</string>
 					<string>D6613DB597B6AD58800E7670</string>
@@ -535,6 +534,7 @@
 					<string>325B8956037E1EF26E7E0A74</string>
 					<string>672AFB43A7F281D65425AAEC</string>
 					<string>E1EB6DBEC22E68C55D8A4EE6</string>
+					<string>115AA5B9BBE7EFA2D47EDD0A</string>
 				</array>
 				<key>isa</key>
 				<string>PBXGroup</string>
