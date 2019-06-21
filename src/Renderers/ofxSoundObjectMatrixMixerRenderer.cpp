@@ -228,7 +228,7 @@ void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 		oss << " -- OUTPUT -- " <<std::endl;
 		auto * dest = obj->getSignalDestinationObject();
 		if(dest){
-			auto info = dest->getDeviceInfo();
+			auto info = dest->getOutputDeviceInfo();
 			oss << info.name;// <<std::endl;
 		}
 		ofSetColor(255);
@@ -272,7 +272,7 @@ void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 				if(!bDisableTextRendering){
 					auto liveScr = dynamic_cast<ofxSoundInput*>(sgnlSrc);
 					if(liveScr){
-						ofDrawBitmapString(ofxSoundUtils::getSoundDeviceString(liveScr->getDeviceInfo(), true, false), objR.x, objR.getMinY()+20);
+						ofDrawBitmapString(ofxSoundUtils::getSoundDeviceString(liveScr->getInputDeviceInfo(), true, false), objR.x, objR.getMinY()+20);
 					}else{
 						ofDrawBitmapString(ofToString(v.size()), objR.x, objR.getMaxY() - 20);
 					}
