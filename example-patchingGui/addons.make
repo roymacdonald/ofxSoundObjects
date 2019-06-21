@@ -1,0 +1,4 @@
+ofxAudioFile
+ofxDropdown
+ofxGui
+ofxSoundObjects
