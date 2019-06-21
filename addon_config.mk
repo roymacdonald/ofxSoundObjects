@@ -31,7 +31,7 @@ common:
 	# specified here separated by spaces or one per line using +=
 	ADDON_INCLUDES =  libs/libsndfile/include
 	ADDON_INCLUDES += src
-	ADDON_INCLUDES += src/SoundObjects
+	ADDON_INCLUDES += src/SoundProcessingObjects
 	ADDON_INCLUDES += src/Renderers
 	# any special flag that should be passed to the compiler when using this
 	# addon
