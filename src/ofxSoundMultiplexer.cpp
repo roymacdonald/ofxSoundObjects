@@ -14,83 +14,96 @@
 //--------------------------------------------------------------
 //  ofxSoundBaseMultiplexer
 //--------------------------------------------------------------
-ofxSoundObject& ofxSoundBaseMultiplexer::getOrCreateChannel(int channel){
-	return getOrCreateChannelGroup({channel});
-}
-//--------------------------------------------------------------
-ofxSoundObject& ofxSoundBaseMultiplexer::getOrCreateChannelGroup(const std::vector<int>& group){
-	ofLogVerbose("ofxSoundBaseMultiplexer::getOrCreateChannelGroup") << ofToString(group) << " size: " << group.size();
-    auto it = channelsMap.find(group);
-    if(it != channelsMap.end()){
-        ofLogNotice("ofxSoundInput::makeChannelGroup") << "channel group already present.";
-        return it->second;
-    }
-	for(auto& g: group){
-		channelsSet.insert(g);
+ofxSoundObject& ofxSoundBaseMultiplexer::linkChannelsToObject(const std::vector<linksIndices>& links, ofxSoundObject& obj){
+	for(auto&l : links){
+		linkChannelsToObject(l, obj);
 	}
-	channelsMap.emplace(group, ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR));
-	return channelsMap[group];
+	return obj;
 }
 //--------------------------------------------------------------
-bool ofxSoundBaseMultiplexer::deleteChannelGroup(const std::vector<int>& group){
-	for(auto& g: group){
-		channelsSet.erase(g);
+ofxSoundObject& ofxSoundBaseMultiplexer::linkChannelsToObject(const linksIndices& links, ofxSoundObject& obj){
+	linkedChannelsToObj.insert({links, &obj});
+	linkedObjToChannels[&obj][links.first].insert(links.second);
+	
+	return obj;
+}
+//--------------------------------------------------------------
+ofxSoundObject& ofxSoundBaseMultiplexer::linkChannelToObject(size_t channel, ofxSoundObject& obj){
+	return linkChannelsToObject({channel, channel}, obj);
+}
+//--------------------------------------------------------------
+bool ofxSoundBaseMultiplexer::deleteChannelsLinkedToObject(const std::vector<linksIndices>& links, ofxSoundObject& obj){
+	if(links.size() == 0)return false;
+	bool bSuccess = true;
+	for(auto&l : links){
+		bSuccess &= deleteChannelsLinkedToObject(l, obj);
 	}
-    return (bool) channelsMap.erase(group);
 }
 //--------------------------------------------------------------
-bool ofxSoundBaseMultiplexer::deleteChannel(int chan){
-	return deleteChannelGroup({chan});
+bool ofxSoundBaseMultiplexer::deleteChannelsLinkedToObject(const linksIndices& links, ofxSoundObject& obj){
+
+	if(linkedChannelsToObj.erase({links, &obj})){
+		
+		if(linkedObjToChannels.count(&obj)){
+			if(linkedObjToChannels[&obj].count(links.first)){
+				linkedObjToChannels[&obj][links.first].erase(links.second);
+				if(linkedObjToChannels[&obj][links.first].size() == 0){
+					linkedObjToChannels[&obj].erase(links.first);
+					if(linkedObjToChannels[&obj].size()){
+						linkedObjToChannels.erase(&obj);
+					}
+				}
+			}
+		}else{
+			std::cout << "something went wrong. Code should not reach here" << std::endl; 
+		}
+		return true;
+	}
+	return false;
 }
 //--------------------------------------------------------------
-std::map < std::vector<int>, ofxSoundObject>& ofxSoundBaseMultiplexer::getChannelGroups(){
-    return channelsMap;
-}
-//--------------------------------------------------------------
-const std::map < std::vector<int>, ofxSoundObject>& ofxSoundBaseMultiplexer::getChannelGroups() const {
-    return channelsMap;
+bool ofxSoundBaseMultiplexer::deleteChannelLinkedToObject(size_t chan, ofxSoundObject& obj){
+	return  deleteChannelsLinkedToObject({chan, chan}, obj);
 }
 
 //--------------------------------------------------------------
-//  ofxSoundInputMultiplexer
-//--------------------------------------------------------------
-
-void ofxSoundInputMultiplexer::audioIn(ofSoundBuffer &input) {
-    ofxSoundUtils::checkBuffers(input, inputBuffer);
-	input.copyTo(inputBuffer);
-    
-    for(auto & m: channelsMap){
-        ofxSoundUtils::getBufferFromChannelGroup(inputBuffer, m.second.getBuffer(), m.first);
-    }
+std::set < std::pair<linksIndices, ofxSoundObject*>> & ofxSoundBaseMultiplexer::getLinkedChannelsToObjects(){
+	return linkedChannelsToObj;
 }
 //--------------------------------------------------------------
-ofxSoundObject & ofxSoundInputMultiplexer::connectChannelTo(int channel,ofxSoundObject &soundObject){
-	return getOrCreateChannelGroup({channel}).connectTo(soundObject);	
+const std::set < std::pair<linksIndices, ofxSoundObject*>>& ofxSoundBaseMultiplexer::getLinkedChannelsToObjects() const {
+	return linkedChannelsToObj;
 }
 
-//-------------------------------------------------------------- 
-void ofxSoundInputMultiplexer::disconnectChannel(int channel){
-	deleteChannelGroup({channel});
+//--------------------------------------------------------------
+//  ofxSoundDemultiplexer
+//--------------------------------------------------------------
+
+void ofxSoundDemultiplexer::process(ofSoundBuffer &input, ofSoundBuffer &output){
+//		for(auto & m: channelsMap){
+//			ofxSoundUtils::getBufferFromChannelGroup(input, m.second.getBuffer(), m.first);
+//		}
 }
+
+
 //--------------------------------------------------------------
 //  ofxSoundOutputMultiplexer
 //--------------------------------------------------------------
-size_t ofxSoundOutputMultiplexer::getNumChannels(){
-	return channelsSet.size();
-}
+//size_t ofxSoundMultiplexer::getNumChannels(){
+//	return channelsSet.size();
+//}
 //--------------------------------------------------------------
-void ofxSoundOutputMultiplexer::audioOut(ofSoundBuffer &output){
-	// this could be multithreaded as in the matrix mixer
-    //pull the audio from each channel group
-    for(auto & m: channelsMap){
-        ofSoundBuffer temp;
-        temp.allocate(output.getNumFrames(), m.first.size());
-        temp.setSampleRate(output.getSampleRate());
-        m.second.audioOut(temp);
-    }
-    //muxing all groups
-    for(auto & m: channelsMap){
-        ofxSoundUtils::setBufferFromChannelGroup(m.second.getBuffer(), output, m.first);
-    }
+void ofxSoundMultiplexer::process(ofSoundBuffer &input, ofSoundBuffer &output) {
+//	for(auto & m: linkedObjToChannels){
+//		
+//		ofSoundBuffer temp;
+//		temp.allocate(output.getNumFrames(), m.first->size());
+//		temp.setSampleRate(output.getSampleRate());
+//		m..audioOut(temp);
+//	}
+//	
+	//muxing all groups
+	//	for(auto & m: channelsMap){
+	//		ofxSoundUtils::setBufferFromChannelGroup(m.second.getBuffer(), output, m.first);
+	//	}
 }
-
