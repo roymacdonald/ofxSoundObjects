@@ -189,13 +189,13 @@ void ofxSoundPlayerObject::stop(size_t index){
 void ofxSoundPlayerObject::clearInstanceEndNotificationQueue(){
 	updateListener.unsubscribe();
 	bListeningUpdate = false;
-	std::lock_guard<std::mutex> lock(mutex);
+	std::lock_guard<std::mutex> lock(instanceEndQueueMutex);
 	endedInstancesToNotify.clear();
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::addInstanceEndNotification(const size_t & id){
 	{
-		std::lock_guard<std::mutex> lock(mutex);
+		std::lock_guard<std::mutex> lock(instanceEndQueueMutex);
 		endedInstancesToNotify.push_back(id);
 	}
 	if(!bListeningUpdate){

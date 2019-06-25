@@ -132,6 +132,7 @@ private:
 	std::vector<size_t> endedInstancesToNotify;
 	void addInstanceEndNotification(const size_t & id);
 	void clearInstanceEndNotificationQueue();
+	ofMutex instanceEndQueueMutex;
 	
 };
 
