@@ -47,16 +47,23 @@ ofxSoundFile::~ofxSoundFile() {}
 //--------------------------------------------------------------
 void ofxSoundFile::ThreadHelper::threadedFunction(){
 	if(isThreadRunning()){
-		ofAddListener(ofEvents().update, &soundFile, &ofxSoundFile::removeThreadHelper);
+		ofAddListener(ofEvents().update, &soundFile, &ofxSoundFile::removeThreadHelperCB);
 		soundFile.loadFile(true);
 	}
 }
 //--------------------------------------------------------------
-void ofxSoundFile::removeThreadHelper(ofEventArgs&){
+bool ofxSoundFile::removeThreadHelper(){
 	if(threadHelper && !threadHelper->isThreadRunning()){
-		ofRemoveListener(ofEvents().update, this, &ofxSoundFile::removeThreadHelper);
+		ofRemoveListener(ofEvents().update, this, &ofxSoundFile::removeThreadHelperCB);
 		threadHelper.reset();
 		threadHelper = nullptr;
+		return true;
+	}
+	return false;
+}
+//--------------------------------------------------------------
+void ofxSoundFile::removeThreadHelperCB(ofEventArgs&){
+	if(removeThreadHelper()){
 		ofNotifyEvent(loadAsyncEndEvent);
 	}
 }
@@ -96,7 +103,7 @@ bool ofxSoundFile::loadFile( bool bAsync){
 		ofLogError("ofxSoundFile::load") << "Can not load a file while another is loading";
 		return false;
 	}
-
+	if(isLoaded())reset();
 	
 	if( ofFile::doesFileExist( path ) ){
 		ofxAudioFile audiofile; 
@@ -170,6 +177,7 @@ bool ofxSoundFile::save(string path, const ofSoundBuffer &buff, int format){
 //--------------------------------------------------------------                  
 //--------------------------------------------------------------
 void ofxSoundFile::reset(){
+	removeThreadHelper();	
 	buffer.clear();
 	bCompressed = false;
 	bLoaded = false;

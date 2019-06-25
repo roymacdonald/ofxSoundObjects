@@ -77,8 +77,8 @@ private:
 		virtual void threadedFunction() override;
 		ofxSoundFile& soundFile;
 	};
-	void removeThreadHelper(ofEventArgs&);
-	
+	void removeThreadHelperCB(ofEventArgs&);
+	bool removeThreadHelper();
 	
 	shared_ptr<ThreadHelper> threadHelper = nullptr;
 	
