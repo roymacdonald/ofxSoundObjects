@@ -40,7 +40,7 @@ void ofApp::setup(){
 	// the index is the number printed in the console inside [ ] before the interface name 
 	// You can use a different input and output device.
 	
-	inDeviceIndex = 1;
+	inDeviceIndex = 0;
 	outDeviceIndex = 0;
 	
 
@@ -84,7 +84,7 @@ void ofApp::loadFolder(const string& path, bool bReload){
 	ofFile f(path);
 	
 	//set bLoadAsync to true if you want to load the audio files on a different thread. 
-	bool bLoadAsync = true;
+	bool bLoadAsync = false;
 	if(f.isDirectory()){
 		ofDirectory dir(path);
 		dir.allowExt("wav");
@@ -97,15 +97,14 @@ void ofApp::loadFolder(const string& path, bool bReload){
 			players.resize( startIndex + dir.size());
 		}
 		for (int i = 0; i < dir.size(); i++) {
-		if(!bReload) {
-			players[startIndex + i] = make_shared<ofxSoundPlayerObject>();
-		}
+			if(!bReload) {
+				players[startIndex + i] = make_shared<ofxSoundPlayerObject>();
+			}
 			if(!bLoadAsync){
 				if(players[startIndex + i]->load(dir.getPath(i))){
 					players[startIndex + i]->connectTo(mixer);
 		
 					players[startIndex + i]->play();
-			
 				}
 			}else{
 				if(players[startIndex + i]->loadAsync(dir.getPath(i), true)){	
