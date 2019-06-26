@@ -187,6 +187,43 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
+			<key>82669D35701193A1B09043B9</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSoundMultiplexer.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/ofxSoundMultiplexer.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>26A94B3736756ADEB2293EDD</key>
+			<dict>
+				<key>fileRef</key>
+				<string>A3AD8F94BAD3A849BA69DA14</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>A3AD8F94BAD3A849BA69DA14</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSoundMultiplexer.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/ofxSoundMultiplexer.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>70F5DA63DD8360DE10639BF0</key>
 			<dict>
 				<key>explicitFileType</key>
@@ -486,6 +523,8 @@
 					<string>9F8B2AB3D557B8CC084ABECA</string>
 					<string>9F768214F9048463922BAE31</string>
 					<string>70F5DA63DD8360DE10639BF0</string>
+					<string>A3AD8F94BAD3A849BA69DA14</string>
+					<string>82669D35701193A1B09043B9</string>
 					<string>C2DBFF6E0A9F7007105C9541</string>
 					<string>1602920CA9506139A0D594F8</string>
 					<string>EB0153789FDCEF9B5303141A</string>
@@ -816,6 +855,21 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
+			<key>BA274EC7A169D538BD43A5D8</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxGuiUtils.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxGui/src/ofxGuiUtils.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>1C0DA2561397A7DE0246858B</key>
 			<dict>
 				<key>explicitFileType</key>
@@ -970,6 +1024,7 @@
 					<string>17E65988300FBD9AAA2CD0CA</string>
 					<string>ECF8674C7975F1063C5E30CA</string>
 					<string>1C0DA2561397A7DE0246858B</string>
+					<string>BA274EC7A169D538BD43A5D8</string>
 					<string>44B351490B620D04E1E7C52D</string>
 					<string>AE68B54581BE4A1DAE853180</string>
 					<string>78D67A00EB899FAC09430597</string>
@@ -4768,6 +4823,7 @@ fi
 					<string>BBD9844681A294B282AAB320</string>
 					<string>0C038942B6A701062B7B70F2</string>
 					<string>7840F332D7330DAAD11D2250</string>
+					<string>26A94B3736756ADEB2293EDD</string>
 					<string>878C0EFF16E187226B0148FA</string>
 					<string>7CAF1A5AEF6F06B39340FF34</string>
 					<string>A951B37B85BE9D9E912D0BD3</string>
