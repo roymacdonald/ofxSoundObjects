@@ -43,7 +43,7 @@ public:
 	float getSpeed(size_t index =0) const;
 	float getPan(size_t index =0) const;
 	bool isLoaded() const;
-	float getVolume(size_t index =0) const;
+	float getVolume(int index =-1) const;
 	bool getIsLooping(size_t index =0) const;
 	unsigned long getDurationMS();
 
@@ -85,6 +85,8 @@ public:
 	
 	
 	virtual  std::string getName() override{ return "Player";}
+	
+	const std::string getFilePath() const;
 	
 private:
 	enum State{

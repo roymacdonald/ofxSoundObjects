@@ -23,7 +23,7 @@ ofxSoundPlayerObject::ofxSoundPlayerObject():ofxSoundObject(OFX_SOUND_OBJECT_SOU
 	{
 		std::lock_guard<std::mutex> lock(mutex);
 		instances.resize(1);
-		volume.set("Volumen", 1, 0, 1);	
+		volume.set("Volumen", 1, 0, 1);
 	}
 	setState(UNLOADED);
 }
@@ -290,8 +290,11 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
 					else {
 						buffer.resampleTo(buf, i.position, nFrames, i.relativeSpeed, i.loop, ofSoundBuffer::Linear);
 					}
+					
 					if(buf.getNumChannels() == 2){
-						buf.stereoPan(i.volumeLeft*volume,i.volumeRight*volume);
+						buf.stereoPan(i.volumeLeft * volume,i.volumeRight * volume);
+					}else{
+						buf *= volume*i.volume;
 					}
 				};
 				if (instances.size() == 1){
@@ -317,10 +320,14 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
 
 //========================SETTERS===============================
 void ofxSoundPlayerObject::setVolume(float vol, int index){
-	updateInstance([&](soundPlayInstance& inst){
-		inst.volume = vol;
-		inst.updateVolumes();
-	},index, "ofxSoundPlayerObject::setVolume");
+	if(index <= -1){
+		volume = vol;
+	}else{
+		updateInstance([&](soundPlayInstance& inst){
+			inst.volume = vol;
+			inst.updateVolumes();
+		},index, "ofxSoundPlayerObject::setVolume");
+	}
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setPan(float _pan, int index){
@@ -434,8 +441,10 @@ bool ofxSoundPlayerObject::isLoaded() const{
 	return state == LOADED; 
 }
 //--------------------------------------------------------------
-float ofxSoundPlayerObject::getVolume(size_t index) const{ 
-	if(index < instances.size()){
+float ofxSoundPlayerObject::getVolume(int index) const{
+	if(index <= -1){
+		return volume.get();
+	}else if(index < instances.size()){
 		return instances[index].volume;
 	}
 	return 0;	
@@ -482,4 +491,8 @@ size_t ofxSoundPlayerObject::getNumChannels() {
 //--------------------------------------------------------------
 ofEvent<void>& ofxSoundPlayerObject::getAsyncLoadEndEvent(){
 	return soundFile.loadAsyncEndEvent;
+}
+//--------------------------------------------------------------
+const std::string ofxSoundPlayerObject::getFilePath() const{
+	return soundFile.getPath();
 }
