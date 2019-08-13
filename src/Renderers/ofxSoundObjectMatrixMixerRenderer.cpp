@@ -33,24 +33,26 @@ std:stringstream ss;
 
 //----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::initOrResizeNumSliders(const float & sliderWidth){
-	if(sliders.size() != obj->inObjects.size())sliders.resize(obj->inObjects.size());
-	for(size_t idx =0 ; idx < obj->inObjects.size(); idx++ ){
-		auto & v = obj->inObjects[idx]->channelsVolumes;
-		if(sliders[idx].size() != v.size()) sliders[idx].resize(v.size());
-		for(size_t i = 0; i <sliders[idx].size(); i++){
-			if(sliders[idx][i].size() != v[i].size()) sliders[idx][i].resize(v[i].size());
-			for(size_t o = 0; o < sliders[idx][i].size(); o++){
-				if(!sliders[idx][i][o]){
-					sliders[idx][i][o] = make_unique<ofxFloatSlider>(v[i][o], sliderWidth);
-					bSlidersEnabled = true;
+	if(!bNonSliderMode){
+		if(sliders.size() != obj->inObjects.size())sliders.resize(obj->inObjects.size());
+		for(size_t idx =0 ; idx < obj->inObjects.size(); idx++ ){
+			auto & v = obj->inObjects[idx]->channelsVolumes;
+			if(sliders[idx].size() != v.size()) sliders[idx].resize(v.size());
+			for(size_t i = 0; i <sliders[idx].size(); i++){
+				if(sliders[idx][i].size() != v[i].size()) sliders[idx][i].resize(v[i].size());
+				for(size_t o = 0; o < sliders[idx][i].size(); o++){
+					if(!sliders[idx][i][o]){
+						sliders[idx][i][o] = make_unique<ofxFloatSlider>(v[i][o], sliderWidth);
+						bSlidersEnabled = true;
+					}
 				}
 			}
 		}
-	}
-	
-	if(outputSliders.size() != obj->getNumOutputChannels()) outputSliders.resize(obj->getNumOutputChannels());
-	for(size_t i = 0; i < outputSliders.size(); i++){
-		if(!outputSliders[i]) outputSliders[i] = make_unique<ofxFloatSlider>(obj->outputChannels[i].volume, sliderWidth);
+		
+		if(outputSliders.size() != obj->getNumOutputChannels()) outputSliders.resize(obj->getNumOutputChannels());
+		for(size_t i = 0; i < outputSliders.size(); i++){
+			if(!outputSliders[i]) outputSliders[i] = make_unique<ofxFloatSlider>(obj->outputChannels[i].volume, sliderWidth);
+		}
 	}
 	if(!bMasterSliderSetup){
 		masterSlider.setup(obj->masterVol);;
@@ -177,10 +179,10 @@ void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 		
 		// start draw output channels 
 		ofRectangle outChanR = bottomR;
-		outChanR.width = bottomR.width/outputSliders.size();
+		outChanR.width = bottomR.width/obj->getNumOutputChannels();
 		glm::vec3 outPos = outChanR.getBottomLeft();
 		if(outputSliders.size()) outPos.y -= outputSliders[0]->getHeight();
-		for(size_t i = 0; i < outputSliders.size() && i < obj->outputChannels.size() ; i++){
+		for(size_t i = 0; i < obj->getNumOutputChannels(); i++){
 			drawRect(outChanR);
 			if(bNonSliderMode){
 				std::stringstream vol;
@@ -199,7 +201,7 @@ void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 			if(ofxSoundMatrixMixer::getComputeRMSandPeak()){
 				auto vuR = outChanR;
 				vuR.y = outChanR.getMaxY();
-				if(outputSliders[i]) vuR.y -= outputSliders[i]->getHeight(); 
+				if(!bNonSliderMode && outputSliders[i]) vuR.y -= outputSliders[i]->getHeight();
 				
 				vuR.y -= chanW;
 				vuR.height = chanW;
@@ -283,14 +285,16 @@ void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 			// draw cells start
 			objR.y += objR.height;
 			ofRectangle rmsR;
-			for(size_t i = 0; i < v.size() && i < sliders[idx].size(); i++){
+//			for(size_t i = 0; i < v.size() && i < sliders[idx].size(); i++){
+			for(size_t i = 0; i < v.size(); i++){
 				cell.y = gridR.y + (cell.height * (i + cellCount));
 				chanR.y = cell.y;
 				drawRect(chanR);
 				if(obj->ofxSoundMatrixMixer::getComputeRMSandPeak()){
 					obj->inObjects[idx]->vuMeter.drawChannel(i, chanR);
 				}
-				for(size_t j = 0; j < v[i].size() && j < sliders[idx][i].size(); j++){
+				
+				for(size_t j = 0; j < v[i].size(); j++){
 					cell.x = gridR.x + cell.width*j; 	 
 					drawRect(cell);
 					ofSetColor(255);
@@ -309,7 +313,7 @@ void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 							vol << "[ " << cellCount+ i << ":" << j <<" ]  " << v[i][j];
 							ofDrawBitmapString(vol.str(), p.x, p.y);						
 						}else{
-							if(sliders[idx][i][j]){
+							if(i < sliders[idx].size() && j < sliders[idx][i].size() && sliders[idx][i][j]){
 								p.y -= sliders[idx][i][j]->getHeight();
 								if(sliders[idx][i][j]->getPosition() != p){
 									sliders[idx][i][j]->setPosition(p);
