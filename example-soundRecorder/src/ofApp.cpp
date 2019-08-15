@@ -45,8 +45,20 @@ void ofApp::setup(){
 	//Currently you need to connect the recorder to the output, because of the pull-through audio architecture being used. Eventually this need would become unnecesary. 
 	input.connectTo(wave).connectTo(recorder).connectTo(mixer).connectTo(output);
 
+	
+	// we register the recorder end event
+	recordingEndListener = recorder.recordingEndEvent.newListener(this, &ofApp::recordingEndCallback);
+	
+	
 }
-
+//--------------------------------------------------------------
+void ofApp::recordingEndCallback(string & filepath){
+	//this gets called when the recording ends.
+	//NOTICE: It will get triggered from either the audio thread or the recorder's own thread (if OFX_SOUND_ENABLE_THREADED_RECORDER has been defined in ofxSoundObjectsConstants.h), which in any case are not the main thread so you should be careful about the callback function.
+	
+	cout << "recordingEndCallback "  << filepath << endl;
+	
+}
 //--------------------------------------------------------------
 void ofApp::update(){
 

@@ -36,5 +36,9 @@ class ofApp : public ofBaseApp{
 	ofxSoundRecorderObject recorder;
 
 	
+	//this will keep a listener so we can know that the recording has ended and its resources are free so it is safe to use the recently recorded file.
+	
+	ofEventListener recordingEndListener;
+	void recordingEndCallback(string & filepath);
 	
 };
