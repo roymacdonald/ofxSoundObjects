@@ -8,7 +8,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include <sndfile.hh>
+//#include <sndfile.hh>
 #include "ofxAudioFile.h"
 /// reads a sound file into an ofSoundBuffer.
 /// encoding support varies by platform.
@@ -40,7 +40,7 @@ public:
 	///	SF_FORMAT_PCM_32			/* Signed 32 bit data */
 	///	SF_FORMAT_PCM_U8		/* Unsigned 8 bit data */
 
-	static bool save(std::string _path, const ofSoundBuffer &buffer, int format = SF_FORMAT_PCM_16);
+	static bool save(std::string _path, const ofSoundBuffer &buffer);//, int format = SF_FORMAT_PCM_16);
 
 	
 	/// reads a file into an ofSoundBuffer.

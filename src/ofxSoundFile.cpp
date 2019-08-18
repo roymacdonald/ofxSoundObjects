@@ -9,7 +9,7 @@
 #include "ofLog.h"
 #include "ofUtils.h"
 
-
+#include "dr_wav.h"
 
 using namespace std;
 //--------------------------------------------------------------
@@ -34,7 +34,7 @@ bool ofxLoadSound(ofSoundBuffer &buff, string path){
 // the current model.
 bool ofxSaveSound(const ofSoundBuffer &buff,  string path){
 	ofxSoundFile soundFile;
-	return soundFile.save(path, buff,SF_FORMAT_PCM_16);
+	return soundFile.save(path, buff);
 }
 
 
@@ -107,7 +107,7 @@ bool ofxSoundFile::loadFile( bool bAsync){
 	
 	if( ofFile::doesFileExist( path ) ){
 		ofxAudioFile audiofile; 
-		audiofile.setVerbose(true);
+//		audiofile.setVerbose(true);
 		audiofile.load( path );
 		bool bL = audiofile.loaded();
 		if (!bL){
@@ -148,7 +148,7 @@ bool ofxSoundFile::load(string filepath){
 }
 
 //--------------------------------------------------------------
-bool ofxSoundFile::save(string path, const ofSoundBuffer &buff, int format){
+bool ofxSoundFile::save(string path, const ofSoundBuffer &buff){
 	// check that we're writing a wav and complain if the file extension is wrong.
 	ofFile f(path);
 	if(ofToLower(f.getExtension())!="wav") {
@@ -163,12 +163,33 @@ bool ofxSoundFile::save(string path, const ofSoundBuffer &buff, int format){
 		}
 	}
 	
-	SndfileHandle sfile ;
+//	SndfileHandle sfile ;
+//	
+//	sfile = SndfileHandle (ofToDataPath(path, true), SFM_WRITE, SF_FORMAT_WAV | format, buff.getNumChannels(), buff.getSampleRate()) ;
+//	
+//	sfile.write (&buff.getBuffer()[0], buff.getBuffer().size());
 	
-	sfile = SndfileHandle (ofToDataPath(path, true), SFM_WRITE, SF_FORMAT_WAV | format, buff.getNumChannels(), buff.getSampleRate()) ;
 	
-	sfile.write (&buff.getBuffer()[0], buff.getBuffer().size());
+	drwav_data_format format;
+	format.container = drwav_container_riff;
+	format.format = DR_WAVE_FORMAT_IEEE_FLOAT;
+	format.channels = buff.getNumChannels();
+	format.sampleRate = buff.getSampleRate();
+	format.bitsPerSample = 32;
 	
+	
+	drwav* wav_handle = NULL;
+	wav_handle = drwav_open_file_write( path.c_str(), &format);
+
+	if( wav_handle != NULL){
+		drwav_uint64 samplesWritten = drwav_write_pcm_frames(wav_handle, buff.getNumFrames(), buff.getBuffer().data());
+		if(samplesWritten != buff.getNumFrames()){
+			ofLogWarning("ofxSoundFile::save") << "samplesWritten " << samplesWritten << " not the same as the passed buffer " <<  buff.getNumFrames() << endl;
+		}
+		drwav_uninit(wav_handle);
+		wav_handle  = NULL;
+		
+	}
 	
 	return true;
 }
