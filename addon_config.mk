@@ -29,8 +29,7 @@ common:
 	# include search paths, this will be usually parsed from the file system
 	# but if the addon or addon libraries need special search paths they can be
 	# specified here separated by spaces or one per line using +=
-	ADDON_INCLUDES =  libs/libsndfile/include
-	ADDON_INCLUDES += src
+	ADDON_INCLUDES = src
 	ADDON_INCLUDES += src/SoundObjects
 	ADDON_INCLUDES += src/Renderers
 	# any special flag that should be passed to the compiler when using this
@@ -82,15 +81,10 @@ linux:
 	ADDON_INCLUDES += ../ofxFft/libs/kiss
 	ADDON_INCLUDES += ../ofxFft/libs/src
 msys2:
-	ADDON_LIBS = libs/libsndfile/lib/win/x86/libsndfile-1.lib
-	ADDON_DLLS_TO_COPY =  libs/libsndfile/lib/win/x86/libsndfile-1.dll
+	
 	
 vs:
-	ADDON_DLLS_TO_COPY =  libs/libsndfile/lib/win/x86/libsndfile-1.dll
-	ADDON_DLLS_TO_COPY =  libs/libsndfile/lib/win/x64/libsndfile-1.dll
-	ADDON_LIBS = libs/libsndfile/lib/win/x86/libsndfile-1.lib
-	ADDON_LIBS = libs/libsndfile/lib/win/x64/libsndfile-1.lib
-
+	
 linuxarmv6l:
 linuxarmv7l:
 android/armeabi:	
