@@ -9,6 +9,8 @@
 #include "ofxSoundObjectBaseRenderer.h"
 #include "ofxSoundMatrixMixer.h"
 #include "ofxGui.h"
+#include "ofxSlidersGrid.h"
+
 class ofxSoundMatrixMixerRenderer: public ofxSoundObjectBaseRenderer<ofxSoundMatrixMixer>{
 public:
 	virtual void draw(const ofRectangle& mixerRect) override;
@@ -22,13 +24,13 @@ public:
 	
 	void setMinChannelHeight(const float& minHeight);
 	
-	ofRectangle& 		getLeftRect(){return leftR;}
+		  ofRectangle& 	getLeftRect()		{return leftR;}
 	const ofRectangle&  getLeftRect() const {return leftR;}
-	ofRectangle& 		getBottomRect(){return bottomR;}
+		  ofRectangle& 	getBottomRect()		  {return bottomR;}
 	const ofRectangle&  getBottomRect() const {return bottomR;}
-	ofRectangle& 		getGridRect(){return gridR;}
+		  ofRectangle& 	getGridRect()		{return gridR;}
 	const ofRectangle&  getGridRect() const {return gridR;}
-	ofRectangle& 		getBottomLeftRect(){return bottomLeftR;}
+		  ofRectangle& 	getBottomLeftRect()		  {return bottomLeftR;}
 	const ofRectangle&  getBottomLeftRect() const {return bottomLeftR;}
 
 	
@@ -39,21 +41,19 @@ protected:
 	ofRectangle bottomR;
 	ofRectangle gridR;
 	ofRectangle bottomLeftR;
+	ofRectangle drawRect;
 
 	float leftW = 200;
 	float bottomH = 50;
 	float chanW = 10;
+	
+	ofVboMesh mainMesh, lineGridMesh;
 
+	void buildMeshes();
+	ofxSlidersGrid slidersGrid;
 private:
-	std::vector<std::vector<std::vector< std::unique_ptr<ofxFloatSlider>>>> sliders;
-	std::vector<std::unique_ptr<ofxFloatSlider>> outputSliders;
+	size_t numChansIn = 0, numChansOut =0;
 
-	ofxFloatSlider masterSlider;	
-	void initOrResizeNumSliders(const float & sliderWidth = 200);
-	
-	
-	bool bSlidersEnabled = false;
-	bool bSlidersWereEnabled = false;
 	bool bMasterSliderSetup = false;
 	
 	bool bNonSliderMode = false;
