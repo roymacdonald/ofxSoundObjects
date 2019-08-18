@@ -23,14 +23,18 @@ bool ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
 			auto player = dynamic_cast<ofxSoundPlayerObject*>(source);
 			if((player && player->isPlaying()) || !player ){// this is to avoid pulling audio when the player is not playing
 				size_t nc = source->getNumChannels();
-				buffer.resize(nc * this->numFramesToProcess);
-				buffer.setNumChannels(nc);
+//				buffer.setNumChannels(nc);
 				buffer.setSampleRate(sampleRate);
+				
+//				buffer.resize(nc * this->numFramesToProcess);
+				buffer.allocate(this->numFramesToProcess, nc);
+				
 				obj->audioOut(buffer);
 				bBufferProcessed = true;
 				if(ofxSoundMatrixMixer::getComputeRMSandPeak()){
 					vuMeter.calculate(buffer);
 				}
+//				std::cout << "buffer.size() " << buffer.size() << std::endl;
 				return true;
 			}
 		}else{
@@ -46,9 +50,7 @@ ofxSoundMatrixMixer::MatrixInputObject::MatrixInputObject(ofxSoundObject* _obj, 
 }
 
 //----------------------------------------------------
-ofxSoundMatrixMixer::MatrixInputObject::~MatrixInputObject(){
-
-}
+//ofxSoundMatrixMixer::MatrixInputObject::~MatrixInputObject(){}
 //----------------------------------------------------
 ofSoundBuffer & ofxSoundMatrixMixer::MatrixInputObject::getBuffer(){
 	return buffer;
@@ -248,6 +250,7 @@ void ofxSoundMatrixMixer::setOutputVolumeForChannel (const float & volValue, con
 		ofLogWarning("ofxSoundMatrixMixer::setOutputVolumeForChannel") << " outputChannel out of range";
 	}
 }
+//----------------------------------------------------
 const float & ofxSoundMatrixMixer::getOutputVolumeForChannel ( const size_t& outputChannel) const{
 	if(outputChannel < outputChannels.size()){
 		return outputChannels[outputChannel].volume.get();
@@ -256,7 +259,6 @@ const float & ofxSoundMatrixMixer::getOutputVolumeForChannel ( const size_t& out
 	return dummyFloat;
 }
 //----------------------------------------------------
-//----------------------------------------------------
 void ofxSoundMatrixMixer::setVolumeForChannel(const float& volValue, const size_t& inputChannel, const size_t& outputChannel){
 	size_t c = getConnectionIndexAtInputChannel(inputChannel);
 	size_t i = getFirstInputChannelForConnection(c);
@@ -264,27 +266,33 @@ void ofxSoundMatrixMixer::setVolumeForChannel(const float& volValue, const size_
 	
 }
 //----------------------------------------------------
-const float& ofxSoundMatrixMixer::getVolumeForChannel(const size_t& inputChannel, const size_t& outputChannel) const{
-	if(inputChannel < matrixInputChannelMap.size()){
-		auto& connectionIndex = matrixInputChannelMap[inputChannel];
-		if(connectionIndex < inObjects.size()){
-			if(inputChannel < inObjects[connectionIndex]->channelsVolumes.size()){
-				if(outputChannel < inObjects[connectionIndex]->channelsVolumes[inputChannel].size()){
-					return inObjects[connectionIndex]->channelsVolumes[inputChannel][outputChannel].get();
+const float& ofxSoundMatrixMixer::getVolumeForChannel(const size_t& inputChannel, const size_t& outputChannel){
+	return getVolumeParamForChannel(inputChannel, outputChannel).get();
+}
+//----------------------------------------------------
+ofParameter<float>& ofxSoundMatrixMixer::getVolumeParamForChannel(const size_t& inputChannel, const size_t& outputChannel) {
+		if(inputChannel < matrixInputChannelMap.size()){
+			auto& connectionIndex = matrixInputChannelMap[inputChannel];
+			if(connectionIndex < inObjects.size()){
+				auto i = inputChannel - getFirstInputChannelForConnection(connectionIndex);
+				if(i < inObjects[connectionIndex]->channelsVolumes.size()){
+					if(outputChannel < inObjects[connectionIndex]->channelsVolumes[i].size()){
+						return inObjects[connectionIndex]->channelsVolumes[i][outputChannel];
+					}else{
+						ofLogWarning("ofxSoundMatrixMixer::getVolumeForChannel") << "outputChannel index out of bounds";
+					}
 				}else{
-					ofLogWarning("ofxSoundMatrixMixer::getVolumeForChannel") << "outputChannel index out of bounds";
+					ofLogWarning("ofxSoundMatrixMixer::getVolumeForChannel") << "inputChannel index out of bounds: " << i << " " << inObjects[connectionIndex]->channelsVolumes.size();
 				}
 			}else{
-				ofLogWarning("ofxSoundMatrixMixer::getVolumeForChannel") << "inputChannel index out of bounds";
+				ofLogWarning("ofxSoundMatrixMixer::getVolumeForChannel") << "connection index out of bounds";
 			}
 		}else{
-			ofLogWarning("ofxSoundMatrixMixer::getVolumeForChannel") << "connection index out of bounds";
+			ofLogWarning("ofxSoundMatrixMixer::getVolumeForChannel") << "input channel index out of bounds";
 		}
-	}else{
-		ofLogWarning("ofxSoundMatrixMixer::getVolumeForChannel") << "input channel index out of bounds";
-	}
-	return dummyFloat;	
+		return dummyFloat;
 }
+//----------------------------------------------------
 size_t ofxSoundMatrixMixer::getConnectionIndexAtInputChannel(const size_t& chan){
 	if(chan < matrixInputChannelMap.size()){
 		return matrixInputChannelMap[chan];
@@ -352,29 +360,68 @@ bool ofxSoundMatrixMixer::isConnected(ofxSoundObject& obj){
 	}
 	return false;
 }
+bool ofxSoundMatrixMixer::MatrixInputObject::addIntoOutputChannel(const size_t& oc, ofSoundBuffer& output){
+	if (obj != nullptr ) {
+		auto nf = output.getNumFrames();
+		auto out_nc = output.getNumChannels();
+		auto in_nc = buffer.getNumChannels();
+		
+//		auto& cv = inObjects[idx]->channelsVolumes;
+		for(size_t ic = 0; ic < in_nc; ic++){
+			auto& v = channelsVolumes[ic][oc].get();
+			if( !ofIsFloatEqual(v, 0.0f)){
+				for(size_t i= 0; i < nf; i++){
+					output[i * out_nc + oc] += v* buffer[i * in_nc +ic];
+				}
+			}
+		}
+		return true;
+	}
+	return false;
+}
 //----------------------------------------------------
-void ofxSoundMatrixMixer::mixChannelBufferIntoOutput(const size_t& idx, ofSoundBuffer& input, ofSoundBuffer& output){
-	auto nf = output.getNumFrames();
-	auto out_nc = output.getNumChannels();
-	auto in_nc = input.getNumChannels();
+void ofxSoundMatrixMixer::mixChannelBufferIntoOutput(const size_t& idx, ofSoundBuffer& output, bool bUseOldImplementation){
+	// for optimizing, some objects, like the sound player will return an empty buffer when not playing
+	auto & input = inObjects[idx]->getBuffer();
+	if(input.getNumFrames() == 0 || !inObjects[idx]->bBufferProcessed) return;
+	
+	size_t out_nc = output.getNumChannels();
+	
+	
 	
 	if(input.getNumFrames() != output.getNumFrames()){
 		ofLogWarning("ofxSoundMatrixMixer::mixChannelBufferIntoOutput") <<  "input and output buffers have different number of frames. these should be equal. in: " << input.getNumFrames() << " out: " << output.getNumFrames();
 	}
 	
 	if(inObjects[idx]->bBufferProcessed){
-		auto& cv = inObjects[idx]->channelsVolumes;
-		for(size_t ic =0; ic < in_nc && ic < cv.size(); ic++){
-			for(size_t oc = 0; oc < out_nc && oc < cv[ic].size(); oc++){
-				
-				auto& v = cv[ic][oc]; 
-				if( !ofIsFloatEqual(v.get(), 0.0f)){
-					for(size_t i= 0; i < nf; i++){
-						output[i * out_nc + oc] += v* input[i * in_nc +ic];
+	
+#ifdef OFX_SOUND_ENABLE_MULTITHREADING
+	ChannelAdder adder(inObjects[idx], output);
+		// esto esta mal. no va a funcionar. hay que iterar por sobre los canales de salida
+	tbb::parallel_for( tbb::blocked_range<size_t>( 0, out_nc),  adder);
+#else
+		auto nf = output.getNumFrames();
+		size_t in_nc = std::min(input.getNumChannels(), inObjects[idx]->channelsVolumes.size());
+		
+		if(bUseOldImplementation){
+			auto& cv = inObjects[idx]->channelsVolumes;
+			for(size_t ic =0; ic < in_nc; ic++){
+				for(size_t oc = 0; oc < out_nc && oc < cv[ic].size(); oc++){
+					auto& v = cv[ic][oc];
+					if( !ofIsFloatEqual(v.get(), 0.0f)){
+						for(size_t i= 0; i < nf; i++){
+							output[i * out_nc + oc] += v* input[i * in_nc +ic];
+						}
 					}
 				}
 			}
+		}else{
+			for(size_t oc = 0; oc < out_nc; oc++){
+//			for(size_t ic =0; ic < in_nc; ic++){
+				inObjects[idx]->addIntoOutputChannel(oc, output);
+			}
 		}
+#endif
 	}
 }
 //----------------------------------------------------
@@ -393,15 +440,15 @@ void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 		}
 		size_t n = inObjects.size();
 		MatrixInputsCollection col;
-		col.inObjects = &inObjects;
+		col._inObjects = &inObjects;
 		tbb::parallel_for( tbb::blocked_range<size_t>( 0, n ),  col);
-		
-		for(size_t i = 0; i < inObjects.size(); i++){			
-			mixChannelBufferIntoOutput(i, inObjects[i]->getBuffer(), output);
+
+		for(size_t i = 0; i < inObjects.size(); i++){
+			mixChannelBufferIntoOutput(i, output);
 		}
 #else
 			if(inObjects[i]->pullChannel()){
-				mixChannelBufferIntoOutput(i, inObjects[i]->getBuffer(), output);
+				mixChannelBufferIntoOutput(i, output);
 			}
 		}
 #endif

@@ -66,8 +66,11 @@ public:
 	// remember that channels are zero based, meaning that the first is zero.
 	// this same logic applies for the getter.
 	void setVolumeForChannel(const float& volValue, const size_t& inputChannel, const size_t& outputChannel);
-	const float& getVolumeForChannel(const size_t& inputChannel, const size_t& outputChannel) const;
+	const float& getVolumeForChannel(const size_t& inputChannel, const size_t& outputChannel) ;
 
+	ofParameter<float>& getVolumeParamForChannel(const size_t& inputChannel, const size_t& outputChannel) ;
+
+	
 	// returns the connection index of a certain overall channel
 	size_t getConnectionIndexAtInputChannel(const size_t& chan);
 	
@@ -108,7 +111,7 @@ protected:
 		//	
 		//		MatrixInputObject();
 		MatrixInputObject(ofxSoundObject* _obj, const size_t& numOutChanns, const size_t& chanCount);
-		~MatrixInputObject();
+//		~MatrixInputObject();
 		
 		
 		bool updateChanVolsSize(const size_t& numOutChanns, const size_t& chanCount );
@@ -121,6 +124,8 @@ protected:
 		
 		
 		bool pullChannel();
+		
+		bool addIntoOutputChannel(const size_t& outputChannelIndex, ofSoundBuffer& output);
 		
 		
 		ofSoundBuffer & getBuffer();
@@ -176,20 +181,38 @@ protected:
 	void setInput(ofxSoundObject *obj) override;
 	
 
-	void mixChannelBufferIntoOutput(const size_t& idx, ofSoundBuffer& input, ofSoundBuffer& output);
+	void mixChannelBufferIntoOutput(const size_t& idx, ofSoundBuffer& output, bool bUseOldImplementation = false);
 		
 	void putMatrixVolumesIntoParamGroup(ofParameterGroup & group);
 	
 	
 #ifdef OFX_SOUND_ENABLE_MULTITHREADING
 	struct MatrixInputsCollection{
-		std::vector<std::shared_ptr<MatrixInputObject>> * inObjects;
+		std::vector<std::shared_ptr<MatrixInputObject>> * _inObjects = nullptr;
 		void operator()( const tbb::blocked_range<size_t>& range ) const {
 			for( size_t i = range.begin(); i!=range.end(); ++i ){
-				inObjects->at(i)->pullChannel();		
+				this-> _inObjects->at(i)->pullChannel();
 			}
 		}
 	};
+	
+	
+	class ChannelAdder{
+	public:
+		ChannelAdder(const std::shared_ptr<MatrixInputObject>& inObject, ofSoundBuffer& output):outputBuffer(output){
+			_inObject = inObject;
+		}
+		void operator()( const tbb::blocked_range<size_t>& range ) const {
+			for( size_t i = range.begin(); i!=range.end(); ++i ){
+				this->_inObject->addIntoOutputChannel(i, this->outputBuffer);
+			}
+		}
+	private:
+		std::shared_ptr<MatrixInputObject> _inObject = nullptr;
+		ofSoundBuffer& outputBuffer;
+	};
+	
+	
 #endif
 
 	
@@ -197,7 +220,7 @@ private:
 	ofMutex mutex;
 	bool bNeedsInputNumUpdate = true; 
 	
-	float dummyFloat;//this is bad practice
+	ofParameter<float> dummyFloat;//this is bad practice
 	
 };
 
