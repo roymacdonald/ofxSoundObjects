@@ -23,18 +23,13 @@ bool ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
 			auto player = dynamic_cast<ofxSoundPlayerObject*>(source);
 			if((player && player->isPlaying()) || !player ){// this is to avoid pulling audio when the player is not playing
 				size_t nc = source->getNumChannels();
-//				buffer.setNumChannels(nc);
 				buffer.setSampleRate(sampleRate);
-				
-//				buffer.resize(nc * this->numFramesToProcess);
 				buffer.allocate(this->numFramesToProcess, nc);
-				
 				obj->audioOut(buffer);
 				bBufferProcessed = true;
 				if(ofxSoundMatrixMixer::getComputeRMSandPeak()){
 					vuMeter.calculate(buffer);
 				}
-//				std::cout << "buffer.size() " << buffer.size() << std::endl;
 				return true;
 			}
 		}else{
@@ -49,8 +44,6 @@ ofxSoundMatrixMixer::MatrixInputObject::MatrixInputObject(ofxSoundObject* _obj, 
 	updateChanVolsSize(numOutChanns, chanCount);
 }
 
-//----------------------------------------------------
-//ofxSoundMatrixMixer::MatrixInputObject::~MatrixInputObject(){}
 //----------------------------------------------------
 ofSoundBuffer & ofxSoundMatrixMixer::MatrixInputObject::getBuffer(){
 	return buffer;
