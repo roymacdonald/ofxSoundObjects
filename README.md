@@ -40,22 +40,7 @@ This addon no longer uses libAudioDecoder, instead uses [ofxAudioFile](https://g
 It seems that there is a bug in RtAudio (the library that provides OF with cross platform access to the sound devices) that disables audio output when running in debug mode. So, you'll need to switch to Release mode always.
 
 #### VisualStudio 2017
-To be able to use this addon with visual studio you need to do the following whenever updating or creating a project with project generator.
-
-1. Use project generator as you normaly would (add ofxSoundObjects from the dropdown menu).
-* Once done, open the project in VS.
-* Go to "View > Property Manager".
-* In the Properties Manager select your project and clic on the "Add Existing Property Sheet" button. (shown in the image below).
-
-	![image](VS_screenshot.jpg)
-
-* Open the file ofxSoundObjects.props that is in this addon folder. (shown in the image below).
-  
-	![image](VS_screenshot2.jpg)
-
-* Press the "Save All" button or keys `ctrl` + `shift` + `s` so you don't need to add the .props file again when opening this project.
-	
-That's all.
+Removed the dependency on libsndfile so there is no more need to add the props file to visualStudio.
 
 ## Multithreading
 If you want to use multithreading, currently only implemented in the matrix mixer object, soon should be in the sound mixer too, you will need to use [ofxTbb](https://github.com/roymacdonald/ofxTbb) and in file `ofxSoundObjectsConstants.h` uncomment the line that reads
@@ -241,7 +226,8 @@ The following are some useful classes included with this addon.
 
 #### ofxSoundFile
 
-This class provides access to sound data from a variety of sound file formats. It supports the most common ones like .mp3, .aiff, .ogg and .wav on all systems, plus several others depending on the system. It makes use of [ofxAudioFile](https://github.com/npisanti/ofxAudioFile) for reading files and [libsndfile](http://www.mega-nerd.com/libsndfile/) for writing.
+This class provides access to sound data from a variety of sound file formats. It supports the most common ones like .mp3, .aiff, .ogg and .wav on all systems, plus several others depending on the system. It makes use of [ofxAudioFile](https://github.com/npisanti/ofxAudioFile) for reading files and writting files.
+
 This class will decode data and make it accessible using the ofSoundBuffer instances.
 Currently all the loaded files data is automatically converted into 32bit floating point regardless of its original bitdepth.
 It provides 8, 16, 24 and 32bit WAV sound file writing.
