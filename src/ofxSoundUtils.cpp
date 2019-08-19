@@ -10,6 +10,7 @@
 #include "ofLog.h"
 #include "ofSoundStream.h"
 #include "ofUtils.h"
+#include <math.h>
 //--------------------------------------------------------------
 void ofxSoundUtils::getBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer, ofSoundBuffer & targetBuffer, std::vector<int> group){
 	auto channels = sourceBuffer.getNumChannels();
@@ -163,6 +164,8 @@ bool ofxSoundUtils::getBufferPeaks(ofSoundBuffer& buffer, std::vector<float>& cu
 	}
 	return bNewPeak;
 }
+
+
 
 
 
