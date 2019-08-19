@@ -100,7 +100,7 @@
 			<PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
 			<RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
 			<WarningLevel>Level3</WarningLevel>
-			<AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxAudioFile\libs;..\..\..\addons\ofxAudioFile\src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\libs\libsndfile\include;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxAudioFile\libs;..\..\..\addons\ofxAudioFile\src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects;..\..\..\addons\ofxSoundObjects\src\Renderers</AdditionalIncludeDirectories>
 			<CompileAs>CompileAsCpp</CompileAs>
 			<ObjectFileName>$(IntDir)</ObjectFileName>
 		</ClCompile>
@@ -120,7 +120,7 @@
 			<PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
 			<RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
 			<WarningLevel>Level3</WarningLevel>
-			<AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxAudioFile\libs;..\..\..\addons\ofxAudioFile\src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\libs\libsndfile\include;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxAudioFile\libs;..\..\..\addons\ofxAudioFile\src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects;..\..\..\addons\ofxSoundObjects\src\Renderers</AdditionalIncludeDirectories>
 			<CompileAs>CompileAsCpp</CompileAs>
 			<MultiProcessorCompilation>true</MultiProcessorCompilation>
 			<ObjectFileName>$(IntDir)</ObjectFileName>
@@ -140,7 +140,7 @@
 			<PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
 			<RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 			<WarningLevel>Level3</WarningLevel>
-			<AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxAudioFile\libs;..\..\..\addons\ofxAudioFile\src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\libs\libsndfile\include;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxAudioFile\libs;..\..\..\addons\ofxAudioFile\src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects;..\..\..\addons\ofxSoundObjects\src\Renderers</AdditionalIncludeDirectories>
 			<CompileAs>CompileAsCpp</CompileAs>
 			<MultiProcessorCompilation>true</MultiProcessorCompilation>
 			<ObjectFileName>$(IntDir)</ObjectFileName>
@@ -163,7 +163,7 @@
 			<PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
 			<RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
 			<WarningLevel>Level3</WarningLevel>
-			<AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxAudioFile\libs;..\..\..\addons\ofxAudioFile\src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\libs\libsndfile\include;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects</AdditionalIncludeDirectories>
+			<AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxAudioFile\libs;..\..\..\addons\ofxAudioFile\src;..\..\..\addons\ofxGui\src;..\..\..\addons\ofxSoundObjects\src;..\..\..\addons\ofxSoundObjects\src\SoundObjects;..\..\..\addons\ofxSoundObjects\src\Renderers</AdditionalIncludeDirectories>
 			<CompileAs>CompileAsCpp</CompileAs>
 			<ObjectFileName>$(IntDir)</ObjectFileName>
 		</ClCompile>
@@ -194,11 +194,16 @@
 		<ClCompile Include="..\..\..\addons\ofxGui\src\ofxSliderGroup.cpp" />
 		<ClCompile Include="..\..\..\addons\ofxGui\src\ofxToggle.cpp" />
 		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundFile.cpp" />
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMatrixMixer.cpp" />
 		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMixer.cpp" />
 		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMultiplexer.cpp" />
 		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObject.cpp" />
-		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObjectsUtils.cpp" />
 		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundPlayerObject.cpp" />
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundRecorderObject.cpp" />
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundUtils.cpp" />
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\Renderers\ofxSlidersGrid.cpp" />
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\Renderers\ofxSoundObjectBaseRenderer.cpp" />
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\Renderers\ofxSoundObjectMatrixMixerRenderer.cpp" />
 	</ItemGroup>
 	<ItemGroup>
 		<ClInclude Include="src\ofApp.h" />
@@ -212,6 +217,7 @@
 		<ClInclude Include="..\..\..\addons\ofxGui\src\ofxColorPicker.h" />
 		<ClInclude Include="..\..\..\addons\ofxGui\src\ofxGui.h" />
 		<ClInclude Include="..\..\..\addons\ofxGui\src\ofxGuiGroup.h" />
+		<ClInclude Include="..\..\..\addons\ofxGui\src\ofxGuiUtils.h" />
 		<ClInclude Include="..\..\..\addons\ofxGui\src\ofxInputField.h" />
 		<ClInclude Include="..\..\..\addons\ofxGui\src\ofxLabel.h" />
 		<ClInclude Include="..\..\..\addons\ofxGui\src\ofxPanel.h" />
@@ -219,18 +225,24 @@
 		<ClInclude Include="..\..\..\addons\ofxGui\src\ofxSliderGroup.h" />
 		<ClInclude Include="..\..\..\addons\ofxGui\src\ofxToggle.h" />
 		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundFile.h" />
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMatrixMixer.h" />
 		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMixer.h" />
 		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMultiplexer.h" />
 		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObject.h" />
 		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObjects.h" />
-		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObjectsUtils.h" />
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObjectsConstants.h" />
 		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundPlayerObject.h" />
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundRecorderObject.h" />
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundUtils.h" />
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\Renderers\ofxSlidersGrid.h" />
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\Renderers\ofxSoundObjectBaseRenderer.h" />
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\Renderers\ofxSoundObjectMatrixMixerRenderer.h" />
 		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\DigitalDelay.h" />
 		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\LowPassFilter.h" />
 		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\NoiseGenerator.h" />
 		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\SineWaveGenerator.h" />
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\VUMeter.h" />
 		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\waveformDraw.h" />
-		<ClInclude Include="..\..\..\addons\ofxSoundObjects\libs\libsndfile\include\sndfile.h" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">

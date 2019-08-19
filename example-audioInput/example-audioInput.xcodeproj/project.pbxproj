@@ -495,10 +495,49 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
+			<key>D62F3E04A5125DF78F8859B1</key>
+			<dict>
+				<key>fileRef</key>
+				<string>FCE5CA29FCA21152CFEA85AE</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>FCE5CA29FCA21152CFEA85AE</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSoundObjectBaseRenderer.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofxSoundObjectBaseRenderer.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>20FBE1E214C2DC0FEEFC1973</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSlidersGrid.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofxSlidersGrid.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>E4C2833BEB24063CF3644AD9</key>
 			<dict>
 				<key>children</key>
 				<array>
+					<string>44FF76267C6B169C837295F7</string>
+					<string>20FBE1E214C2DC0FEEFC1973</string>
 					<string>FCE5CA29FCA21152CFEA85AE</string>
 					<string>404DA65FD7204024A8A15803</string>
 					<string>CE32325B7AC136FE083E72EB</string>
@@ -543,72 +582,10 @@
 				<key>sourceTree</key>
 				<string>&lt;group&gt;</string>
 			</dict>
-			<key>D62F3E04A5125DF78F8859B1</key>
-			<dict>
-				<key>fileRef</key>
-				<string>FCE5CA29FCA21152CFEA85AE</string>
-				<key>isa</key>
-				<string>PBXBuildFile</string>
-			</dict>
-			<key>FCE5CA29FCA21152CFEA85AE</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.cpp.cpp</string>
-				<key>fileEncoding</key>
-				<string>4</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>ofxSoundObjectBaseRenderer.cpp</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/Renderers/ofxSoundObjectBaseRenderer.cpp</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>44A88DDC01A2677728172FE5</key>
-			<dict>
-				<key>children</key>
-				<array>
-					<string>4CACE7B9680F7990C04983AC</string>
-				</array>
-				<key>isa</key>
-				<string>PBXGroup</string>
-				<key>name</key>
-				<string>include</string>
-				<key>sourceTree</key>
-				<string>&lt;group&gt;</string>
-			</dict>
-			<key>AC88EE60CE0AA69EB125399B</key>
-			<dict>
-				<key>children</key>
-				<array>
-					<string>44A88DDC01A2677728172FE5</string>
-				</array>
-				<key>isa</key>
-				<string>PBXGroup</string>
-				<key>name</key>
-				<string>libsndfile</string>
-				<key>sourceTree</key>
-				<string>&lt;group&gt;</string>
-			</dict>
-			<key>EE444319650A32985C5E8F71</key>
-			<dict>
-				<key>children</key>
-				<array>
-					<string>AC88EE60CE0AA69EB125399B</string>
-				</array>
-				<key>isa</key>
-				<string>PBXGroup</string>
-				<key>name</key>
-				<string>libs</string>
-				<key>sourceTree</key>
-				<string>&lt;group&gt;</string>
-			</dict>
 			<key>41B26342D97D99EEEB93B344</key>
 			<dict>
 				<key>children</key>
 				<array>
-					<string>EE444319650A32985C5E8F71</string>
 					<string>1DD23CBDBDA3CB59B15B7F48</string>
 				</array>
 				<key>isa</key>
@@ -618,18 +595,25 @@
 				<key>sourceTree</key>
 				<string>&lt;group&gt;</string>
 			</dict>
-			<key>4CACE7B9680F7990C04983AC</key>
+			<key>6DC40DD805B8D7BBA677A14C</key>
+			<dict>
+				<key>fileRef</key>
+				<string>44FF76267C6B169C837295F7</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>44FF76267C6B169C837295F7</key>
 			<dict>
 				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
+				<string>sourcecode.cpp.cpp</string>
 				<key>fileEncoding</key>
 				<string>4</string>
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
-				<string>sndfile.h</string>
+				<string>ofxSlidersGrid.cpp</string>
 				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/libs/libsndfile/include/sndfile.h</string>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofxSlidersGrid.cpp</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -1390,7 +1374,6 @@ fi
 						<string>../../../addons/ofxAudioFile/libs</string>
 						<string>../../../addons/ofxAudioFile/src</string>
 						<string>../../../addons/ofxGui/src</string>
-						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include</string>
 						<string>../../../addons/ofxSoundObjects/src</string>
 						<string>../../../addons/ofxSoundObjects/src/SoundObjects</string>
 						<string>../../../addons/ofxSoundObjects/src/Renderers</string>
@@ -1438,7 +1421,6 @@ fi
 						<string>../../../addons/ofxAudioFile/libs</string>
 						<string>../../../addons/ofxAudioFile/src</string>
 						<string>../../../addons/ofxGui/src</string>
-						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include</string>
 						<string>../../../addons/ofxSoundObjects/src</string>
 						<string>../../../addons/ofxSoundObjects/src/SoundObjects</string>
 						<string>../../../addons/ofxSoundObjects/src/Renderers</string>
@@ -1460,7 +1442,6 @@ fi
 						<string>$(OF_CORE_LIBS)</string>
 						<string>$(OF_CORE_FRAMEWORKS)</string>
 						<string>$(LIB_OF)</string>
-						<string>../../../addons/ofxSoundObjects/libs/libsndfile/lib/osx/libsndfile.a</string>
 					</array>
 					<key>PRODUCT_NAME</key>
 					<string>$(TARGET_NAME)</string>
@@ -4250,7 +4231,6 @@ fi
 						<string>../../../addons/ofxAudioFile/libs</string>
 						<string>../../../addons/ofxAudioFile/src</string>
 						<string>../../../addons/ofxGui/src</string>
-						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include</string>
 						<string>../../../addons/ofxSoundObjects/src</string>
 						<string>../../../addons/ofxSoundObjects/src/SoundObjects</string>
 						<string>../../../addons/ofxSoundObjects/src/Renderers</string>
@@ -4318,7 +4298,6 @@ fi
 						<string>../../../addons/ofxAudioFile/libs</string>
 						<string>../../../addons/ofxAudioFile/src</string>
 						<string>../../../addons/ofxGui/src</string>
-						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include</string>
 						<string>../../../addons/ofxSoundObjects/src</string>
 						<string>../../../addons/ofxSoundObjects/src/SoundObjects</string>
 						<string>../../../addons/ofxSoundObjects/src/Renderers</string>
@@ -4357,6 +4336,7 @@ fi
 					<string>837220E80EB56CD44AD27F2A</string>
 					<string>B56FE57CC35806596D38118C</string>
 					<string>1CD33E884D9E3358252E82A1</string>
+					<string>6DC40DD805B8D7BBA677A14C</string>
 					<string>D62F3E04A5125DF78F8859B1</string>
 					<string>12CEE754929E8DB692B2BBE6</string>
 					<string>BBD9844681A294B282AAB320</string>
@@ -4470,7 +4450,6 @@ fi
 						<string>../../../addons/ofxAudioFile/libs</string>
 						<string>../../../addons/ofxAudioFile/src</string>
 						<string>../../../addons/ofxGui/src</string>
-						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include</string>
 						<string>../../../addons/ofxSoundObjects/src</string>
 						<string>../../../addons/ofxSoundObjects/src/SoundObjects</string>
 						<string>../../../addons/ofxSoundObjects/src/Renderers</string>
@@ -4492,7 +4471,6 @@ fi
 						<string>$(OF_CORE_LIBS)</string>
 						<string>$(OF_CORE_FRAMEWORKS)</string>
 						<string>$(LIB_OF_DEBUG)</string>
-						<string>../../../addons/ofxSoundObjects/libs/libsndfile/lib/osx/libsndfile.a</string>
 					</array>
 					<key>PRODUCT_NAME</key>
 					<string>$(TARGET_NAME)Debug</string>
@@ -4530,7 +4508,6 @@ fi
 						<string>../../../addons/ofxAudioFile/libs</string>
 						<string>../../../addons/ofxAudioFile/src</string>
 						<string>../../../addons/ofxGui/src</string>
-						<string>../../../addons/ofxSoundObjects/libs/libsndfile/include</string>
 						<string>../../../addons/ofxSoundObjects/src</string>
 						<string>../../../addons/ofxSoundObjects/src/SoundObjects</string>
 						<string>../../../addons/ofxSoundObjects/src/Renderers</string>
@@ -4552,7 +4529,6 @@ fi
 						<string>$(OF_CORE_LIBS)</string>
 						<string>$(OF_CORE_FRAMEWORKS)</string>
 						<string>$(LIB_OF)</string>
-						<string>../../../addons/ofxSoundObjects/libs/libsndfile/lib/osx/libsndfile.a</string>
 					</array>
 					<key>PRODUCT_NAME</key>
 					<string>$(TARGET_NAME)</string>
