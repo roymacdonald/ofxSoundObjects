@@ -397,7 +397,7 @@ float ofxSoundPlayerObject::getPosition(size_t index) const{
 //--------------------------------------------------------------
 int ofxSoundPlayerObject::getPositionMS(size_t index) const{
 	if(index < instances.size()){
-		return float(instances[index].position)*1000./buffer.getSampleRate(); 	
+		return float(instances[index].position)*1000./(float)buffer.getSampleRate();
 	}
 	return 0;
 }
