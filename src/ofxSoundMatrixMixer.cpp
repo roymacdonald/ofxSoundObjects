@@ -508,7 +508,7 @@ void ofxSoundMatrixMixer::save(const std::string& filename){
 		}
 		ofSerialize(xml, group);
 		xml.save(filename);
-	}else
+	}else{
 		if(extension == "json"){
 			ofJson json = ofLoadJson(filename);
 			ofSerialize(json, group);
@@ -516,7 +516,7 @@ void ofxSoundMatrixMixer::save(const std::string& filename){
 		}else{
 			ofLogError("ofxGui") << extension << " not recognized, only .xml and .json supported by now";
 		}
-	
+	}
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::putMatrixVolumesIntoParamGroup(ofParameterGroup & group){
@@ -525,7 +525,6 @@ void ofxSoundMatrixMixer::putMatrixVolumesIntoParamGroup(ofParameterGroup & grou
 	for(size_t idx =0 ; idx < inObjects.size(); idx++ ){	
 		for(size_t ic =0; ic < inObjects[idx]->channelsVolumes.size(); ic++){
 			for(size_t oc = 0; oc < inObjects[idx]->channelsVolumes[ic].size(); oc++){
-				//				std::cout << inObjects[idx].channelsVolumes[ic][oc]->getName() << std::endl;
 				group.add(inObjects[idx]->channelsVolumes[ic][oc]);
 			}
 		}
