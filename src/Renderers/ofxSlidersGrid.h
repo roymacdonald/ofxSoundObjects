@@ -54,14 +54,15 @@ protected:
 	
 	bool bDragging = false;
 	ofRectangle overGridRect;
-	//	size_t overXInd = 0;
-	//	size_t overYInd = 0;
+	
 	size_t pressedXInd = 0;
 	size_t pressedYInd = 0;
 	
 	
+	ofBitmapFont bf;
 	
 	ofVboMesh lineGridMesh, slidersGridMesh;
+	std::vector<ofVboMesh> textMeshes;
 	void buildMeshes();
 private:
 	size_t xSize = 0, ySize =0;
@@ -70,6 +71,6 @@ private:
 	ofEventListeners mouseListeners;
 	
 	bool bEnabled = false;
-	
+	bool bEnableTextRendering = true;
 };
 

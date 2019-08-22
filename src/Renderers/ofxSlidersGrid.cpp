@@ -86,7 +86,7 @@ void ofxSlidersGrid::mouseReleased(ofMouseEventArgs& args){
 
 //----------------------------------------------------
 void ofxSlidersGrid::buildMeshes(){
-//	std::cout << "ofxSlidersGrid::buildMeshes" << std::endl;
+	//	std::cout << "ofxSlidersGrid::buildMeshes" << std::endl;
 	
 	lineGridMesh.clear();
 	slidersGridMesh.clear();
@@ -101,11 +101,16 @@ void ofxSlidersGrid::buildMeshes(){
 	
 	addRectToMesh(lineGridMesh, gridRect, ofColor(100), true);
 	
+	textMeshes.clear();
+	
 	if(xSize > 0 && ySize > 0){
 		
-//		std::cout << "SlidersGrid::BuildMeshes xSize: " << xSize << " ySize: " << ySize << " gridRect: " << gridRect << std::endl;
-		
-		
+		//		std::cout << "SlidersGrid::BuildMeshes xSize: " << xSize << " ySize: " << ySize << " gridRect: " << gridRect << std::endl;
+		bEnableTextRendering = (gridRect.height / ySize) >=16.0f;
+		if(bEnableTextRendering){
+			textMeshes.resize(xSize * ySize);
+		}
+	
 		auto p0 = gridRect.getTopLeft();
 		auto p1 = gridRect.getTopRight();
 		
@@ -158,20 +163,17 @@ void ofxSlidersGrid::updateAllSliders(){
 }
 //----------------------------------------------------
 void ofxSlidersGrid::updateSlider(size_t x, size_t y, float val){
-//	std::cout << "x: " << x << " y: " << y  << " - "<< val << " : ";//std::endl;
-	//	float vol = ofMap( p.x - overGridRect.x, 0, overGridRect.width, 0, 1, true );
-	size_t vInd = (x + y * xSize)*4;
+	size_t i = x + y * xSize;
+	size_t vInd = i * 4;
 	auto& v = slidersGridMesh.getVertices();
 	if(vInd + 2 < v.size()){
-	v[vInd +1].x = v[vInd].x + (val * (overGridRect.width - 2));
-	v[vInd +2].x = v[vInd +1].x;
-	
-	
-//	std::cout << v[vInd].x << " " << v[vInd +1].x << std::endl;
+		v[vInd +1].x = v[vInd].x + (val * (overGridRect.width - 2));
+		v[vInd +2].x = v[vInd +1].x;
+		
+		if(bEnableTextRendering){
+			textMeshes[i] = bf.getMesh(ofToString(val, 4), v[vInd +3].x, v[vInd +3].y-2);
+		}
 	}
-	//	if(obj != nullptr){
-	//		obj->setVolumeForChannel(val, overYInd,overXInd);
-	//	}
 }
 //----------------------------------------------------
 void ofxSlidersGrid::GridParameter::setup(const size_t& _x, const size_t& _y, ofParameter<float>& p, ofxSlidersGrid* grid){
@@ -197,10 +199,10 @@ void ofxSlidersGrid::GridParameter::notify(float &){
 //----------------------------------------------------
 void ofxSlidersGrid::setGridSize(size_t _x, size_t _y){
 	if(	xSize != _x && ySize != _y){
-
+		
 		xSize = _x;
 		ySize = _y;
-
+		
 		parameters.clear();
 		parameters.resize(ySize);
 		for(size_t y = 0; y < parameters.size(); y++){
@@ -210,7 +212,7 @@ void ofxSlidersGrid::setGridSize(size_t _x, size_t _y){
 				parameters[y][x] = make_unique<ofxSlidersGrid::GridParameter>();
 			}
 		}
-	buildMeshes();
+		buildMeshes();
 	}
 }
 //----------------------------------------------------
@@ -224,42 +226,22 @@ void ofxSlidersGrid::linkParameter(size_t x, size_t y, ofParameter<float> & para
 //----------------------------------------------------
 void ofxSlidersGrid::draw(const ofRectangle& _gridRect){
 	if(bEnabled){
-	//	if(obj != nullptr){
-	
-	if(gridRect != _gridRect){
-	
-		//			numChansIn = obj->getNumInputChannels();
-		//			numChansOut = obj->getNumOutputChannels();
-		//
-		gridRect = _gridRect;
-//
-	   	buildMeshes();
+		if(gridRect != _gridRect){
+			gridRect = _gridRect;
+			buildMeshes();
+		}
+		
+		lineGridMesh.draw();
+		slidersGridMesh.draw();
+		if(bEnableTextRendering){
+		ofPushStyle();
+		ofSetColor(20);
+		bf.getTexture().bind();
+		for(auto& t: textMeshes){
+			t.draw();
+		}
+		bf.getTexture().unbind();
+		ofPopStyle();
+		}
 	}
-
-	//		mainMesh.draw();
-	lineGridMesh.draw();
-	slidersGridMesh.draw();
-	
-//	if(bOverGrid){
-//		ofPushStyle();
-//		ofNoFill();
-//		ofSetColor(ofColor::red);
-//		ofDrawRectangle(overGridRect);
-//		ofPopStyle();
-//	}
-	}
-//	stringstream ss;
-//	ss << "xSize " << xSize << std::endl;
-//	ss << "ySize " << ySize << std::endl;
-//	ss << " v " << slidersGridMesh.getVertices().size() << std::endl;
-//	
-//	ofDrawBitmapStringHighlight(ss.str(), 100,100);
-	
-//	ofSetColor(ofColor::yellow);
-//	for(auto& v: slidersGridMesh.getVertices()){
-//		ofDrawCircle(v, 5);
-//	}
-	
-	
-	//	}
 }
