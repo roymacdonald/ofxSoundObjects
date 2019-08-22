@@ -10,7 +10,9 @@
 #include "ofxSoundMatrixMixer.h"
 #include "ofxGui.h"
 #include "ofxSlidersGrid.h"
+#include "ofxSoundPlayerObject.h"
 
+#define DISABLE_SLIDERS
 class ofxSoundMatrixMixerRenderer: public ofxSoundObjectBaseRenderer<ofxSoundMatrixMixer>{
 public:
 	virtual void draw(const ofRectangle& mixerRect) override;
@@ -47,11 +49,20 @@ protected:
 	float bottomH = 50;
 	float chanW = 10;
 	
-	ofVboMesh mainMesh, lineGridMesh;
+	ofVboMesh mainMesh, lineGridMesh, playheadMesh;
 
 	void buildMeshes();
+	void buildPlayheads();
+	void buildOutputSliders();
+	void buildSlidersGrid();
 	ofxSlidersGrid slidersGrid;
+	ofxSlidersGrid outputSliders;
+	ofRectangle outputSlidersRect;
+	void updatePlayheads();
+	
 private:
+	
+	std::map<size_t, ofxSoundPlayerObject* > playheadsIndices;
 	size_t numChansIn = 0, numChansOut =0;
 
 	bool bMasterSliderSetup = false;
