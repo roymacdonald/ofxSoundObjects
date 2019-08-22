@@ -37,6 +37,8 @@ public:
 
 	
 
+	void drawStatus(float x = 20, float y =20);
+	
 protected:
 
 	ofRectangle leftR;
@@ -50,7 +52,7 @@ protected:
 	float chanW = 10;
 	
 	ofVboMesh mainMesh, lineGridMesh, playheadMesh;
-
+	std::vector<ofVboMesh> textMeshes;
 	void buildMeshes();
 	void buildPlayheads();
 	void buildOutputSliders();
@@ -60,6 +62,7 @@ protected:
 	ofRectangle outputSlidersRect;
 	void updatePlayheads();
 	
+	bool bDisableTextRendering = false;
 private:
 	
 	std::map<size_t, ofxSoundPlayerObject* > playheadsIndices;

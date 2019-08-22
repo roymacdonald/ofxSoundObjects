@@ -82,6 +82,12 @@ void ofxSoundMatrixMixerRenderer::buildPlayheads(){
 			float vuWidth = 20;
 			
 			float h =0;
+
+			bDisableTextRendering = (cellHeight < 16.0f);
+			textMeshes.clear();
+			string txt;
+			ofBitmapFont bf;
+			float y =0;
 			for(size_t idx =0 ; idx < obj->inObjects.size(); idx++ ){
 				auto & v = obj->inObjects[idx]->channelsVolumes;
 				
@@ -94,18 +100,29 @@ void ofxSoundMatrixMixerRenderer::buildPlayheads(){
 				if(idx < obj->inObjects.size()-1){
 					addLineToMesh(lineGridMesh, p0, p1, ofColor(100));
 				}
+				y = p0.y;
 				
 				auto sgnlSrc = obj->inObjects[idx]->obj->getSignalSourceObject();
 				auto player = dynamic_cast<ofxSoundPlayerObject*>(sgnlSrc);
 				
 				if(player){
 					playheadsIndices[idx] = player;
-					
-					addRectToMesh(playheadMesh,{p0.x, p0.y - playheadHeight,
+					y -= playheadHeight;
+					addRectToMesh(playheadMesh,{p0.x, y,
 						ofMap(player->getPositionMS(), 0, player->getDurationMS(), 0, leftR.width - vuWidth),
 						playheadHeight
 					},ofColor(0),false);
+					if(!bDisableTextRendering)	txt = "Player: " + ofFilePath::getFileName(player->getFilePath());
+				}else if(sgnlSrc){
+					if(!bDisableTextRendering) txt = sgnlSrc->getName();
+				}else{
+					txt = "";
 				}
+				if(!bDisableTextRendering && !txt.empty()){
+					textMeshes.push_back(ofVboMesh());
+					textMeshes.back() = bf.getMesh(txt, p0.x+4, y);
+				}
+				
 			}
 		}
 	}
@@ -117,20 +134,6 @@ void ofxSoundMatrixMixerRenderer::buildOutputSliders(){
 			
 			float outputSliderHeight = 16;
 			float outRectMargin  = 1;
-			
-//			auto brbl =  bottomR.getBottomLeft();
-//			float w = bottomR.width/numChansOut;
-//			for(size_t i = 0; i < numChansOut; i++){
-//				
-//				addRectToMesh(mainMesh,
-//							  {brbl.x+ (w*i) + outRectMargin,
-//								  brbl.y - outputSliderHeight,
-//								  w - (outRectMargin*2),
-//								  outputSliderHeight
-//							  },
-//							  ofColor(70),
-//							  false);
-//			}
 			
 			outputSlidersRect = {
 				bottomR.x + outRectMargin,
@@ -147,8 +150,6 @@ void ofxSoundMatrixMixerRenderer::buildOutputSliders(){
 				outputSliders.linkParameter(i, 0,obj->outputChannels[i].volume);
 			}
 			
-//			ofRectangle r (bottomR.x + outRectMargin, bottomR.getMaxY() - (outputSliderHeight*2), bottomR.width  - (outRectMargin*2), outputSliderHeight);
-////			cout << "outVuMeter rect " << r << endl;
 			auto r = outputSlidersRect;
 			r.y -= outputSliderHeight;
 			obj->outVuMeter.setup(r,VUMeter::VU_DRAW_HORIZONTAL, VUMeter::VU_STACK_HORIZONTAL);
@@ -230,6 +231,15 @@ void ofxSoundMatrixMixerRenderer::updatePlayheads(){
 	}
 }
 //----------------------------------------------------
+void ofxSoundMatrixMixerRenderer::drawStatus(float x, float y){
+	std::stringstream ss;
+	ss << "Num Output Channels : " << numChansOut << std::endl;
+	ss << "Num Input Channels  : " << numChansIn << std::endl;
+	ss << "Num Input Objects   : " << obj->inObjects.size() << std::endl;
+	
+	ofDrawBitmapStringHighlight(ss.str(), x, y);
+}
+//----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 	
 	if(obj != nullptr){
@@ -238,10 +248,6 @@ void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 		if(numChansIn != obj->getNumInputChannels() ||
 		   numChansOut != obj->getNumOutputChannels() ||
 		   drawRect != mixerRect){
-//			std::cout << "ofxSoundMatrixMixerRenderer::draw" << std::endl;
-//			std::cout << numChansIn << "  " << obj->getNumInputChannels() << std::endl;
-//			std::cout << numChansOut << "  " << obj->getNumOutputChannels() << std::endl;
-			
 			
 			
 			numChansIn = obj->getNumInputChannels();
@@ -255,99 +261,18 @@ void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 		lineGridMesh.draw();
 		slidersGrid.draw(gridR);
 		outputSliders.draw(outputSlidersRect);
-		
-//		ofPushStyle();
-//		ofNoFill();
-//		ofSetColor(ofColor::yellow);
-//		ofDrawRectangle(slidersGrid.gridRect);
-//		ofSetColor(ofColor::blue);
-//		ofDrawRectangle(outputSliders.gridRect);
-//		ofPopStyle();
-		
-		
+		if(!bDisableTextRendering){
+			ofBitmapFont bf;
+			bf.getTexture().bind();
+			for(auto& tm: textMeshes){
+				tm.draw();
+			}
+			bf.getTexture().unbind();
+		}
 		
 		updatePlayheads();
 
 		playheadMesh.draw();
-		
-//
-//			ofRectangle cell;
-//			cell.x = gridR.getMaxX()  - chanW;
-//			cell.y = gridR.y;
-//			cell.width = gridR.width/ obj->getNumOutputChannels();
-//			float cellHeight = gridR.height/ obj->getNumInputChannels();
-//			cell.height = std::max(minHeight, gridR.height/ obj->getNumInputChannels());
-//
-//			bool bDisableTextRendering = (cell.height < 16.0f);
-
-
-
-		//TO-DO this logic needs some love 
-//		if(bDisableTextRendering){
-//			if(bSlidersEnabled){
-//				bSlidersWereEnabled = true;
-//				setNonSliderMode(true);
-//			}
-//		}else if(bSlidersWereEnabled && !bSlidersEnabled){
-//			enableSliders();
-//		}
-		
-		// end draw output channels
-		
-		// start draw grid
-		
-//		if(obj->inObjects.size()){
-//		auto p0 = gridR.getTopLeft();
-//		auto p1 = gridR.getTopRight();
-//		for(size_t idx =0 ; idx < obj->inObjects.size()-1; idx++ ){
-//			auto & v = obj->inObjects[idx]->channelsVolumes;
-////
-////		}
-//			
-//			p0.y += cellHeight * v.size();
-//			p1.y += cellHeight * v.size();
-//			
-//			chanR.y = objR.y;
-//			
-//			drawRect(objR);			
-//			ofSetColor(255);
-			
-			
-			
-//			auto sgnlSrc = obj->inObjects[idx]->obj->getSignalSourceObject();
-//			auto player = dynamic_cast<ofxSoundPlayerObject*>(sgnlSrc);
-//			
-//			// input object info header rect draw start
-//			if(player){
-//				if(!bDisableTextRendering){
-//					auto info = getSoundFileInfo(player->getSoundFile());
-//					auto bb = bf.getBoundingBox(info, 0,0);
-//					ofDrawBitmapString(info, objR.x - bb.x, objR.y - bb.y);
-//				}
-//				ofRectangle posR = objR;
-//				posR.height = std::min(cell.height, 10.0f);
-//				posR.y = objR.getMaxY() - posR.height;
-//				posR.width = ofMap(player->getPositionMS(), 0, player->getDurationMS(), 0, objR.width);
-//				
-//				ofSetColor(100);
-//				ofDrawRectangle(posR);
-//				
-//				
-//			}else{
-//				if(!bDisableTextRendering){
-//					auto liveScr = dynamic_cast<ofxSoundInput*>(sgnlSrc);
-//					if(liveScr){
-//						ofDrawBitmapString(ofxSoundUtils::getSoundDeviceString(liveScr->getDeviceInfo(), true, false), objR.x, objR.getMinY()+20);
-//					}else{
-//						ofDrawBitmapString(ofToString(v.size()), objR.x, objR.getMaxY() - 20);
-//					}
-//				}
-//			}
-			// input object info header rect draw end
-//		}
-//		}
-		
-		
 		
 		
 		for(size_t idx =0 ; idx < obj->inObjects.size(); idx++ ){
@@ -355,18 +280,6 @@ void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 		}
 		obj->outVuMeter.draw();
 		
-		std::stringstream ss;
-//
 		
-		
-		
-		ss << "Num Output Channels : " << numChansOut << std::endl;
-		ss << "Num Input Channels  : " << numChansIn << std::endl;
-//		ss << "Num Input Objects   : " << obj->inObjects.size() << std::endl;
-		
-		//		vecToString(ss, obj->matrixInputChannelMap);
-		//		vecToString(ss, obj->numConnectionInputChannels);
-		//		vecToString(ss, obj->connectionFirstChannel);
-		ofDrawBitmapStringHighlight(ss.str(), 20, 20);
 	}
 }
