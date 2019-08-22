@@ -93,7 +93,7 @@ private:
 	
 	bool bCompressed;
 	bool bLoaded;
-	uint64_t duration;
+	uint64_t duration = 0;
 	unsigned int numChannels;
 	unsigned int sampleRate;
 	uint64_t numSamples;
