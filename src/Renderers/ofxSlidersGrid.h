@@ -43,21 +43,22 @@ public:
 	void setGridSize(size_t x, size_t y);
 	void linkParameter(size_t x, size_t y, ofParameter<float> & param);
 
+	ofRectangle gridRect;
 protected:
 	void updateParameter(GridParameter & p);
+	void updateAllSliders();
 	
 	void updateSlider(size_t x, size_t y, float val);
 	
 	void checkOverGrid( const glm::vec2& p, bool bUpdateSlider, bool bPressed = false);
 	
-	bool bOverGrid = false;
+	bool bDragging = false;
 	ofRectangle overGridRect;
 	//	size_t overXInd = 0;
 	//	size_t overYInd = 0;
 	size_t pressedXInd = 0;
 	size_t pressedYInd = 0;
 	
-	ofRectangle gridRect;
 	
 	
 	ofVboMesh lineGridMesh, slidersGridMesh;

@@ -7,7 +7,9 @@
 //
 
 #include "ofxSlidersGrid.h"
+#include "ofxSoundRendererUtils.h"
 
+using namespace ofxSoundRendererUtils;
 //----------------------------------------------------
 
 
@@ -45,18 +47,21 @@ bool ofxSlidersGrid::isEnabled(){
 }
 //----------------------------------------------------
 void ofxSlidersGrid::checkOverGrid( const glm::vec2& p, bool bUpdateSlider, bool bPressed){
-	bOverGrid = gridRect.inside(p);
-	if(bPressed){
-		pressedXInd = floor(ofMap(p.x, gridRect.x, gridRect.getMaxX(), 0, xSize, true));
-		pressedYInd = floor(ofMap(p.y, gridRect.y, gridRect.getMaxY(), 0, ySize, true));
-		overGridRect.x = gridRect.x + (overGridRect.width * pressedXInd );
-		overGridRect.y = gridRect.y + (overGridRect.height * pressedYInd );
-	}
-	if(bUpdateSlider){
-		float vol = ofMap( p.x - overGridRect.x, 0, overGridRect.width, 0, 1, true );
+	if(xSize > 0 && ySize > 0){
 		
-		if(parameters[pressedYInd][pressedXInd]){
-			parameters[pressedYInd][pressedXInd]->param = vol;
+		if(bPressed && gridRect.inside(p)){
+			bDragging = true;
+			pressedXInd = floor(ofMap(p.x, gridRect.x, gridRect.getMaxX(), 0, xSize, true));
+			pressedYInd = floor(ofMap(p.y, gridRect.y, gridRect.getMaxY(), 0, ySize, true));
+			overGridRect.x = gridRect.x + (overGridRect.width * pressedXInd );
+			overGridRect.y = gridRect.y + (overGridRect.height * pressedYInd );
+		}
+		if(bUpdateSlider && bDragging){
+			float vol = ofMap( p.x - overGridRect.x, 0, overGridRect.width, 0, 1, true );
+			
+			if(parameters[pressedYInd][pressedXInd]){
+				parameters[pressedYInd][pressedXInd]->param = vol;
+			}
 		}
 	}
 }
@@ -66,6 +71,7 @@ void ofxSlidersGrid::mousePressed(ofMouseEventArgs& args){
 }
 //----------------------------------------------------
 void ofxSlidersGrid::mouseMoved(ofMouseEventArgs& args){
+	bDragging = false;
 	checkOverGrid(args, false);
 }
 //----------------------------------------------------
@@ -75,52 +81,12 @@ void ofxSlidersGrid::mouseDragged(ofMouseEventArgs& args){
 //----------------------------------------------------
 void ofxSlidersGrid::mouseReleased(ofMouseEventArgs& args){
 	checkOverGrid(args, true);
+	bDragging = false;
 }
 
-void addLineToMesh(ofVboMesh& mesh, const glm::vec3& p0, const glm::vec3& p1, const ofFloatColor& color){
-	auto i = mesh.getVertices().size();
-	mesh.addVertex(p0);
-	mesh.addVertex(p1);
-	mesh.addIndex(i);
-	mesh.addIndex(i+1);
-	mesh.addColors({color,color});
-}
-void addRectToMesh(ofVboMesh& mesh, const ofRectangle& r, const ofFloatColor& color, bool bAddLinesIndices){
-//	std::cout << "addRectToMesh " << r << std::endl;
-	auto i = mesh.getVertices().size();
-	
-	mesh.addVertex(r.getTopLeft());
-	mesh.addVertex(r.getTopRight());
-	mesh.addVertex(r.getBottomRight());
-	mesh.addVertex(r.getBottomLeft());
-	mesh.addColors({color,color,color,color});
-	
-	if(bAddLinesIndices){
-		mesh.addIndex(i);
-		mesh.addIndex(i+1);
-		
-		mesh.addIndex(i+1);
-		mesh.addIndex(i+2);
-		
-		mesh.addIndex(i+2);
-		mesh.addIndex(i+3);
-		
-		mesh.addIndex(i+3);
-		mesh.addIndex(i);
-	}else{
-		mesh.addIndex(i);
-		mesh.addIndex(i+1);
-		mesh.addIndex(i+2);
-		
-		mesh.addIndex(i);
-		mesh.addIndex(i+2);
-		mesh.addIndex(i+3);
-		
-	}
-}
 //----------------------------------------------------
 void ofxSlidersGrid::buildMeshes(){
-	std::cout << "ofxSlidersGrid::buildMeshes" << std::endl;
+//	std::cout << "ofxSlidersGrid::buildMeshes" << std::endl;
 	
 	lineGridMesh.clear();
 	slidersGridMesh.clear();
@@ -137,7 +103,8 @@ void ofxSlidersGrid::buildMeshes(){
 	
 	if(xSize > 0 && ySize > 0){
 		
-//		std::cout << "xSize: " << xSize << " ySize: " << . ySize << std::endl;
+//		std::cout << "SlidersGrid::BuildMeshes xSize: " << xSize << " ySize: " << ySize << " gridRect: " << gridRect << std::endl;
+		
 		
 		auto p0 = gridRect.getTopLeft();
 		auto p1 = gridRect.getTopRight();
@@ -174,31 +141,49 @@ void ofxSlidersGrid::buildMeshes(){
 			}
 		}
 	}
+	updateAllSliders();
 }
+
 //----------------------------------------------------
 void ofxSlidersGrid::updateParameter(GridParameter & p){
 	updateSlider(p.x, p.y, p.param.get());
 }
 //----------------------------------------------------
+void ofxSlidersGrid::updateAllSliders(){
+	for(auto& y: parameters ){
+		for(auto& x: y){
+			updateParameter(*x);
+		}
+	}
+}
+//----------------------------------------------------
 void ofxSlidersGrid::updateSlider(size_t x, size_t y, float val){
-	
+//	std::cout << "x: " << x << " y: " << y  << " - "<< val << " : ";//std::endl;
 	//	float vol = ofMap( p.x - overGridRect.x, 0, overGridRect.width, 0, 1, true );
 	size_t vInd = (x + y * xSize)*4;
 	auto& v = slidersGridMesh.getVertices();
-	
+	if(vInd + 2 < v.size()){
 	v[vInd +1].x = v[vInd].x + (val * (overGridRect.width - 2));
 	v[vInd +2].x = v[vInd +1].x;
 	
+	
+//	std::cout << v[vInd].x << " " << v[vInd +1].x << std::endl;
+	}
 	//	if(obj != nullptr){
 	//		obj->setVolumeForChannel(val, overYInd,overXInd);
 	//	}
 }
+//----------------------------------------------------
 void ofxSlidersGrid::GridParameter::setup(const size_t& _x, const size_t& _y, ofParameter<float>& p, ofxSlidersGrid* grid){
 	param.makeReferenceTo(p);
 	listener = param.newListener(this, &ofxSlidersGrid::GridParameter::notify);
 	this->grid = grid;
 	x = _x;
 	y = _y;
+	if(grid!=nullptr){
+		grid->updateSlider(x, y, param.get());
+	}
+	
 }
 
 
@@ -211,22 +196,22 @@ void ofxSlidersGrid::GridParameter::notify(float &){
 
 //----------------------------------------------------
 void ofxSlidersGrid::setGridSize(size_t _x, size_t _y){
-//	if(xSize != _x || ySize != _y){
+	if(	xSize != _x && ySize != _y){
+
 		xSize = _x;
 		ySize = _y;
-//	std::cout << "xSize: " << xSize << " ySize: " << ySize << std::endl;
+
+		parameters.clear();
 		parameters.resize(ySize);
 		for(size_t y = 0; y < parameters.size(); y++){
+			parameters[y].clear();
 			parameters[y].resize(xSize);
 			for(size_t x = 0; x < parameters[y].size(); x++){
 				parameters[y][x] = make_unique<ofxSlidersGrid::GridParameter>();
-				//				auto& p = parameters[y][x];
-				//				p.x = x;
-				//				p.y = y;
 			}
 		}
 	buildMeshes();
-//	}
+	}
 }
 //----------------------------------------------------
 void ofxSlidersGrid::linkParameter(size_t x, size_t y, ofParameter<float> & param){
@@ -238,7 +223,7 @@ void ofxSlidersGrid::linkParameter(size_t x, size_t y, ofParameter<float> & para
 }
 //----------------------------------------------------
 void ofxSlidersGrid::draw(const ofRectangle& _gridRect){
-	
+	if(bEnabled){
 	//	if(obj != nullptr){
 	
 	if(gridRect != _gridRect){
@@ -255,22 +240,22 @@ void ofxSlidersGrid::draw(const ofRectangle& _gridRect){
 	lineGridMesh.draw();
 	slidersGridMesh.draw();
 	
-	if(bOverGrid){
-		ofPushStyle();
-		ofNoFill();
-		ofSetColor(ofColor::red);
-		ofDrawRectangle(overGridRect);
-		ofPopStyle();
+//	if(bOverGrid){
+//		ofPushStyle();
+//		ofNoFill();
+//		ofSetColor(ofColor::red);
+//		ofDrawRectangle(overGridRect);
+//		ofPopStyle();
+//	}
 	}
+//	stringstream ss;
+//	ss << "xSize " << xSize << std::endl;
+//	ss << "ySize " << ySize << std::endl;
+//	ss << " v " << slidersGridMesh.getVertices().size() << std::endl;
+//	
+//	ofDrawBitmapStringHighlight(ss.str(), 100,100);
 	
-	stringstream ss;
-	ss << "xSize " << xSize << std::endl;
-	ss << "ySize " << ySize << std::endl;
-	ss << " v " << slidersGridMesh.getVertices().size() << std::endl;
-	
-	ofDrawBitmapStringHighlight(ss.str(), 100,100);
-	
-	ofSetColor(ofColor::yellow);
+//	ofSetColor(ofColor::yellow);
 //	for(auto& v: slidersGridMesh.getVertices()){
 //		ofDrawCircle(v, 5);
 //	}
