@@ -118,7 +118,8 @@ protected:
 		
 		ofxSoundObject* obj;
 		
-		std::vector< std::vector<ofParameter<float> > > channelsVolumes; //[in channel index] [ output channel index] 
+		std::vector< std::vector<ofParameter<float> > > channelsVolumes; //[in channel index] [ output channel index]
+//		std::vector< std::vector<std::atomic<float> > > channelsVolumesAtomic; //[in channel index] [ output channel index]
 		VUMeter vuMeter;
 		bool bBufferProcessed = false;
 		
@@ -137,7 +138,7 @@ protected:
 		ofxSoundChannelVisibility visibility = VISIBLE; 
 		
 	private:
-
+		ofMutex mutex;
 		ofSoundBuffer buffer;
 	};
 
@@ -171,8 +172,8 @@ protected:
 	
 	void disconnectInput(ofxSoundObject * input) override;
 	std::vector<std::shared_ptr<MatrixInputObject>>inObjects;
-	size_t numInputChannels = 0;
-	size_t numOutputChannels = 0;
+	std::atomic<size_t> numInputChannels;
+	std::atomic<size_t> numOutputChannels;
 	void updateNumInputChannels();
 	void updateNumOutputChannels(const size_t & nc);
 	
