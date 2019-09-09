@@ -43,15 +43,29 @@ void ofxSoundRecorderObject::write(ofSoundBuffer& input){
 		<< "                        bitsPerSample: " << format.bitsPerSample;
 		
 		wav_handle = drwav_open_file_write( filenameBuffer.c_str(), &format);
+//		input.copyTo(internalRecordingBuffer);
+		internalRecordingBuffer = input;
+		cout << "input.getNumChannels : " << input.getNumChannels() <<endl;
+		cout << "internalRecordingBuffer.getNumChannels : " << internalRecordingBuffer.getNumChannels() <<endl;
 	}else if(recState == DEINIT_REC){
 		ofLogVerbose("ofxSoundRecorderObject::process") << "finished recording file " << filenameBuffer;
 		drwav_uninit(wav_handle);
 		wav_handle  = NULL;
 		recState = IDLE;
+		if(bRecordToRam){
+			std::lock_guard<std::mutex> lck (mutex);
+			internalRecordingBuffer.swap(recordingBuffer);
+			bRecordToRam = false;
+		}
+		
 		ofNotifyEvent(recordingEndEvent, filenameBuffer);
 	}
 	
 	if( recState == REC_ON && wav_handle != NULL){
+		if(bRecordToRam){
+//			recordingBuffer.clear()
+			internalRecordingBuffer.append(input);
+		}
 		drwav_uint64 samplesWritten = drwav_write_pcm_frames(wav_handle, input.getNumFrames(), input.getBuffer().data());
 		if(samplesWritten != input.getNumFrames()){
 			ofLogWarning("ofxSoundRecorderObject::process") << "samplesWritten " << samplesWritten << " != input.getNumFrames() " <<  input.getNumFrames() << endl;
@@ -83,21 +97,26 @@ bool ofxSoundRecorderObject::isRecording(){
 	return recState != IDLE;
 }
 //--------------------------------------------------------------
-void ofxSoundRecorderObject::startRecording(const std::string & filename){
+void ofxSoundRecorderObject::startRecording(const std::string & filename, bool recordToRam){
 
+	
 	if(recState == IDLE){
-		recState = INIT_REC;
 		if(filename.empty()){
 			this->filename = ofToDataPath(ofGetTimestampString()+".wav", true);
 		}else{
 			this->filename = filename;
 		}
 		{
-			std::lock_guard<std::mutex> lck (mutex);		
+			std::lock_guard<std::mutex> lck (mutex);
+			bRecordToRam = recordToRam;
+			if(bRecordToRam){
+				recordingBuffer.clear();
+				internalRecordingBuffer.clear();
+			}
 			this->filenameBuffer = this->filename;
 			recStartTime = ofGetElapsedTimef();
 		}
-		
+		recState = INIT_REC;
 	}else{
 		ofLogWarning("ofxSoundRecorderObject::startRecording")<< "can not start recording when there is already another recording happening. Please stop this recording before beggining a new one";
 	}
@@ -130,4 +149,8 @@ std::string ofxSoundRecorderObject::getRecStateString(){
 	if(state == REC_ON)return "RECORDING";
 	if(state == DEINIT_REC)return "DEINIT_REC";
 	return "";
+}
+//--------------------------------------------------------------
+const ofSoundBuffer& ofxSoundRecorderObject::getRecordedBuffer(){
+	return recordingBuffer;
 }

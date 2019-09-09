@@ -25,9 +25,12 @@ public:
 	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
 	
 	
-	// This will return true if it is recording. It is thread safe. When recording if you call stopRecording(), isRecording() will return false only when the recorded file has been closed. As the recording task happens on a thread different to the main thread, if you call stopRecording() and then immediatelly check isRecording() it is possible that you might get true, as the recorded file might not be closed yet.
+	/// This will return true if it is recording. It is thread safe. When recording if you call stopRecording(), isRecording() will return false only when the recorded file has been closed. As the recording task happens on a thread different to the main thread, if you call stopRecording() and then immediatelly check isRecording() it is possible that you might get true, as the recorded file might not be closed yet.
 	bool isRecording();
-	void startRecording(const std::string & filename);
+	/// \brief start recording a file to disk.
+	/// \param filepath the file path where the recording wil get stored.
+	/// \param recordToRam if set to true it will also keep a buffer of the recording in memory. It is useful for sampling, when you want to playback what you've recorded immediately after finishing recording.
+	void startRecording(const std::string & filepath, bool recordToRam = false);
 	void stopRecording();
 	
 	
@@ -37,6 +40,11 @@ public:
 	
 	
 	std::string getRecStateString();
+	
+	
+	/// \brief returns the sound buffer with the recently recorded data.
+	/// It will only return a valid buffer if not currently recording.
+	const ofSoundBuffer& getRecordedBuffer();
 	
 	
 	// This event gets triggered when the recording has finished and the file has been closed. 
@@ -70,4 +78,9 @@ private:
 	std::string filename, filenameBuffer;
 	ofMutex mutex;
 	float recStartTime = 0.0f;
+	
+	ofSoundBuffer recordingBuffer, internalRecordingBuffer;
+	
+	bool bRecordToRam = false;
+	
 };
