@@ -16,16 +16,6 @@ using namespace ofxSoundRendererUtils;
 
 //----------------------------------------------------
 
-std::string getSoundFileInfo(const ofxSoundFile& f){
-	std:stringstream ss;
-	ss << ofFilePath::getBaseName(f.getPath())  << std::endl;
-	ss << "  Duration " << f.getDuration() << std::endl;
-	ss << "  NumChannels " << f.getNumChannels() << std::endl;
-	ss << "  SampleRate " << f.getSampleRate() << std::endl;
-	ss << "  NumSamples " << f.getNumSamples();
-	return ss.str();
-}
-
 //----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::enableSliders(){
 	slidersGrid.enable();
