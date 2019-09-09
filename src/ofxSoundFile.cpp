@@ -81,16 +81,16 @@ void ofxSoundFile::setFromAudioFile(ofxAudioFile& audiofile){
 	reset();
 	numChannels = audiofile.channels();
 	sampleRate =  audiofile.samplerate();
-	numSamples = audiofile.length();
+	numFrames = audiofile.length();
 	
-	buffer.resize(numSamples*numChannels);
-	buffer.copyFrom(audiofile.data(), numSamples, numChannels, sampleRate);
+	buffer.resize(numFrames*numChannels);
+	buffer.copyFrom(audiofile.data(), numFrames, numChannels, sampleRate);
 	
 	audiofile.free();
 	
 	path = tempPath;
 
-	duration = 1000* float(numSamples) / float(sampleRate);
+	duration = 1000* float(numFrames) / float(sampleRate);
 	
 	bCompressed = (ofFilePath::getFileExt(ofToLower(path)) == "mp3");
 	
@@ -205,7 +205,7 @@ void ofxSoundFile::reset(){
 	duration = 0;
 	numChannels = 0;
 	sampleRate = 0;
-	numSamples = 0;
+	numFrames = 0;
 	path = "";
 }
 //--------------------------------------------------------------
@@ -229,8 +229,8 @@ const unsigned int ofxSoundFile::getSampleRate() const{
 	return sampleRate;
 }
 //--------------------------------------------------------------
-const uint64_t ofxSoundFile::getNumSamples() const{
-	return numSamples;
+const uint64_t ofxSoundFile::getNumFrames() const{
+	return numFrames;
 }
 //--------------------------------------------------------------
 const bool ofxSoundFile::isCompressed() const{

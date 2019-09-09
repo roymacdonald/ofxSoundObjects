@@ -52,7 +52,8 @@ public:
 	const uint64_t 		getDuration() const;
 	const unsigned int 	getNumChannels() const;
 	const unsigned int 	getSampleRate() const;
-	const uint64_t 		getNumSamples() const;
+	const uint64_t 		getNumFrames() const;
+	OF_DEPRECATED_MSG("Use getNumFrames instead",const uint64_t 		getNumSamples() const){return getNumFrames();}
 	const bool 			isCompressed() const;
 	const bool 			isLoaded() const;
 	const std::string 	getPath() const;
@@ -62,6 +63,7 @@ public:
 	
 	ofEvent<void> loadAsyncEndEvent;
 	
+	friend std::ostream& operator<<(std::ostream& os, const ofxSoundFile& M);
 protected:
 	
 	
@@ -96,8 +98,16 @@ private:
 	uint64_t duration = 0;
 	unsigned int numChannels;
 	unsigned int sampleRate;
-	uint64_t numSamples;
+	uint64_t numFrames;
 	std::string path;
 //	ofMutex mtx;
 
 };
+std::ostream& operator<<(std::ostream& os, const ofxSoundFile& f){
+		os << ofFilePath::getBaseName(f.getPath())  << std::endl;
+		os << "  Duration    " << f.getDuration() << std::endl;
+		os << "  NumChannels " << f.getNumChannels() << std::endl;
+		os << "  SampleRate  " << f.getSampleRate() << std::endl;
+		os << "  NumSamples  " << f.getNumFrames();
+	return os;
+}
