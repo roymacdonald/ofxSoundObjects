@@ -15,11 +15,14 @@
 #include "ofSoundStream.h"
 #include "ofEvents.h"
 #include "ofxSoundObjects.h"
-//#include "ofxSoundFileThreadedLoader.h"
+
 
 class ofxSoundPlayerObject:  public ofxSoundObject {
 public:
 	ofxSoundPlayerObject();
+	
+	bool load(const ofSoundBuffer& loadBuffer, const std::string& name);
+	
 	bool load(std::filesystem::path filePath, bool stream = false);
 	bool loadAsync(std::filesystem::path filePath, bool bAutoplay);
 	void unload();
@@ -38,22 +41,17 @@ public:
 	void setPositionMS(int ms, size_t index =0 );
 
 	float getPosition(size_t index =0) const;
-	int getPositionMS(size_t index =0) const;
-	bool isPlaying(int index = -1) const;
+	int	  getPositionMS(size_t index =0) const;
+	bool  isPlaying(int index = -1) const;
 	float getSpeed(size_t index =0) const;
 	float getPan(size_t index =0) const;
-	bool isLoaded() const;
+	bool  isLoaded() const;
 	float getVolume(int index =-1) const;
-	bool getIsLooping(size_t index =0) const;
+	bool  getIsLooping(size_t index =0) const;
 	unsigned long getDurationMS();
 
-	ofSoundBuffer & getCurrentBuffer();
-
-//	static void setMaxSoundsTotal(int max);
-//	static void setMaxSoundsPerPlayer(int max);
-//	void setMaxSounds(int max);
-
-//	ofEvent<ofSoundBuffer> newBufferE;
+	const ofSoundBuffer & getCurrentBuffer() const;
+	const ofSoundBuffer & getBuffer() const;
     ofEvent<size_t> endEvent;
 	ofEvent<void>& getAsyncLoadEndEvent();
 
@@ -99,33 +97,38 @@ private:
 	void setState(State newState);
 	bool isState(State compState);
 	
-	void init();
+	void initFromSoundFile();
 	
 	
 	void audioOutBuffersChanged( int nFrames, int nChannels, int sampleRate );
 	virtual void audioOut(ofSoundBuffer& outputBuffer) override;
 	void updatePositions(int numFrames);
 	
-	size_t playerSampleRate;
+	std::atomic<size_t> playerSampleRate;
 	size_t playerNumFrames;
 	size_t playerNumChannels;
+	size_t sourceSampleRate;
+	size_t sourceNumFrames;
+	size_t sourceNumChannels;
+	size_t sourceDuration;
 
-//	static int maxSoundsTotal;
-//	static int maxSoundsPerPlayer;
-//	int maxSounds;
 	ofSoundBuffer buffer; 
 	ofSoundBuffer resampledBuffer;
 	ofxSoundFile soundFile;
+	
 	std::atomic<bool> bStreaming;
 	std::atomic<bool> bMultiplay;
 	std::atomic<bool> bIsPlayingAny;
 
+	void setNumInstances(const size_t & num);
+	
 	vector<soundPlayInstance> instances;
 
 	void checkPaused();
     
     void updateInstance(std::function<void(soundPlayInstance& inst)> func, int index, string methodName);
 	ofMutex mutex;
+	mutable ofMutex instacesMutex, volumeMutex;
 	
 	
 	void update(ofEventArgs&);
