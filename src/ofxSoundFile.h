@@ -103,11 +103,3 @@ private:
 //	ofMutex mtx;
 
 };
-std::ostream& operator<<(std::ostream& os, const ofxSoundFile& f){
-		os << ofFilePath::getBaseName(f.getPath())  << std::endl;
-		os << "  Duration    " << f.getDuration() << std::endl;
-		os << "  NumChannels " << f.getNumChannels() << std::endl;
-		os << "  SampleRate  " << f.getSampleRate() << std::endl;
-		os << "  NumSamples  " << f.getNumFrames();
-	return os;
-}
