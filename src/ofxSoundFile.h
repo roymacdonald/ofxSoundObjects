@@ -49,14 +49,14 @@ public:
 //	void readTo(ofSoundBuffer &buffer, uint64_t samples = 0);
 	
 	/// returns sound file duration in milliseconds
-	const uint64_t 		getDuration() const;
-	const unsigned int 	getNumChannels() const;
-	const unsigned int 	getSampleRate() const;
-	const uint64_t 		getNumFrames() const;
+	const uint64_t 		& getDuration() const;
+	const unsigned int 	& getNumChannels() const;
+	const unsigned int 	& getSampleRate() const;
+	const uint64_t 		& getNumFrames() const;
 	OF_DEPRECATED_MSG("Use getNumFrames instead",const uint64_t 		getNumSamples() const){return getNumFrames();}
-	const bool 			isCompressed() const;
-	const bool 			isLoaded() const;
-	const std::string 	getPath() const;
+	const bool 			& isCompressed() const;
+	const bool 			& isLoaded() const;
+	const std::string 	& getPath() const;
 
 	ofSoundBuffer&  getBuffer();
 	const ofSoundBuffer&  getBuffer() const;
