@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup>
+		<ClCompile Include="src\ofApp.cpp">
+			<Filter>src</Filter>
+		</ClCompile>
+		<ClCompile Include="src\main.cpp">
+			<Filter>src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxAudioFile\src\ofxAudioFile.cpp">
+			<Filter>addons\ofxAudioFile\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundFile.cpp">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMatrixMixer.cpp">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMixer.cpp">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMultiplexer.cpp">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObject.cpp">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundPlayerObject.cpp">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundRecorderObject.cpp">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundUtils.cpp">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\Renderers\ofxSlidersGrid.cpp">
+			<Filter>addons\ofxSoundObjects\src\Renderers</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\Renderers\ofxSoundObjectBaseRenderer.cpp">
+			<Filter>addons\ofxSoundObjects\src\Renderers</Filter>
+		</ClCompile>
+		<ClCompile Include="..\..\..\addons\ofxSoundObjects\src\Renderers\ofxSoundObjectMatrixMixerRenderer.cpp">
+			<Filter>addons\ofxSoundObjects\src\Renderers</Filter>
+		</ClCompile>
+	</ItemGroup>
+	<ItemGroup>
+		<Filter Include="src">
+			<UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons">
+			<UniqueIdentifier>{71834F65-F3A9-211E-73B8-DC85}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxAudioFile">
+			<UniqueIdentifier>{010EAA6C-DF0B-6AE2-9885-C475}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxAudioFile\src">
+			<UniqueIdentifier>{C1E6B5D8-5BFE-B788-AEF4-D956}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxAudioFile\libs">
+			<UniqueIdentifier>{FFF0DC64-CB2B-F1B7-B927-0659}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSoundObjects">
+			<UniqueIdentifier>{A1DEA472-3243-C85B-12C4-7080}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSoundObjects\src">
+			<UniqueIdentifier>{F49E5818-5434-4299-95C1-2A8C}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSoundObjects\src\Renderers">
+			<UniqueIdentifier>{7FC1F407-8245-86D7-940C-A245}</UniqueIdentifier>
+		</Filter>
+		<Filter Include="addons\ofxSoundObjects\src\SoundObjects">
+			<UniqueIdentifier>{7D005C6E-D3DD-315D-EF0E-E12B}</UniqueIdentifier>
+		</Filter>
+	</ItemGroup>
+	<ItemGroup>
+		<ClInclude Include="src\ofApp.h">
+			<Filter>src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxAudioFile\src\ofxAudioFile.h">
+			<Filter>addons\ofxAudioFile\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxAudioFile\libs\dr_flac.h">
+			<Filter>addons\ofxAudioFile\libs</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxAudioFile\libs\dr_mp3.h">
+			<Filter>addons\ofxAudioFile\libs</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxAudioFile\libs\dr_wav.h">
+			<Filter>addons\ofxAudioFile\libs</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxAudioFile\libs\stb_vorbis.h">
+			<Filter>addons\ofxAudioFile\libs</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundFile.h">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMatrixMixer.h">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMixer.h">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundMultiplexer.h">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObject.h">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObjects.h">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundObjectsConstants.h">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundPlayerObject.h">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundRecorderObject.h">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\ofxSoundUtils.h">
+			<Filter>addons\ofxSoundObjects\src</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\Renderers\ofxSlidersGrid.h">
+			<Filter>addons\ofxSoundObjects\src\Renderers</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\Renderers\ofxSoundObjectBaseRenderer.h">
+			<Filter>addons\ofxSoundObjects\src\Renderers</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\Renderers\ofxSoundObjectMatrixMixerRenderer.h">
+			<Filter>addons\ofxSoundObjects\src\Renderers</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\DigitalDelay.h">
+			<Filter>addons\ofxSoundObjects\src\SoundObjects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\LowPassFilter.h">
+			<Filter>addons\ofxSoundObjects\src\SoundObjects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\NoiseGenerator.h">
+			<Filter>addons\ofxSoundObjects\src\SoundObjects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\SineWaveGenerator.h">
+			<Filter>addons\ofxSoundObjects\src\SoundObjects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\VUMeter.h">
+			<Filter>addons\ofxSoundObjects\src\SoundObjects</Filter>
+		</ClInclude>
+		<ClInclude Include="..\..\..\addons\ofxSoundObjects\src\SoundObjects\waveformDraw.h">
+			<Filter>addons\ofxSoundObjects\src\SoundObjects</Filter>
+		</ClInclude>
+	</ItemGroup>
+	<ItemGroup>
+		<ResourceCompile Include="icon.rc" />
+	</ItemGroup>
+</Project>
