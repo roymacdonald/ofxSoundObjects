@@ -41,6 +41,17 @@ public:
 	} ;
 	
 
+	/// \brief get Draw Mode
+	DrawMode getDrawMode();
+	/// \brief get Stack Mode
+	StackMode getStackMode();
+	
+	/// \brief set Draw Mode
+	void setDrawMode(DrawMode newMode);
+	/// \brief set Stack Mode
+	void setStackMode(StackMode newMode);
+	
+	
 	
 	/// \brief setup the VU Meter and its drawing configuration
 	///
@@ -128,7 +139,7 @@ public:
 	/// \returns float The peak value. Its range is 0 to 1
 	float getPeakForChannel(size_t channel) const;
 	
-	
+
 	
 	///---------- static functions ------------------
 	/// Static Functions behave as globals for all the instances of this class, and will affect all of these.
@@ -164,7 +175,7 @@ protected:
 	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
 	
 	
-	void buildMeshes(bool bForce = false);
+	void buildMeshes();
 	
 	void updateMeshes();
 	
@@ -179,7 +190,7 @@ protected:
 private:
 	
 	bool bNeedsUpdate = false;
-	
+	bool bNeedsBuildMeshes = true;
 	struct VuData{
 		std::vector<float>rms;
 		std::vector<float>peak;

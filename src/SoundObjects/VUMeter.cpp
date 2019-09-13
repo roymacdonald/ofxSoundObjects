@@ -29,7 +29,7 @@ void VUMeter::setup(const ofRectangle& r, DrawMode drawMode, StackMode stackMode
 	this->drawMode = drawMode;
 	this->stackMode = stackMode;
 	setDrawRectangle(r);
-	
+	bNeedsBuildMeshes = true;
 }
 //--------------------------------------------------------------
 void VUMeter::setup(float x, float y, float w, float h, DrawMode drawMode, StackMode stackMode){
@@ -39,7 +39,8 @@ void VUMeter::setup(float x, float y, float w, float h, DrawMode drawMode, Stack
 void VUMeter::setDrawRectangle(const ofRectangle& r){
 	if(drawRect != r){
 		drawRect.set(r);
-		buildMeshes(true);
+		bNeedsBuildMeshes = true;
+		buildMeshes();
 	}
 }
 //--------------------------------------------------------------
@@ -100,10 +101,11 @@ void VUMeter::draw(){
 	
 }
 //--------------------------------------------------------------
-void VUMeter::buildMeshes(bool bForce){
+void VUMeter::buildMeshes(){
 	size_t n = drawData.rms.size();
-	if(prevNumChans != n || getForceRebuild() || bForce ){
+	if(prevNumChans != n || getForceRebuild() || bNeedsBuildMeshes ){
 		
+		bNeedsBuildMeshes = false;
 		prevNumChans = n;
 		
 		lineMesh.clear();
@@ -204,6 +206,24 @@ void VUMeter::updateMeshes(){
 			cl[vi+3] = linePeakColor;
 			
 		}
+	}
+}
+//--------------------------------------------------------------
+VUMeter::DrawMode VUMeter::getDrawMode(){return drawMode;}
+//--------------------------------------------------------------
+VUMeter::StackMode VUMeter::getStackMode(){return stackMode;}
+//--------------------------------------------------------------
+void VUMeter::setDrawMode(VUMeter::DrawMode newMode){
+	if(drawMode != newMode){
+		drawMode = newMode;
+		bNeedsBuildMeshes = true;
+	}
+}
+//--------------------------------------------------------------
+void VUMeter::setStackMode(VUMeter::StackMode newMode){
+	if(stackMode != newMode){
+		stackMode = newMode;
+		bNeedsBuildMeshes = true;
 	}
 }
 //--------------------------------------------------------------
