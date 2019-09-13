@@ -13,298 +13,166 @@
 #include "ofxSoundRendererUtils.h"
 
 using namespace ofxSoundRendererUtils;
+class ofxSoundMatrixMixer;
 class VUMeter:  public ofxSoundObject{
 public:
-	VUMeter():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){}
+	friend class ofxSoundMatrixMixer;
+
 	virtual  std::string getName() override{ return "VUMeter";}
 	
-	//--------------------------------------------------------------
-	VUMeter(const VUMeter& a): ofxSoundObject(a){
-		this->drawMode = a.drawMode;
-		this->stackMode = a.stackMode;
-		setDrawRectangle(a.drawRect);
-	}
-	//--------------------------------------------------------------
-	VUMeter& operator=(const VUMeter& mom) {
-		this->processData = mom.processData;
-		this->drawData = mom.drawData;
-		this->setDrawRectangle(mom.drawRect);
-		this->drawMode = mom.drawMode;
-		this->stackMode = mom.stackMode;
-		return *this;
-	}
+	VUMeter();
+	VUMeter(const VUMeter& a);
+	VUMeter& operator=(const VUMeter& mom);
+	
 	
 	enum DrawMode{
+		/// The VU meter is draw vertically. meaning that it will move up and down
 		VU_DRAW_VERTICAL =0,
+		/// The VU meter is draw horizontally. meaning that it will move left to right
 		VU_DRAW_HORIZONTAL
-	} drawMode = VU_DRAW_VERTICAL;
+	};
 	enum StackMode{
+		/// stack mode only is used when the VUMeter is used with more than one channel of audio.
+		
+		/// The VU meter is stacked vertically. meaning that the channels VUMeters will be stacked one on top of the other.
 		VU_STACK_VERTICAL =0,
+		/// The VU meter is stacked horizontally. meaning that the channels VUMeters will be stacked sideways, fron left to right
 		VU_STACK_HORIZONTAL
-	} stackMode = VU_STACK_HORIZONTAL;
+	} ;
 	
-	//--------------------------------------------------------------
-	void setup(const ofRectangle& r, DrawMode drawMode = VU_DRAW_VERTICAL, StackMode stackMode = VU_STACK_HORIZONTAL){
-		this->drawMode = drawMode;
-		this->stackMode = stackMode;
-		setDrawRectangle(r);
-		
-	}
-	void setup(float x, float y, float w, float h, DrawMode drawMode = VU_DRAW_VERTICAL, StackMode stackMode = VU_STACK_HORIZONTAL){
-		setup(ofRectangle(x,y,w, h), drawMode, stackMode);
-	}
-	//--------------------------------------------------------------
-	void setDrawRectangle(const ofRectangle& r){
-		if(drawRect != r){
-//			std::cout << "VUMeter drawRect " << drawRect << std::endl;
-			drawRect.set(r);
-			buildMeshes();
-		}
-	}
-	//--------------------------------------------------------------
-	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override{
-		
-		calculate(input);
-		input.copyTo(output);
-	}
-	//--------------------------------------------------------------
-	void calculate(ofSoundBuffer &input){
-		
-		size_t nc = input.getNumChannels();
-		
-		processData.resize(nc);
-		
-		
-		auto t = ofGetElapsedTimeMillis();
-		
-		if(ofxSoundUtils::getBufferPeaks(input, processData.peak, processData.holdPeak)){
-			lastPeakTime = t;
-			processData.lastPeak = processData.peak;
-			processData.holdPeak = processData.peak;
-		}else{
-			auto releaseStart = lastPeakTime + getPeakHoldTime();
-			auto releaseEnd = releaseStart + getPeakReleaseTime();
-			if( releaseStart < t && t <= releaseEnd){
-				float pct = 1.0 - ofMap(t, releaseStart, releaseEnd,  0, 1, true);
-				for(size_t i = 0; i < processData.peak.size(); i++){
-					processData.holdPeak[i] = processData.lastPeak[i]*pct;
-				}
-			}
-		}
-		
-		for(size_t i =0; i < nc; i++){
-			processData.rms[i] = input.getRMSAmplitudeChannel(i);
-		}
-		
-		//		mutex.lock();
-		std::lock_guard<std::mutex> mtx(mutex);
-		drawData = processData;
-		//		mutex.unlock();
-		bNeedsUpdate = true;
-	}
-	//--------------------------------------------------------------
+
 	
-	//--------------------------------------------------------------
-	//	void drawChannel(size_t chan, ofRectangle r){
-	//		size_t n = drawData.rms.size();
-	//		if(chan < n){
-	//			float rms_v = ofMap(drawData.rms[chan], 0, 1, 0, ((drawMode == VU_DRAW_VERTICAL)?r.height:r.width));
-	//			float peak_v = ofMap(drawData.peak[chan], 0, 1, 0, ((drawMode == VU_DRAW_VERTICAL)?r.height:r.width));
-	//			float peakHold_v = ofMap(drawData.holdPeak[chan], 0, 1, 0, ((drawMode == VU_DRAW_VERTICAL)?r.height:r.width));
-	//			if(drawMode == VU_DRAW_VERTICAL){
-	//				r.y = r.getMaxY() - rms_v;
-	//				r.height = rms_v;
-	//			}else{
-	//				r.width = rms_v;
-	//			}
-	//			ofSetColor(getRmsColor());
-	//			ofDrawRectangle(r);
-	//			drawPeakLine(peak_v, r);
-	//			ofSetColor(getPeakColor());
-	//			drawPeakLine(peakHold_v, r);
-	//		}
-	//	}
-	//--------------------------------------------------------------
-	void draw(){
-		
-		
-		buildMeshes();
-		
-		updateMeshes();
-		
-		
-		fillMesh.draw();
-		lineMesh.draw();
-		
-//		std::stringstream ss;
-//		
-//		switch(drawMode){
-//			case VU_DRAW_VERTICAL: ss <<  "VU_DRAW_VERTICAL\n";break; 
-//			case VU_DRAW_HORIZONTAL: ss <<  "VU_DRAW_HORIZONTAL\n";break; 
-//		}
-//		
-//		switch(stackMode){
-//			case VU_STACK_VERTICAL: ss <<  "VU_STACK_VERTICAL";break; 
-//			case VU_STACK_HORIZONTAL: ss <<  "VU_STACK_HORIZONTAL";break; 
-//		}
-//		
-//		ofDrawBitmapStringHighlight(ss.str(), drawRect.x+10, drawRect.y+20);
-		
-	}
-	//--------------------------------------------------------------
-	void buildMeshes(){
-		size_t n = drawData.rms.size();
-		if(prevNumChans != n){
-//			std::cout << "VUMeter buildMeshes " << std::endl;
-			
-			prevNumChans = n;
-			
-			lineMesh.clear();
-			fillMesh.clear();
-			
-			
-			lineMesh.setMode(OF_PRIMITIVE_LINES);
-			lineMesh.setUsage(GL_STATIC_DRAW);
-			
-			fillMesh.setMode(OF_PRIMITIVE_TRIANGLES);
-			fillMesh.setUsage(GL_STATIC_DRAW);
-			
-			vuRects.resize(n);
-			
-			bool bDrawVertical = drawMode == VU_DRAW_VERTICAL;
-			bool bStackVertical = stackMode == VU_STACK_VERTICAL;
-			if(n > 0){
-				ofRectangle r = drawRect;
-				if(bStackVertical){
-					r.height /= n;
-				}else{
-					r.width /= n;
-				}
-				//			ofRectangle r = singleMeterRect;
-				for(size_t i =0; i < n; i++){
-					
-					vuRects[i] = r;
-					
-					addRectToMesh(fillMesh, r, getRmsColor(), false);
-					addLineToMesh(lineMesh, r.getTopLeft(), bDrawVertical ? r.getTopRight() :  r.getBottomLeft() , getPeakColor());
-					addLineToMesh(lineMesh, r.getTopLeft(), bDrawVertical ? r.getTopRight() :  r.getBottomLeft() , getPeakHoldColor());
-					if(bStackVertical){
-						r.y += r.height;
-					}else{
-						r.x += r.width;
-					}
-				}
-			}
-			addRectToMesh(lineMesh, drawRect,  getBorderColor(), true);
-			bNeedsUpdate = true;
-			
-		}
-	}
-	//--------------------------------------------------------------
-	void updateMeshes(){
-		if(bNeedsUpdate){
-			bNeedsUpdate = false;
-			size_t n = drawData.rms.size();
-			if(n != vuRects.size()){
-				n = std::min(n, vuRects.size());
-				ofLogWarning("VUMeter::updateMeshes") << "vuRects size not equal to data size";
-			}
-			auto& v = fillMesh.getVertices();
-			auto& vl = lineMesh.getVertices();
-			size_t vi = 0;
-			float mn ;
-			float mx;
-			for(size_t i =0; i < n; i++){
-				mn = ((drawMode == VU_DRAW_VERTICAL)?vuRects[i].getMaxY():vuRects[i].getMinX());
-				mx = ((drawMode == VU_DRAW_VERTICAL)?vuRects[i].getMinY():vuRects[i].getMaxX());
-				
-				float rms_v =		ofMap(drawData.rms[i],		0, 1, mn, mx);
-				float peak_v =		ofMap(drawData.peak[i],		0, 1, mn, mx);
-				float peakHold_v =	ofMap(drawData.holdPeak[i], 0, 1, mn, mx);
-				
-				vi = i*4;
-				size_t d = (drawMode == VU_DRAW_VERTICAL)?1:0;
-				
-				v[vi+1 -d][d] = rms_v;
-				v[vi+2 -d][d] = rms_v;
-				
-				vl[vi  ][d] = peak_v;
-				vl[vi+1][d] = peak_v;
-				
-				vl[vi+2][d] = peakHold_v;
-				vl[vi+3][d] = peakHold_v;
-			}
-		}
-	}
-	//--------------------------------------------------------------
-	float getRmsForChannel(size_t channel) const{
-		if(channel < drawData.rms.size()){
-			return drawData.rms[channel];
-		}
-		return 0;
-	}
-	//--------------------------------------------------------------
-	float getPeakForChannel(size_t channel) const{
-		if(channel < drawData.peak.size()){
-			return drawData.peak[channel];
-		}
-		return 0;
-	}
-	//--------------------------------------------------------------
-	// You can use the following static functions as setters or getters.
-	// if you want to set the color of the RMS value you can do, for example
-	//	VUMeter::getRmsColor() = ofColor::blue;
-	// or to set the peak release time
-	//	VUMeter::getPeakReleaseTime() = 100;
-	//--------------------------------------------------------------
-	static ofColor& getRmsColor(){
-		static std::unique_ptr<ofColor> i =  make_unique<ofColor>(150);
-		return *i;
-	}
-	//--------------------------------------------------------------
-	static ofColor& getPeakColor(){
-		static std::unique_ptr<ofColor> i =  make_unique<ofColor>(ofColor::red);
-		return *i;
-	}
-	//--------------------------------------------------------------
-	static ofColor& getPeakHoldColor(){
-		static std::unique_ptr<ofColor> i =  make_unique<ofColor>(ofColor::white);
-		return *i;
-	}
-	//--------------------------------------------------------------
-	static ofColor& getBorderColor(){
-		static std::unique_ptr<ofColor> i =  make_unique<ofColor>(70);
-		return *i;
-	}
-	//--------------------------------------------------------------
-	static uint64_t& getPeakHoldTime(){
-		static std::unique_ptr<uint64_t> i =  make_unique<uint64_t>(5000);
-		return *i;
-	}
-	//--------------------------------------------------------------
-	static uint64_t& getPeakReleaseTime(){
-		static std::unique_ptr<uint64_t> i =  make_unique<uint64_t>(1000);
-		return *i;
-	}
-	//--------------------------------------------------------------
-	void resetPeak(){
-		mutex.lock();
-		processData.peak.assign(processData.peak.size(), 0.0f);
-		processData.lastPeak.assign(processData.lastPeak.size(), 0.0f);
-		mutex.unlock();
-	}
+	/// \brief setup the VU Meter and its drawing configuration
+	///
+	/// Setup the VU meter size and position where to be drawn and its draw and stack modes.
+	///
+	/// \param drawRectangle the rectangle where the vu meter will be drawn
+	/// \param drawMode the draw mode to be use. look at DrawMode above
+	/// \param stackMode the stack mode to be use. look at StackMode above
+	///
+	/// You can pass an ofRectangle defined elsewhere in the code.
+	///
+	/// ```
+	///		ofRectangle r (100,200,300,500); // just an ofRectangle properly setup. It is up to you to do so
+	///		 //  assuming that there is a VUMeter vuMeter; defined elsewhere.
+	///		vuMeter.setup(r);// if you dont pass a second and/or third parameters the defaults are used
+	///		// which is the same as the following
+	///		vuMeter.setup(r, VU_DRAW_VERTICAL, VU_STACK_HORIZONTAL); // the second and third parameters passed here are the defaults used when you dont pass these.
+	///	```
+	/// or you can set it directly within the function call
+	/// ```
+	///		// put the correct values in the ofRectangle. these are x, y, width and height respectively.
+	///		vuMeter.setup(ofRectangle(100, 200, 300, 500), VU_DRAW_VERTICAL, VU_STACK_HORIZONTAL);
+	///		// or assuming the default second and third parameters
+	///		// vuMeter.setup(ofRectangle(100, 200, 300, 500));
+	///
+	///```
+	/// or instead of the previous use the shorter version with the initializer list for the ofRectangle; wrap the values passed to ofRectangle in the function above in curly brackets.
+	/// ```
+	///		vuMeter.setup({100, 200, 300, 500});// notice the curly brackets { and }
+	///```
+	void setup(const ofRectangle& drawRectangle, DrawMode drawMode = VU_DRAW_VERTICAL, StackMode stackMode = VU_STACK_HORIZONTAL);
 	
+	/// \brief setup the VU Meter and its drawing configuration
+	///
+	/// Setup the VU meter size and position where to be drawn and its draw and stack modes.
+	///
+	/// \param x X axis position of upper left corner where its going to be drawn
+	/// \param y Y axis position of upper left corner where its going to be drawn
+	/// \param w Width of the VUMeter
+	/// \param h Height of the VUMeter
+	/// \param drawMode the draw mode to be use. look at DrawMode above
+	/// \param stackMode the stack mode to be use. look at StackMode above
+	
+	void setup(float x, float y, float w, float h, DrawMode drawMode = VU_DRAW_VERTICAL, StackMode stackMode = VU_STACK_HORIZONTAL);
+	
+	/// \brief Sets the rectangle where to draw the VU meter
+	///
+	/// Sets the rectangle where the VU meter will be drawn. This is the same one that is set using the setup function but calling setup also sets the draw and stack modes.
+	///
+	/// \param drawRectangle the rectangle that will define where to draw the VU meter.
+
+	void setDrawRectangle(const ofRectangle& drawRectangle);
+	
+	/// \brief Resets the peaks being held.
+	///
+	/// Resets the peaks being held. Useful when you have a long peak hold time and you want to manually reset its value
+	
+	void resetPeak();
+	
+	/// \brief calculate the values of the VU Meter using the passed ofSoundBuffer.
+	///
+	/// Calculate the values of the VU Meter using the passed ofSoundBuffer.
+	/// This is the function that is called internally when you have  a VUMeter object as part of a larger chain of ofxSoundObjects.
+	/// This is made public as it can be useful on certain scenarios
+	void calculate(ofSoundBuffer &input);
+	
+	/// \brief Draw the vu meter
+	/// Draw the VU Meter. Call this within the ofApp::draw() function, either directly or through a nested function
+	void draw();
+	
+	/// \brief Retrieve the RMS value for a certain channel.
+	///
+	/// Retrieve the RMS (Root Mean Square) value for a certain channel.
+	///
+	/// \param channel The channel number from which you want its RMS value. Notice that the first channel is 0 not 1.
+	/// \returns float value with the RMS. Its range is 0 to 1
+	float getRmsForChannel(size_t channel) const;
+	
+	
+	/// \brief Retrieve the current peak value for a certain channel.
+	///
+	/// Retrieve the current peak value for a certain channel. This is the peak of the last processed buffer.
+	///
+	/// \param channel The channel number from which you want its peak value. Notice that the first channel is 0 not 1.
+	/// \returns float The peak value. Its range is 0 to 1
+	float getPeakForChannel(size_t channel) const;
+	
+	
+	
+	///---------- static functions ------------------
+	/// Static Functions behave as globals for all the instances of this class, and will affect all of these.
+	///
+	/// You can use the following static functions as setters or getters.
+	/// If you want to set the color of the RMS value you can do, for example
+	///	VUMeter::getRmsColor() = ofColor::blue;
+	/// or to set the peak release time
+	///	VUMeter::getPeakReleaseTime() = 100;
+	/// or simply to retrieve this one of this values.
+	/// ofColor peakHoldColor = VUMeter::getPeakHoldColor();
+	///
+	/// \brief the color used for the filled region of the VUMeter which corresponds to its RMS value
+	static ofColor& getRmsColor();
+	/// \brief the color used for the current peak line of the VUMeter
+	static ofColor& getPeakColor();
+	/// \brief the color used for the held peak line of the VUMeter
+	static ofColor& getPeakHoldColor();
+	/// \brief the color used for the lines that surround the the VUMeter
+	static ofColor& getBorderColor();
+	/// \brief When the VU Meter is clipping- the RMS and/or peak values are more than 1 - the vumeter will be drawn with this color
+	static ofColor& getClippingColor();
+	/// \brief The peak hold time. This is the amount of time that the held peak is held after being detected.
+	static uint64_t& getPeakHoldTime();
+	/// \brief The peak release time is how long it takes for the held peak value to reset. This is mostly used as how long it takes for the animation of it to fall down.
+	static uint64_t& getPeakReleaseTime();
+	/// \brief Force rebuilding the VUMeter.
+	/// Force rebuilding the VUMeter.
+	/// in case that you've modified the colors using any of the above static functions you must call VUMeter::getForceRebuild() = true; for these changes to take effect.
+	static bool& getForceRebuild();
 protected:
-	//--------------------------------------------------------------
-	//	void drawPeakLine(float p, ofRectangle& r){
-	//		if(drawMode == VU_DRAW_VERTICAL){
-	//			p = r.getMaxY() - p;
-	//			ofDrawLine(r.x, p, r.getMaxX(), p);
-	//		}else{
-	//			p = r.x + p;
-	//			ofDrawLine(p, r.y, p, r.getMaxY());
-	//		}
-	//	}
+
+	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
+	
+	
+	void buildMeshes(bool bForce = false);
+	
+	void updateMeshes();
+	
+	DrawMode drawMode = VU_DRAW_VERTICAL;
+	StackMode stackMode = VU_STACK_HORIZONTAL;
+
+	
+	
 	ofRectangle drawRect;
 	std::vector <ofRectangle> vuRects;
 	
@@ -317,12 +185,16 @@ private:
 		std::vector<float>peak;
 		std::vector<float>lastPeak;
 		std::vector<float>holdPeak;
-		
+		std::vector<bool> bClippingPeak;
+		std::vector<bool> bClippingRms;
 		void resize(const size_t& newSize){
 			ofxSoundUtils::resize_vec(rms, newSize);
 			ofxSoundUtils::resize_vec(peak, newSize);
 			ofxSoundUtils::resize_vec(lastPeak, newSize);
 			ofxSoundUtils::resize_vec(holdPeak, newSize);
+			ofxSoundUtils::resize_vec(bClippingPeak, newSize);
+			ofxSoundUtils::resize_vec(bClippingRms, newSize);
+
 		}
 		
 	}processData, drawData;
@@ -331,7 +203,7 @@ private:
 	mutable ofMutex mutex;
 	
 	
-	ofVboMesh lineMesh, fillMesh;
+	ofVboMesh lineMesh, fillMesh, borderMesh;
 	size_t prevNumChans = 0;
 	
 	
