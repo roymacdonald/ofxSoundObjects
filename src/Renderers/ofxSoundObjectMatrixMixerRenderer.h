@@ -8,7 +8,7 @@
 #pragma once
 #include "ofxSoundObjectBaseRenderer.h"
 #include "ofxSoundMatrixMixer.h"
-#include "ofxGui.h"
+//#include "ofxGui.h"
 #include "ofxSlidersGrid.h"
 #include "ofxSoundPlayerObject.h"
 
@@ -73,5 +73,7 @@ private:
 	bool bNonSliderMode = false;
 	
 	float minHeight = 1;
+	
+	float vuWidth = 20;
 };
 

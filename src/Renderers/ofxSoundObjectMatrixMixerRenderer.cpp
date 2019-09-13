@@ -9,7 +9,7 @@
 #include "ofxSoundObjectMatrixMixerRenderer.h"
 
 #include "ofMain.h"
-#include "ofxGui.h"
+//#include "ofxGui.h"
 #include "ofxSoundRendererUtils.h"
 
 using namespace ofxSoundRendererUtils;
@@ -69,7 +69,7 @@ void ofxSoundMatrixMixerRenderer::buildPlayheads(){
 			playheadsIndices.clear();
 			
 			float playheadHeight = std::min(cellHeight, 5.0f);
-			float vuWidth = 20;
+			
 			
 			float h =0;
 
@@ -82,7 +82,8 @@ void ofxSoundMatrixMixerRenderer::buildPlayheads(){
 				auto & v = obj->inObjects[idx]->channelsVolumes;
 				
 				h = cellHeight * v.size();
-				obj->inObjects[idx]->vuMeter.setup(p1.x - vuWidth, p1.y, vuWidth, h , VUMeter::VU_DRAW_VERTICAL, VUMeter::VU_STACK_VERTICAL);
+				
+				obj->inObjects[idx]->vuMeter.setup({p1.x - vuWidth, p1.y, vuWidth, h} , VUMeter::VU_DRAW_VERTICAL, VUMeter::VU_STACK_VERTICAL);
 				
 				p0.y += h;
 				p1.y += h;
@@ -205,7 +206,7 @@ void ofxSoundMatrixMixerRenderer::updatePlayheads(){
 	auto & v = playheadMesh.getVertices();
 	
 	float mn = leftR.getMinX();
-	float mx = leftR.getMaxX();
+	float mx = leftR.getMaxX() - vuWidth;
 	for(auto& p: playheadsIndices){
 		if(p.second){
 			if(p.second->isPlaying()){
