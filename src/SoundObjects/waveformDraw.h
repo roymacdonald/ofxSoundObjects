@@ -9,9 +9,14 @@ public:
 	}
 	waveformDraw(const waveformDraw& a): ofRectangle(a), ofxSoundObject(a){}
 //--------------------------------------------------------------
+	void setup(const ofRectangle& r){
+		this->set(r);
+		bRenderWaveforms = true;
+	}
+//--------------------------------------------------------------
     void setup(float x, float y, float w, float h){
-        this->set(x, y, w, h);
-    }
+		setup({x, y, w, h});
+	}
 //--------------------------------------------------------------
     void process(ofSoundBuffer &input, ofSoundBuffer &output) override{
 		{
