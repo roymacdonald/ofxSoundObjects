@@ -19,7 +19,7 @@ namespace ofxSoundRendererUtils{
 		mesh.addColors({color,color});
 	}
 	static void addRectToMesh(ofVboMesh& mesh, const ofRectangle& r, const ofFloatColor& color, bool bAddLinesIndices){
-		//	std::cout << "addRectToMesh " << r << std::endl;
+//			std::cout << "addRectToMesh " << r << std::endl;
 		auto i = mesh.getVertices().size();
 		
 		mesh.addVertex(r.getTopLeft());
