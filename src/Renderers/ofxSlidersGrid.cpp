@@ -198,7 +198,7 @@ void ofxSlidersGrid::GridParameter::notify(float &){
 
 //----------------------------------------------------
 void ofxSlidersGrid::setGridSize(size_t _x, size_t _y){
-	if(	xSize != _x && ySize != _y){
+	if(	xSize != _x || ySize != _y){
 		
 		xSize = _x;
 		ySize = _y;
