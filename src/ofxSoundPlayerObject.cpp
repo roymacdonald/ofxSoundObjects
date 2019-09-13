@@ -20,11 +20,9 @@ ofxSoundPlayerObject::ofxSoundPlayerObject():ofxSoundObject(OFX_SOUND_OBJECT_SOU
 	bListeningUpdate = false;
 	
 	setNumInstances(1);
+
+	volume.set("Volume", 1, 0, 1);
 	
-	{
-		std::lock_guard<std::mutex> lock(volumeMutex);
-		volume.set("Volume", 1, 0, 1);
-	}
 	setState(UNLOADED);
 }
 //--------------------------------------------------------------
@@ -282,6 +280,11 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
 		if (playerNumChannels != nChannels || playerNumFrames != nFrames || playerSampleRate != outputBuffer.getSampleRate()) {
 			audioOutBuffersChanged(nFrames, nChannels, outputBuffer.getSampleRate());
 		}
+		float vol;
+		{
+			std::lock_guard<std::mutex> lock(volumeMutex);
+			vol = volume.get();
+		}
 		if(bStreaming){
 			//			int samplesRead = soundFile.readTo(buffer,nFrames);
 			//			if ( samplesRead==0 ){
@@ -302,9 +305,9 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
 					}
 					
 					if(buf.getNumChannels() == 2){
-						buf.stereoPan(i.volumeLeft * volume,i.volumeRight * volume);
+						buf.stereoPan(i.volumeLeft * vol,i.volumeRight * vol);
 					}else{
-						buf *= volume*i.volume;
+						buf *= vol*i.volume;
 					}
 				};
 				if (instances.size() == 1){
@@ -320,7 +323,7 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
 				updatePositions(nFrames);
 			}
 			else {
-				setPaused(-1);
+//				setPaused(-1);
 			}
 		}
 	}else{
@@ -350,10 +353,9 @@ void ofxSoundPlayerObject::updatePositions(int nFrames){
 //========================SETTERS===============================
 void ofxSoundPlayerObject::setVolume(float vol, int index){
 	if(index <= -1){
-		{
-			std::lock_guard<std::mutex> lock(volumeMutex);
-			volume = vol;
-		}
+	
+		volume = vol;
+		
 	}else{
 		updateInstance([&](soundPlayInstance& inst){
 			inst.volume = vol;
@@ -480,7 +482,6 @@ bool ofxSoundPlayerObject::isLoaded() const{
 //--------------------------------------------------------------
 float ofxSoundPlayerObject::getVolume(int index) const{
 	if(index <= -1){
-		std::lock_guard<std::mutex> lock(volumeMutex);
 		return volume.get();
 	}else if(index < instances.size()){
 		std::lock_guard<std::mutex> lock(instacesMutex);
