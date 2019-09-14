@@ -39,7 +39,13 @@ public:
 	/// This is the method you implement to process the signal from inputs to outputs.
 	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) {
 		// default behaviour is pass-through.
-		input.copyTo(output);
+		
+		// the ofSoundBuffer's copyTo method expects the output to be setup properly.
+		// if not it will not copy at all. Instead using the = operator will just copy everything.
+		// Thus, considering that this will behave as a passthrough it is better to just copy everything.
+		// If there are any diferences between the input and output settings it should be handled by the objects down the chain that do actual processing 
+		output = input;
+//		input.copyTo(output);
 	}
 
 	/// this pulls the audio through from earlier links in the chain.
