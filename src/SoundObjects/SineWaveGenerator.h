@@ -13,14 +13,16 @@ public:
         currentPhase = phase;
     }
     virtual  std::string getName() override{ return "Sine Wave Gen";}
-    void process(ofSoundBuffer &in, ofSoundBuffer &out) override{
+	
+	void process(ofSoundBuffer &in, ofSoundBuffer &out) override{
         float m = TWO_PI* freq / in.getSampleRate();
-//        frameIndex*myBuffer.getNumChannels()) + channelIndex
+
         int numFrames = out.getNumFrames();
         int numChannels = out.getNumChannels();
-        
+		float a = amplitude;
+		
         for(int i = 0; i < numFrames; i++) {
-            float s = sin(m*i +currentPhase) * amplitude;
+            float s = sin(m*i +currentPhase) * a;
             for(int c = 0; c < numChannels; c++){
                 out[i*numChannels + c ] = s;
             }
@@ -28,8 +30,9 @@ public:
         currentPhase += (m*numFrames);
     }
 
-    float freq;
-    float amplitude;
+	// these need to be atomic so there are no data races between threads
+	std::atomic<float> freq;
+    std::atomic<float> amplitude;
 private:
     float currentPhase;
 };
