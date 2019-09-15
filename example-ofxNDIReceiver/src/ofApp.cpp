@@ -44,11 +44,17 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::setHelpText(){
 	stringstream ss;
+#ifdef OFX_SOUND_OBJECTS_USE_OFX_NDI
 	ss << "Press [key] to : " << endl;;
 	ss << "      [h]      : Draw this help text" << endl;
 	ss << "is receiver connected : " << boolalpha << receiver.isConnected() <<endl;
 	ss << "Source Name: " << receiver.getSourceName() <<endl;
 	ss << "Source URL: " << receiver.getSourceUrl() <<endl;
+#else
+	ss << "ofxNDI use is disabled. !" <<endl <<endl;
+	ss << "Go to the file ofxSoundObjectsConstants.h \nand uncomment the line that reads //#define OFX_SOUND_OBJECTS_USE_OFX_NDI" <<endl;
+	ss << "You will also need to properly add ofxNDI to the project via Project Generator.\nRead the ofxSoundObject's readme file for more info" <<endl;
+#endif
 	helpText = ss.str();
 }
 
@@ -95,6 +101,13 @@ void ofApp::draw(){
 	vuMeter.draw();
 	
 	if(bDrawHelp){
+#ifdef OFX_SOUND_OBJECTS_USE_OFX_NDI
+		ofSetColor(40);
+#else
+		ofSetColor(ofColor::red, (unsigned char)ofMap(sin(ofGetElapsedTimef()*10), -1, 1, 50, 255));
+#endif
+		ofDrawRectangle(helpTextRect);
+		
 		ofSetColor(255);
 		ofDrawBitmapString(helpText,helpTextRect.x + 20,20);
 	}

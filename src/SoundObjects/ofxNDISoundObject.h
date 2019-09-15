@@ -6,11 +6,16 @@
 //
 //
 #pragma once
+#include "ofxSoundObjectsConstants.h"
+#include "ofxSoundObject.h"
+
+#ifdef OFX_SOUND_OBJECTS_USE_OFX_NDI
 #include "ofxNDISender.h"
 #include "ofxNDISendStream.h"
-#include "ofxSoundObject.h"
 #include "ofxNDIReceiver.h"
 #include "ofxNDIRecvStream.h"
+#endif
+
 
 class ofxNDISenderSoundObject : public ofxSoundObject{
 
@@ -26,8 +31,10 @@ public:
 	bool isMuteOutput();
 	
 private:
+#ifdef OFX_SOUND_OBJECTS_USE_OFX_NDI
 	ofxNDISender sender_;
 	ofxNDISendAudio audio_;
+#endif
 	std::atomic<bool> bMute;
 };
 
@@ -39,20 +46,25 @@ public:
 	ofxNDIReceiverSoundObject():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE){}
 	void setup(const std::string& name_or_url,
 			   const std::string &group=""
+#ifndef OFX_SOUND_OBJECTS_USE_OFX_NDI
+	);
+#else
 			   ,uint32_t waittime_ms=1000,
 			   ofxNDI::Location location= ofxNDI::Location::BOTH,
 			   const std::vector<std::string> extra_ips={});
-	
+#endif
 	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
 	
 	std::string getSourceName();
 	std::string getSourceUrl();
 	bool isConnected();
 private:
+#ifdef OFX_SOUND_OBJECTS_USE_OFX_NDI
 	ofxNDIReceiver receiver_;
 	ofxNDIRecvAudioFrameSync audio_;
-	bool bAudioNeedsSetup = false;
 	ofxNDI::Source source;
+	bool bAudioNeedsSetup = false;
+#endif
 };
 
 
