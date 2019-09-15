@@ -8,7 +8,7 @@
 #pragma once
 #include "ofxSoundObjectsConstants.h"
 #include "ofxSoundObject.h"
-
+#include <atomic>
 #ifdef OFX_SOUND_OBJECTS_USE_OFX_NDI
 #include "ofxNDISender.h"
 #include "ofxNDISendStream.h"
