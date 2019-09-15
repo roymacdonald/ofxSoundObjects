@@ -36,7 +36,6 @@ install:
 - git clone --depth=1 --branch=master https://github.com/openframeworks/openFrameworks
 - git clone --depth=1 --branch=master https://github.com/npisanti/ofxAudioFile openframeworks/addons/ofxAudioFile
 - git clone --depth=1 --branch=master https://github.com/kylemcdonald/ofxFft openframeworks/addons/ofxFft
-- git clone --depth=1 --branch=master https://github.com/nariakiiwatani/ofxNDI openframeworks/addons/ofxNDI
 - call openFrameworks\scripts\ci\addons\install.cmd
 
 build_script:
