@@ -14,16 +14,9 @@
 language: c++
 compiler: gcc
 sudo: true
-env:
-  - BADGE=linux
-  - BADGE=osx
-  
+
+
 matrix:
-  exclude:
-    - os: linux
-      env: BADGE=osx
-    - os: osx
-      env: BADGE=linux
   include:
   # fully specify builds, include can't dynamically expand matrix entries
   # relative order of sudo and env is important so that addons: is recognized
@@ -32,7 +25,7 @@ matrix:
   - os: linux
     dist: trusty
     sudo: required
-    env: TARGET="linux64" OF_BRANCH="master"
+    env: BADGE=linux TARGET="linux64" OF_BRANCH="master"
     compiler: gcc
     addons:
       apt:
@@ -47,7 +40,7 @@ matrix:
   - os: osx
     osx_image: xcode8
     compiler: clang
-    env: TARGET="osx" OF_BRANCH="master"
+    env: BADGE=osx TARGET="osx" OF_BRANCH="master"
 
 
 install:
