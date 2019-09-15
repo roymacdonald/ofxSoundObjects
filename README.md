@@ -26,7 +26,10 @@ Made as addon, improoved and updated by Roy Macdonald.
 ## Dependencies
 * [ofxAudioFile](https://github.com/npisanti/ofxAudioFile)
 * [ofxFft](https://github.com/kylemcdonald/ofxFft) (only needed for the Fftobject)
+
+### optional
 * [ofxTbb](https://github.com/roymacdonald/ofxTbb) (only needed if you enable multithreading, which is disabled by default)
+* [ofxNDI](https://github.com/nariakiiwatani/ofxNDI) (only needed for using ofxNDI. read [here](#ofxndi) for details.
 
 ## IMPORTANT.
 ### All platforms
@@ -249,4 +252,25 @@ You need to use this to connect the sound device input to a soundObject
 
 #### ofxSoundMatrixMixer
 This class implements a matrix mixer, which is a special kind of mixer that allows you to mix any input into any output, allowing for complex mix scenarios or rerouting audio channels. This becomes very useful when using audio interfaces with lots of outputs. By itself it does not have a gui but the `ofxSoundMatrixMixerRenderer` class implements one. The `example-matrixMixer` shows how to use both of these.
+
+
+#### ofxNDI
+
+There is a sound object specifically made for using ofxNDI to allow you to send and receive audio from other computers over a network.
+There are two classes made for this `ofxNDISenderSoundObject` and `ofxNDIReceiverSoundObject`. Look at the examples on how to use these.
+
+**This feature is disabled by default so you'll need to activate it.**
+Do the following in order to activate the use of ofxNDI
+
+Go to the file `src/ofxSoundObjectsConstants.h`, uncomment the line that reads `//#define OFX_SOUND_OBJECTS_USE_OFX_NDI` and save;
+	
+You'll also need to download and properly install in your addons [ofxNDI](https://github.com/nariakiiwatani/ofxNDI) add it to your project via Project Generator and then do the following in case you're using xcode.
+
+* Select the project in the project navigator. (The topmost item with the blue icon.)
+* Build Phases > Copy Files
+	* select "Destination" to Executables
+ 	* click `+`
+ 	* add `libndi.3.dylib`
+	* if you don't see `libndi.3.dylib` on the list clic on `add other...` and navigate to `your_openframeworks_folder/addons/ofxNDI/libs/NDI/lib/osx/x64` and select from there `libndi.3.dylib`.
+
 
