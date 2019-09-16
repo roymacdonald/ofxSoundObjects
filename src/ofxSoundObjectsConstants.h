@@ -23,7 +23,7 @@
 
 
 /// define for using ofxNDI https://github.com/nariakiiwatani/ofxNDI , which allows to send and receive audio data over a network.
-/// By default it is disables so the CI tests can pass. If you want to use ofxNDI along with ofxSoundObjects uncomment the line below.
+/// By default it is disables you dont need to add ofxNDI if you are not going to use it. If you want to use ofxNDI along with ofxSoundObjects uncomment the line below.
 //#define OFX_SOUND_OBJECTS_USE_OFX_NDI
 
 
