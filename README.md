@@ -269,11 +269,7 @@ Go to the file `src/ofxSoundObjectsConstants.h`, uncomment the line that reads `
 	
 You'll also need to download and properly install in your addons [ofxNDI](https://github.com/nariakiiwatani/ofxNDI) add it to your project via Project Generator and then do the following in case you're using xcode.
 
-* Select the project in the project navigator. (The topmost item with the blue icon.)
-* Build Phases > Copy Files
-	* select "Destination" to Executables
- 	* click `+`
- 	* add `libndi.3.dylib`
-	* if you don't see `libndi.3.dylib` on the list clic on `add other...` and navigate to `your_openframeworks_folder/addons/ofxNDI/libs/NDI/lib/osx/x64` and select from there `libndi.3.dylib`.
+Once you've created your new project copy the `config.make` file from either `ofxSoundObjects/example-ofxNDISender/config.make` or `ofxSoundObjects/example-ofxNDIReceiver/config.make` into your newly created project. Now update your project with project generator. You only need to do this when creating the project. 
+
 
 
