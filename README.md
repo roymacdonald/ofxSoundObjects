@@ -17,10 +17,13 @@ Made as addon, improoved and updated by Roy Macdonald.
 
 
 ## Continous Integration (CI) builds status
-* macos and linux (32 and 64 bits)
-[![Build status](https://travis-ci.org/roymacdonald/ofxSoundObjects.svg?branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
-* Windows using MSYS2 (32 bit) and Visual Studio 2017 (32 and 64 bits)
-[![Build status](https://ci.appveyor.com/api/projects/status/m7rwi7209bpepf0i/branch/master?svg=true)](https://ci.appveyor.com/project/roymacdonald/ofxsoundobjects/branch/master)
+Platform                     | CI Status
+-----------------------------|:---------
+OSX                          | [![OSX Build Status](http://badges.herokuapp.com/travis/roymacdonald/ofxSoundObjects?env=BADGE=osx&label=build&branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
+Linux  64bit                 | [![Linux Build Status](http://badges.herokuapp.com/travis/roymacdonald/ofxSoundObjects?env=BADGE=linux&label=build&branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
+Windows MSYS2 32bits         | [![Build status](https://appveyor-matrix-badges.herokuapp.com/repos/roymacdonald/ofxsoundobjects/branch/master/1)](https://ci.appveyor.com/project/roymacdonald/ofxsoundobjects/branch/master)
+Windows Visual Studio 32bits | [![Build status](https://appveyor-matrix-badges.herokuapp.com/repos/roymacdonald/ofxsoundobjects/branch/master/2)](https://ci.appveyor.com/project/roymacdonald/ofxsoundobjects/branch/master)
+Windows Visual Studio 64bits | [![Build status](https://appveyor-matrix-badges.herokuapp.com/repos/roymacdonald/ofxsoundobjects/branch/master/3)](https://ci.appveyor.com/project/roymacdonald/ofxsoundobjects/branch/master)
 
 
 ## Dependencies
