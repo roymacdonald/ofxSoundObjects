@@ -20,9 +20,9 @@ public:
         int numFrames = out.getNumFrames();
         int numChannels = out.getNumChannels();
 		float a = amplitude;
-		
+		float s;
         for(int i = 0; i < numFrames; i++) {
-            float s = sin(m*i +currentPhase) * a;
+			s = sin(m*i + currentPhase) * a;
             for(int c = 0; c < numChannels; c++){
                 out[i*numChannels + c ] = s;
             }
@@ -34,6 +34,6 @@ public:
 	std::atomic<float> freq;
     std::atomic<float> amplitude;
 private:
-    float currentPhase;
+    float currentPhase = 0;
 };
 
