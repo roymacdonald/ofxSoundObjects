@@ -229,33 +229,33 @@ void ofxSoundPlayerObject::update(ofEventArgs&){
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::drawDebug(float x, float y){
 	stringstream ss;
-	
+	if(isLoaded()){
 	ss << "Duration     : " << sourceDuration << endl;
+	ss << "DurationMS   : " << getDurationMS() << endl;
 	ss << "Channels     : " << sourceNumChannels << endl;
 	ss << "SampleRate   : " << sourceSampleRate << endl;
 	ss << "Num Samples  : " << sourceNumFrames << endl;
 	
+	
 	ss << "INSTANCES" << endl;
-	{
-		std::lock_guard<std::mutex> lock(instacesMutex);
+	
 	for (int i =0; i< instances.size(); i++) {
 		ss << i << "------------------------" <<endl;
 		
-		ss << "    volume: " << instances[i].volume << endl;
-		ss << "    bIsPlaying: " << instances[i].bIsPlaying << endl;
-		ss << "    loop: " << instances[i].loop << endl;
-		ss << "    speed: " << instances[i].speed << endl;
-		ss << "    pan: " << instances[i].pan << endl;
-		ss << "    relativeSpeed: " << instances[i].relativeSpeed << endl;
-		ss << "    position: " << instances[i].position << endl;
-		ss << "    position Norm: " << getPosition(i) <<endl;
-		ss << "    position MS: " << getPositionMS(i) <<endl;
-		ss << "    volumeLeft: " << instances[i].volumeLeft << endl;
-		ss << "    volumeRight: " << instances[i].volumeRight << endl;
 		ss << "    id: " << instances[i].id << endl;
+		ss << "    Position: " << getPosition(i) << endl;
+		ss << "    PositionMS: " << getPositionMS(i) << endl;
+		ss << "    Playing: " << boolalpha << isPlaying(i) << endl;
+		ss << "    Speed: " << getSpeed(i) << endl;
+		ss << "    Pan: " << getPan(i) << endl;
+		ss << "    Volume: " << getVolume(i) << endl;
+		ss << "    IsLooping: " << boolalpha << getIsLooping(i) << endl;
+		
+	}
+	}else{
+		ss << "File not loaded" << endl;
 	}
 	
-	}
 	ofDrawBitmapString(ss.str(), x, y);
 }
 
