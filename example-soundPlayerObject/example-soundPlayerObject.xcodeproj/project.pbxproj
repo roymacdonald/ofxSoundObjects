@@ -350,6 +350,43 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
+			<key>07A2855F474B47E59E8C289B</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxNDISoundObject.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/SoundObjects/ofxNDISoundObject.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>A2B6FD1D1AF1667EDCD28068</key>
+			<dict>
+				<key>fileRef</key>
+				<string>83FE967EEF9E1EDAB079DD81</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>83FE967EEF9E1EDAB079DD81</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxNDISoundObject.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/SoundObjects/ofxNDISoundObject.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>540EDF6E2F1CA24B5211673F</key>
 			<dict>
 				<key>explicitFileType</key>
@@ -362,6 +399,28 @@
 				<string>VUMeter.h</string>
 				<key>path</key>
 				<string>../../../addons/ofxSoundObjects/src/SoundObjects/VUMeter.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>0BE96166ED40A5D4B27C9C7E</key>
+			<dict>
+				<key>fileRef</key>
+				<string>91B7BCA1CD2E2C5F1B776324</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>91B7BCA1CD2E2C5F1B776324</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>VUMeter.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/SoundObjects/VUMeter.cpp</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -418,7 +477,10 @@
 					<string>DBF555CF2E50BC6F8C44A805</string>
 					<string>4DDD5A51152F1581BDF9CCCF</string>
 					<string>7E5FAD2B1CAA506583AF8584</string>
+					<string>91B7BCA1CD2E2C5F1B776324</string>
 					<string>540EDF6E2F1CA24B5211673F</string>
+					<string>83FE967EEF9E1EDAB079DD81</string>
+					<string>07A2855F474B47E59E8C289B</string>
 					<string>486582E0863B80FABE19AA90</string>
 				</array>
 				<key>isa</key>
@@ -440,6 +502,21 @@
 				<string>DigitalDelay.h</string>
 				<key>path</key>
 				<string>../../../addons/ofxSoundObjects/src/SoundObjects/DigitalDelay.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>0B3B64FB195094680309F214</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSoundRendererUtils.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofxSoundRendererUtils.h</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -542,6 +619,7 @@
 					<string>404DA65FD7204024A8A15803</string>
 					<string>CE32325B7AC136FE083E72EB</string>
 					<string>6E855C4504BF9FE548126EEE</string>
+					<string>0B3B64FB195094680309F214</string>
 				</array>
 				<key>isa</key>
 				<string>PBXGroup</string>
@@ -4339,6 +4417,8 @@ fi
 					<string>6DC40DD805B8D7BBA677A14C</string>
 					<string>D62F3E04A5125DF78F8859B1</string>
 					<string>12CEE754929E8DB692B2BBE6</string>
+					<string>0BE96166ED40A5D4B27C9C7E</string>
+					<string>A2B6FD1D1AF1667EDCD28068</string>
 					<string>BBD9844681A294B282AAB320</string>
 					<string>0C038942B6A701062B7B70F2</string>
 					<string>7840F332D7330DAAD11D2250</string>
