@@ -13,7 +13,10 @@ void ofApp::setup(){
 #else
 	
 
-	player.load( ofToDataPath("../../../../../examples/sound/soundPlayerExample/bin/data/sounds/beat.wav",true));
+	player.load( ofToDataPath("../../../../../examples/sound/soundPlayerExample/bin/data/sounds/beat.wav",true),
+				//set the following to true if you want to stream the audio data from the disk on demand instead of
+				//reading the whole file into memory. Default is false
+				false);
 #endif
 	
 
