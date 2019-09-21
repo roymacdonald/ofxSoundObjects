@@ -43,7 +43,9 @@ ofxSoundFile::ofxSoundFile() {
 	reset();
 }
 //--------------------------------------------------------------
-ofxSoundFile::~ofxSoundFile() {}
+ofxSoundFile::~ofxSoundFile() {
+	closeDrWavPtr();
+}
 //--------------------------------------------------------------
 void ofxSoundFile::ThreadHelper::threadedFunction(){
 	if(isThreadRunning()){
@@ -79,23 +81,28 @@ void ofxSoundFile::setFromAudioFile(ofxAudioFile& audiofile){
 	}
 	auto tempPath =  path;
 	reset();
-	numChannels = audiofile.channels();
-	sampleRate =  audiofile.samplerate();
 	numFrames = audiofile.length();
-	
-	buffer.resize(numFrames*numChannels);
-	buffer.copyFrom(audiofile.data(), numFrames, numChannels, sampleRate);
-	
-	audiofile.free();
-	
-	path = tempPath;
-
-	duration = 1000* float(numFrames) / float(sampleRate);
-	
-	bCompressed = (ofFilePath::getFileExt(ofToLower(path)) == "mp3");
-	
-	ofLogVerbose("ofxSoundFile::load") << "file loaded. is mp3 : " << (bCompressed?"YES":"NO");
-	bLoaded = true;
+	bLoaded = numFrames > 0;
+	if(bLoaded){
+		numChannels = audiofile.channels();
+		sampleRate =  audiofile.samplerate();
+		
+		
+		buffer.resize(numFrames*numChannels);
+		buffer.copyFrom(audiofile.data(), numFrames, numChannels, sampleRate);
+		
+		audiofile.free();
+		
+		path = tempPath;
+		
+		duration = 1000* float(numFrames) / float(sampleRate);
+		
+		bCompressed = (ofFilePath::getFileExt(ofToLower(path)) == "mp3");
+		
+		ofLogVerbose("ofxSoundFile::load") << "file loaded. is mp3 : " << (bCompressed?"YES":"NO");
+	}else{
+		ofLogWarning("ofxSoundFile::load") << "file loaded has zero length ";
+	}
 }
 //--------------------------------------------------------------
 bool ofxSoundFile::loadFile( bool bAsync){
@@ -106,8 +113,10 @@ bool ofxSoundFile::loadFile( bool bAsync){
 	if(isLoaded())reset();
 	
 	if( ofFile::doesFileExist( path ) ){
+		closeDrWavPtr();
+		
 		ofxAudioFile audiofile; 
-//		audiofile.setVerbose(true);
+		audiofile.setVerbose(ofGetLogLevel() == OF_LOG_VERBOSE);
 		audiofile.load( path );
 		bool bL = audiofile.loaded();
 		if (!bL){
@@ -129,6 +138,55 @@ bool ofxSoundFile::loadFile( bool bAsync){
 	
 	return bLoaded;   
 	
+}
+//--------------------------------------------------------------
+void ofxSoundFile::closeDrWavPtr(){
+	if(dr_wav_ptr != nullptr){
+		drwav_uninit(dr_wav_ptr.get());
+		dr_wav_ptr.reset();
+		dr_wav_ptr = nullptr;
+	}
+}
+//--------------------------------------------------------------
+bool ofxSoundFile::openFileStream(std::string filepath){
+	if(ofFilePath::getFileExt(ofToLower(filepath)) != "wav"){
+		ofLogError("ofxSoundFile::openFileStream") << "files for streaming have to be of uncompressed type.";
+		return false;
+	}
+	
+	reset();
+	
+	dr_wav_ptr = make_unique<drwav>();
+	if (!drwav_init_file_ex(dr_wav_ptr.get(), ofToDataPath(filepath, true).c_str(), NULL, NULL, DRWAV_SEQUENTIAL)) {
+		closeDrWavPtr();
+		ofLogVerbose("ofxSoundFile::openFileStream") << "failed opening file for streaming.";
+		return false;
+	}
+	
+	numFrames = dr_wav_ptr->totalPCMFrameCount;
+	bLoaded = numFrames > 0;
+	if(bLoaded){
+		cout << "ofxSoundFile::openFileStream" << endl;
+		sampleRate = dr_wav_ptr->sampleRate;
+		numChannels = dr_wav_ptr->channels;
+		
+		path = filepath;
+		
+		duration = 1000* float(numFrames) / float(sampleRate);
+		
+		bCompressed = false;
+		bLoaded = true;
+		
+		
+		cout << "sampleRate: " << sampleRate << endl;
+		cout << "numChannels : " << numChannels  << endl;
+		cout << "path : " << path  << endl;
+		cout << "duration : " << duration  << endl;
+		cout << "bCompressed : " << bCompressed  << endl;
+		cout << "bLoaded : " << bLoaded  << endl;
+		
+	}
+	return bLoaded;
 }
 //--------------------------------------------------------------
 bool ofxSoundFile::loadAsync(std::string filepath){
@@ -163,12 +221,6 @@ bool ofxSoundFile::save(string path, const ofSoundBuffer &buff){
 		}
 	}
 	
-//	SndfileHandle sfile ;
-//	
-//	sfile = SndfileHandle (ofToDataPath(path, true), SFM_WRITE, SF_FORMAT_WAV | format, buff.getNumChannels(), buff.getSampleRate()) ;
-//	
-//	sfile.write (&buff.getBuffer()[0], buff.getBuffer().size());
-	
 	
 	drwav_data_format format;
 	format.container = drwav_container_riff;
@@ -198,7 +250,8 @@ bool ofxSoundFile::save(string path, const ofSoundBuffer &buff){
 //--------------------------------------------------------------                  
 //--------------------------------------------------------------
 void ofxSoundFile::reset(){
-	removeThreadHelper();	
+	closeDrWavPtr();
+	removeThreadHelper();
 	buffer.clear();
 	bCompressed = false;
 	bLoaded = false;
@@ -207,11 +260,12 @@ void ofxSoundFile::reset(){
 	sampleRate = 0;
 	numFrames = 0;
 	path = "";
+	currentStreamReadFrame = 0;
 }
 //--------------------------------------------------------------
-//void ofxSoundFile::close(){
-//	reset();
-//}
+void ofxSoundFile::close(){
+	reset();
+}
 //--------------------------------------------------------------
 const bool & ofxSoundFile::isLoaded() const{
 	return bLoaded;
@@ -248,18 +302,85 @@ ofSoundBuffer&  ofxSoundFile::getBuffer(){
 const ofSoundBuffer&  ofxSoundFile::getBuffer() const{
 	return buffer;
 }
-////--------------------------------------------------------------
-//void ofxSoundFile::readTo(ofSoundBuffer & buf, uint64_t _samples){
-//	if(_samples!=0){
-//		// will read the requested number of samples
-//		// clamp to the number of samples we actually have
-//		_samples = min(_samples, getNumSamples());
-//	}else{
-//		_samples = getNumSamples();
-//	}
-//	buf.resize(_samples*getNumChannels());
-//	buf.copyFrom(buffer.getBuffer(), _samples, getNumChannels(), getSampleRate());
-//}
+//--------------------------------------------------------------
+ bool ofxSoundFile::isStreaming() const{
+	return (dr_wav_ptr != nullptr);
+}
+//--------------------------------------------------------------
+bool ofxSoundFile::seekToFrame(uint64_t frame){
+	if(!isStreaming())return false;
+	
+	if(drwav_seek_to_pcm_frame(dr_wav_ptr.get(), frame)){
+		currentStreamReadFrame = frame;
+		return true;
+	}
+	return false;
+}
+//--------------------------------------------------------------
+size_t ofxSoundFile::readTo(ofSoundBuffer & buf, std::size_t outNumFrames, std::size_t fromFrame , bool bLoop ){
+	if(isLoaded()){
+		if (isStreaming()){
+//			cout << "ofxSoundFile::readTo" << endl;
+//			ofSoundBuffer* b;
+//			if( getNumChannels() != outNumChannels){
+//				b = &buffer;
+//			}else{
+//				b = &buf;
+//			}
+//			
+//			b->resize(outNumFrames * getNumChannels());
+//			b->setNumChannels(outNumChannels);
+//			b->setSampleRate(sampleRate);
+//
+			
+			
+			
+			buf.resize(outNumFrames * getNumChannels());
+			buf.setNumChannels(getNumChannels());
+			buf.setSampleRate(sampleRate);
+			
+			
+			if(currentStreamReadFrame != fromFrame){
+				if(bLoop) fromFrame %= numFrames;
+				if(!seekToFrame(fromFrame)){return 0;}
+			}
+			size_t readFrames = drwav_read_pcm_frames_f32(dr_wav_ptr.get(), outNumFrames, buf.getBuffer().data());
+			//TODO usar instancia "buffer" en para que en caso de que tenga una cantidad de canales diferentes o se loopee se usa la funcion copyTo, que hará la gestion de compiar lo necesario. En caso de que no leer directamente a "buf"
+			if(bLoop && readFrames < outNumFrames && readFrames > 0){
+				seekToFrame(0);
+				readFrames += drwav_read_pcm_frames_f32(dr_wav_ptr.get(), outNumFrames - readFrames , &buf.getBuffer()[readFrames]);
+			}
+			
+//			if( getNumChannels() != outNumChannels){
+
+//			}
+			
+			 currentStreamReadFrame += readFrames;
+			
+//			cout << "readFrames: " << readFrames << endl;
+			
+			return readFrames;
+		}else{
+			if(outNumFrames!=0){
+				// will read the requested number of samples
+				// clamp to the number of samples we actually have
+				outNumFrames = std::min(outNumFrames, static_cast<size_t>(getNumFrames()));
+			}else{
+				outNumFrames = getNumFrames();
+			}
+//			buf.resize(outNumFrames * getNumChannels());
+//			void copyTo(ofSoundBuffer & outBuffer, std::size_t outNumFrames, std::size_t outNumChannels, std::size_t fromFrame, bool loop = false) const;
+			
+			buffer.copyTo(buf, outNumFrames, getNumChannels(), fromFrame, bLoop);
+//			buf.copyFrom(buffer.getBuffer(), getNumChannels(), getSampleRate());
+			
+			
+			return outNumFrames;
+		}
+	}
+	return 0;
+}
+//--------------------------------------------------------------
 std::ostream& operator<<(std::ostream& os, const ofxSoundFile& f){
 	os << ofFilePath::getBaseName(f.getPath())  << std::endl;
 	os << "  Duration    " << f.getDuration() << std::endl;
