@@ -44,6 +44,7 @@ public:
 	int	  getPositionMS(size_t index =0) const;
 	bool  isPlaying(int index = -1) const;
 	float getSpeed(size_t index =0) const;
+	float getRelativeSpeed(size_t index =0) const;
 	float getPan(size_t index =0) const;
 	bool  isLoaded() const;
 	float getVolume(int index =-1) const;
@@ -138,6 +139,9 @@ private:
 	void addInstanceEndNotification(const size_t & id);
 	void clearInstanceEndNotificationQueue();
 	ofMutex instanceEndQueueMutex;
+
+	
+	void processBuffers(ofSoundBuffer& buf, soundPlayInstance& i, const float& vol, const std::size_t& nFrames, const std::size_t& nChannels);
 	
 };
 

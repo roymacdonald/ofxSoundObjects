@@ -58,16 +58,22 @@ bool ofxSoundPlayerObject::loadAsync(std::filesystem::path filePath, bool bAutop
 //--------------------------------------------------------------
 bool ofxSoundPlayerObject::load(std::filesystem::path filePath, bool _stream){
 	if(isLoaded())unload();
-	if(soundFile.load(filePath.string())){
-		//	bStreaming = _stream;
-		
-		bStreaming = false; // temporarily unavailable, until properly implementing in ofxSoundFile
-		initFromSoundFile();
-		
-		
-		return isLoaded();
+	if(_stream){
+		if(soundFile.openFileStream(filePath.string())){
+			bStreaming = true;
+//			initFromSoundFile();
+		}else{
+			return false;
+		}
+	}else if(soundFile.load(filePath.string())){
+		bStreaming = false;
+	}else{
+		return false;
 	}
-	return false;
+	
+	initFromSoundFile();
+	return isLoaded();
+	
 }
 //--------------------------------------------------------------
 bool ofxSoundPlayerObject::load(const ofSoundBuffer& loadBuffer, const std::string& name){
@@ -90,7 +96,6 @@ bool ofxSoundPlayerObject::load(const ofSoundBuffer& loadBuffer, const std::stri
 		
 		setState(LOADED);
 		
-		
 	}
 	
 	
@@ -109,16 +114,27 @@ void ofxSoundPlayerObject::initFromSoundFile(){
 		}
 		setNumInstances(1);
 		
-		
+		auto name = ofFilePath::getBaseName(soundFile.getPath());
 		if(!bStreaming){
-			
-			buffer = soundFile.getBuffer(); 
 			
 			if(ofGetLogLevel() == OF_LOG_VERBOSE){
 				ss << "Not streaming; Reading whole file into memory!\n";
 			}
-			load(soundFile.getBuffer(), ofFilePath::getBaseName(soundFile.getPath()));
-//			sourceNumFrames = soundFile.getNumFrames();
+			load(soundFile.getBuffer(), name);
+		}else{
+			volume.setName(name);
+			setNumInstances(1);
+			
+			playerNumChannels = soundFile.getNumChannels();
+			playerSampleRate = soundFile.getSampleRate();
+			
+			sourceNumFrames = soundFile.getNumFrames();
+			sourceNumChannels = soundFile.getNumChannels();
+			sourceSampleRate = soundFile.getSampleRate();
+			sourceDuration   = 1000* float(soundFile.getNumFrames()) / float(soundFile.getSampleRate());
+			
+			setState(LOADED);
+		
 		}
 		if(ofGetLogLevel() == OF_LOG_VERBOSE){
 			ss << "Loading file : " << soundFile.getPath() << "\n";
@@ -247,6 +263,7 @@ void ofxSoundPlayerObject::drawDebug(float x, float y){
 		ss << "    PositionMS: " << getPositionMS(i) << endl;
 		ss << "    Playing: " << boolalpha << isPlaying(i) << endl;
 		ss << "    Speed: " << getSpeed(i) << endl;
+		ss << "    Rel. Speed: " << getRelativeSpeed(i) << endl;
 		ss << "    Pan: " << getPan(i) << endl;
 		ss << "    Volume: " << getVolume(i) << endl;
 		ss << "    IsLooping: " << boolalpha << getIsLooping(i) << endl;
@@ -285,62 +302,75 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
 			std::lock_guard<std::mutex> lock(volumeMutex);
 			vol = volume.get();
 		}
-		if(bStreaming){
-			//			int samplesRead = soundFile.readTo(buffer,nFrames);
-			//			if ( samplesRead==0 ){
-			//				stop();
-			//			}else{
-			//				buffer.copyTo(outputBuffer);
-			//			//	newBufferE.notify(this,buffer);// is there any need to notify this?
-			//			}
-		}else{
-			if (buffer.size()) {
-				auto processBuffers = [&](ofSoundBuffer& buf, soundPlayInstance& i){
-					//assert( resampledBuffer.getNumFrames() == bufferSize*relativeSpeed[i] );
-					if (abs(i.speed - 1) < FLT_EPSILON) {
-						buffer.copyTo(buf, nFrames, nChannels, i.position, i.loop);
-					}
-					else {
-						buffer.resampleTo(buf, i.position, nFrames, i.relativeSpeed, i.loop, ofSoundBuffer::Linear);
-					}
-					
-					if(buf.getNumChannels() == 2){
-						buf.stereoPan(i.volumeLeft * vol,i.volumeRight * vol);
-					}else{
-						buf *= vol*i.volume;
-					}
-				};
+//		if(bStreaming){
+		
+			//TODO mover todas las operaciones de streaming a la funcion processBuffers.
+			// declarar la funcion processbuffers como funcion de la clase en lugar de un lambda
+			
+//				int samplesRead = soundFile.readTo(buffer,nFrames);
+//				if ( samplesRead==0 ){
+//							stop();
+//						}else{
+//							buffer.copyTo(outputBuffer);
+//						//	newBufferE.notify(this,buffer);// is there any need to notify this?
+//				}
+//		}else{
+			
 				if (instances.size() == 1){
-					processBuffers(outputBuffer, instances[0]);
+					processBuffers(outputBuffer, instances[0], vol, nFrames, nChannels);
 				}
 				else {
 					for(auto& inst : instances){
-						processBuffers(resampledBuffer, inst);
+						processBuffers(resampledBuffer, inst, vol, nFrames, nChannels);
 						//					newBufferE.notify(this, resampledBuffer);
 						resampledBuffer.addTo(outputBuffer, 0, inst.loop);
 					}
 				}
 				updatePositions(nFrames);
-			}
-			else {
-//				setPaused(-1);
-			}
-		}
-	}else{
+			
+		
+		}else{
 		outputBuffer.set(0);//if not playing clear the passed buffer, because it might contain junk data
 	}
 }
 //--------------------------------------------------------------
+void ofxSoundPlayerObject::processBuffers(ofSoundBuffer& buf, soundPlayInstance& i, const float& vol, const std::size_t& nFrames, const std::size_t& nChannels){
+	//assert( resampledBuffer.getNumFrames() == bufferSize*relativeSpeed[i] );
+	if(bStreaming) {
+		soundFile.readTo(buf, nFrames, i.position, i.loop);
+	}else{
+		if (ofIsFloatEqual( i.speed,  1.0f)) {
+			buffer.copyTo(buf, nFrames, nChannels, i.position, i.loop);
+		}
+		else {
+			buffer.resampleTo(buf, i.position, nFrames, i.relativeSpeed, i.loop, ofSoundBuffer::Linear);
+		}
+	}
+	
+	if(buf.getNumChannels() == 2){
+		buf.stereoPan(i.volumeLeft * vol,i.volumeRight * vol);
+	}else{
+		buf *= vol*i.volume;
+	}
+
+}
+//--------------------------------------------------------------
 void ofxSoundPlayerObject::updatePositions(int nFrames){
 	if (isLoaded()) {
+		size_t nf;
+		if(bStreaming){
+			nf = soundFile.getNumFrames();
+		}else{
+			nf = buffer.getNumFrames();
+		}
 		for (auto& i : instances){
 			if(i.bIsPlaying){
 				i.position += nFrames*i.relativeSpeed;
 				if (i.loop) {
-					i.position %= buffer.getNumFrames();
+					i.position %= nf;
 				} else {
-					i.position = ofClamp(i.position, 0, buffer.getNumFrames()-1);
-					if (i.position == buffer.getNumFrames()-1) {	// finished?
+					i.position = ofClamp(i.position, 0, nf-1);
+					if (i.position == nf-1) {	// finished?
 						i.bIsPlaying = false;
 						addInstanceEndNotification(i.id);
 					}
@@ -372,7 +402,7 @@ void ofxSoundPlayerObject::setPan(float _pan, int index){
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setSpeed(float spd, int index){
-	if ( bStreaming && fabsf(spd-1.0f)<FLT_EPSILON ){
+	if ( bStreaming && !ofIsFloatEqual(spd, 1.0f) ){
 		ofLogWarning("ofxSoundPlayerObject") << "setting speed is not supported on bStreaming sounds";
 		return;
 	}
@@ -406,9 +436,6 @@ void ofxSoundPlayerObject::setPosition(float pct, size_t index){
 	pct = ofClamp(pct, 0, 1);
 	updateInstance([&](soundPlayInstance& inst){
 		inst.position = pct* sourceNumFrames;
-		if(bStreaming){
-			//soundFile.seekTo(inst.position);
-		}
 	},index, "ofxSoundPlayerObject::setPosition");
 }
 //--------------------------------------------------------------
@@ -458,6 +485,15 @@ bool ofxSoundPlayerObject::getIsLooping(size_t index) const{
 		return instances[index].loop;
 	}
 	return false;
+}
+
+//--------------------------------------------------------------
+float ofxSoundPlayerObject::getRelativeSpeed(size_t index) const{
+	std::lock_guard<std::mutex> lock(instacesMutex);
+	if(index < instances.size()){
+		return instances[index].relativeSpeed;
+	}
+	return 0;
 }
 //--------------------------------------------------------------
 float ofxSoundPlayerObject::getSpeed(size_t index) const{
