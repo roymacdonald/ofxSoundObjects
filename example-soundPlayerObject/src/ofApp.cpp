@@ -1,10 +1,12 @@
 #include "ofApp.h"
+
+/// Uncomment the following line if you want to use a load dialog instead of a fixed file path to open
 //#define USE_LOAD_DIALOG
-#define DISABLE_ALL
+
 //--------------------------------------------------------------
 void ofApp::setup(){
 	ofSetLogLevel(OF_LOG_VERBOSE);
-
+	//----- Loading sound player begin -------.
 #ifdef USE_LOAD_DIALOG
 	ofFileDialogResult result = ofSystemLoadDialog();
 	if (result.bSuccess) {
@@ -18,7 +20,7 @@ void ofApp::setup(){
 				//reading the whole file into memory. Default is false
 				false);
 #endif
-	
+	//----- Loading sound player end -------.
 
 	//----- Sound stream setup begin -------.
 	// the sound stream is in charge of dealing with your computers audio device.
@@ -28,7 +30,7 @@ void ofApp::setup(){
 	auto outDevices = ofxSoundUtils::getOutputSoundDevices();
 	
 	// IMPORTANT!!!
-	// The following two lines of code is where you set which audio interface to use.
+	// The following line of code is where you set which audio interface to use.
 	// the index is the number printed in the console inside [ ] before the interface name
 	// You can use a different input and output device.
 	
