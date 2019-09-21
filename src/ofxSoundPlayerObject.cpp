@@ -302,34 +302,19 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
 			std::lock_guard<std::mutex> lock(volumeMutex);
 			vol = volume.get();
 		}
-//		if(bStreaming){
+		if (instances.size() == 1){
+			processBuffers(outputBuffer, instances[0], vol, nFrames, nChannels);
+		}
+		else {
+			for(auto& inst : instances){
+				processBuffers(resampledBuffer, inst, vol, nFrames, nChannels);
+				resampledBuffer.addTo(outputBuffer, 0, inst.loop);
+			}
+		}
+		updatePositions(nFrames);
 		
-			//TODO mover todas las operaciones de streaming a la funcion processBuffers.
-			// declarar la funcion processbuffers como funcion de la clase en lugar de un lambda
-			
-//				int samplesRead = soundFile.readTo(buffer,nFrames);
-//				if ( samplesRead==0 ){
-//							stop();
-//						}else{
-//							buffer.copyTo(outputBuffer);
-//						//	newBufferE.notify(this,buffer);// is there any need to notify this?
-//				}
-//		}else{
-			
-				if (instances.size() == 1){
-					processBuffers(outputBuffer, instances[0], vol, nFrames, nChannels);
-				}
-				else {
-					for(auto& inst : instances){
-						processBuffers(resampledBuffer, inst, vol, nFrames, nChannels);
-						//					newBufferE.notify(this, resampledBuffer);
-						resampledBuffer.addTo(outputBuffer, 0, inst.loop);
-					}
-				}
-				updatePositions(nFrames);
-			
 		
-		}else{
+	}else{
 		outputBuffer.set(0);//if not playing clear the passed buffer, because it might contain junk data
 	}
 }

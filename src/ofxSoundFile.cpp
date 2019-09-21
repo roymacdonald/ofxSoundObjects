@@ -320,20 +320,6 @@ bool ofxSoundFile::seekToFrame(uint64_t frame){
 size_t ofxSoundFile::readTo(ofSoundBuffer & buf, std::size_t outNumFrames, std::size_t fromFrame , bool bLoop ){
 	if(isLoaded()){
 		if (isStreaming()){
-//			cout << "ofxSoundFile::readTo" << endl;
-//			ofSoundBuffer* b;
-//			if( getNumChannels() != outNumChannels){
-//				b = &buffer;
-//			}else{
-//				b = &buf;
-//			}
-//			
-//			b->resize(outNumFrames * getNumChannels());
-//			b->setNumChannels(outNumChannels);
-//			b->setSampleRate(sampleRate);
-//
-			
-			
 			
 			buf.resize(outNumFrames * getNumChannels());
 			buf.setNumChannels(getNumChannels());
@@ -345,19 +331,13 @@ size_t ofxSoundFile::readTo(ofSoundBuffer & buf, std::size_t outNumFrames, std::
 				if(!seekToFrame(fromFrame)){return 0;}
 			}
 			size_t readFrames = drwav_read_pcm_frames_f32(dr_wav_ptr.get(), outNumFrames, buf.getBuffer().data());
-			//TODO usar instancia "buffer" en para que en caso de que tenga una cantidad de canales diferentes o se loopee se usa la funcion copyTo, que hará la gestion de compiar lo necesario. En caso de que no leer directamente a "buf"
+			
 			if(bLoop && readFrames < outNumFrames && readFrames > 0){
 				seekToFrame(0);
 				readFrames += drwav_read_pcm_frames_f32(dr_wav_ptr.get(), outNumFrames - readFrames , &buf.getBuffer()[readFrames]);
 			}
 			
-//			if( getNumChannels() != outNumChannels){
-
-//			}
-			
-			 currentStreamReadFrame += readFrames;
-			
-//			cout << "readFrames: " << readFrames << endl;
+			currentStreamReadFrame += readFrames;
 			
 			return readFrames;
 		}else{
@@ -368,12 +348,8 @@ size_t ofxSoundFile::readTo(ofSoundBuffer & buf, std::size_t outNumFrames, std::
 			}else{
 				outNumFrames = getNumFrames();
 			}
-//			buf.resize(outNumFrames * getNumChannels());
-//			void copyTo(ofSoundBuffer & outBuffer, std::size_t outNumFrames, std::size_t outNumChannels, std::size_t fromFrame, bool loop = false) const;
 			
 			buffer.copyTo(buf, outNumFrames, getNumChannels(), fromFrame, bLoop);
-//			buf.copyFrom(buffer.getBuffer(), getNumChannels(), getSampleRate());
-			
 			
 			return outNumFrames;
 		}
