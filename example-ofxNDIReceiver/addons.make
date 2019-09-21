@@ -1,3 +1,0 @@
-ofxAudioFile
-ofxNDI
-ofxSoundObjects
