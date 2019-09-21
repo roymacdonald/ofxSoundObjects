@@ -22,11 +22,6 @@
 #define OFX_SOUND_ENABLE_THREADED_RECORDER
 
 
-/// define for using ofxNDI https://github.com/nariakiiwatani/ofxNDI , which allows to send and receive audio data over a network.
-/// By default it is disables you dont need to add ofxNDI if you are not going to use it. If you want to use ofxNDI along with ofxSoundObjects uncomment the line below.
-//#define OFX_SOUND_OBJECTS_USE_OFX_NDI
-
-
 /// \brief enum that defines the way in which audio is processed through
 /// Although this is already implemented it is mostly thought to be useful on an upcoming version of ofxSoundObjects
 enum ofxSoundObjectsType{
