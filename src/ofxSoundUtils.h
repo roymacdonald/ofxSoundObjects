@@ -30,3 +30,23 @@ namespace ofxSoundUtils{
 	}
 	
 };
+//--------------------------------------------------------------
+
+class ofxCircularSoundBuffer: public ofSoundBuffer{
+public:
+	
+	void push(ofSoundBuffer& buffer){
+		if(getBuffer().size() > 0){
+			pushIndex %= getBuffer().size();
+			
+			memcpy(&getBuffer()[pushIndex], &buffer.getBuffer()[0], sizeof(float) * buffer.getBuffer().size());
+			
+			pushIndex += buffer.getBuffer().size();
+		}
+	}
+	size_t getPushIndex() const {return pushIndex; }
+	
+private:
+	
+	size_t pushIndex = 0;
+};
