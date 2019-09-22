@@ -248,6 +248,14 @@ You need to use this to connect the sound device input to a soundObject
 #### ofxSoundMatrixMixer
 This class implements a matrix mixer, which is a special kind of mixer that allows you to mix any input into any output, allowing for complex mix scenarios or rerouting audio channels. This becomes very useful when using audio interfaces with lots of outputs. By itself it does not have a gui but the `ofxSoundMatrixMixerRenderer` class implements one. The `example-matrixMixer` shows how to use both of these.
 
+## External SoundObjects
+
+In order to keep this addon as tidy and neat as possible is that I will not add other soundObjects that require aditional libraries or dependency. In such case those implementations will become another addon.
+
+So far the following are implemented/working:
+
+* [ofxSoundObjects-NDI](https://github.com/roymacdonald/ofxSoundObjects-NDI)
+This addon was specifically made for using ofxNDI to allow you to send and receive audio from other computers over a network, while using ofxSoundObjects
 
 
 
