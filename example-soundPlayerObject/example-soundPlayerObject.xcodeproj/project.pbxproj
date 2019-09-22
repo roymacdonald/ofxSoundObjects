@@ -350,29 +350,14 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
-			<key>07A2855F474B47E59E8C289B</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.c.h</string>
-				<key>fileEncoding</key>
-				<string>4</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>ofxNDISoundObject.h</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/SoundObjects/ofxNDISoundObject.h</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
-			<key>A2B6FD1D1AF1667EDCD28068</key>
+			<key>A06A9F81C3B83D8FDD59C0C8</key>
 			<dict>
 				<key>fileRef</key>
-				<string>83FE967EEF9E1EDAB079DD81</string>
+				<string>CB0E65868B71BE8879F04AB5</string>
 				<key>isa</key>
 				<string>PBXBuildFile</string>
 			</dict>
-			<key>83FE967EEF9E1EDAB079DD81</key>
+			<key>CB0E65868B71BE8879F04AB5</key>
 			<dict>
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
@@ -381,9 +366,9 @@
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
-				<string>ofxNDISoundObject.cpp</string>
+				<string>waveformDraw.cpp</string>
 				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/SoundObjects/ofxNDISoundObject.cpp</string>
+				<string>../../../addons/ofxSoundObjects/src/SoundObjects/waveformDraw.cpp</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -479,8 +464,7 @@
 					<string>7E5FAD2B1CAA506583AF8584</string>
 					<string>91B7BCA1CD2E2C5F1B776324</string>
 					<string>540EDF6E2F1CA24B5211673F</string>
-					<string>83FE967EEF9E1EDAB079DD81</string>
-					<string>07A2855F474B47E59E8C289B</string>
+					<string>CB0E65868B71BE8879F04AB5</string>
 					<string>486582E0863B80FABE19AA90</string>
 				</array>
 				<key>isa</key>
@@ -609,10 +593,49 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
+			<key>6DC40DD805B8D7BBA677A14C</key>
+			<dict>
+				<key>fileRef</key>
+				<string>44FF76267C6B169C837295F7</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>44FF76267C6B169C837295F7</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSlidersGrid.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofxSlidersGrid.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>39140C5962784444DA3091CE</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofx2DCanvas.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofx2DCanvas.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>E4C2833BEB24063CF3644AD9</key>
 			<dict>
 				<key>children</key>
 				<array>
+					<string>67FD96F7C241D53BFCF35195</string>
+					<string>39140C5962784444DA3091CE</string>
 					<string>44FF76267C6B169C837295F7</string>
 					<string>20FBE1E214C2DC0FEEFC1973</string>
 					<string>FCE5CA29FCA21152CFEA85AE</string>
@@ -673,14 +696,14 @@
 				<key>sourceTree</key>
 				<string>&lt;group&gt;</string>
 			</dict>
-			<key>6DC40DD805B8D7BBA677A14C</key>
+			<key>242FC6168D4E123D99060E53</key>
 			<dict>
 				<key>fileRef</key>
-				<string>44FF76267C6B169C837295F7</string>
+				<string>67FD96F7C241D53BFCF35195</string>
 				<key>isa</key>
 				<string>PBXBuildFile</string>
 			</dict>
-			<key>44FF76267C6B169C837295F7</key>
+			<key>67FD96F7C241D53BFCF35195</key>
 			<dict>
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
@@ -689,9 +712,9 @@
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
-				<string>ofxSlidersGrid.cpp</string>
+				<string>ofx2DCanvas.cpp</string>
 				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/Renderers/ofxSlidersGrid.cpp</string>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofx2DCanvas.cpp</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -4414,11 +4437,12 @@ fi
 					<string>837220E80EB56CD44AD27F2A</string>
 					<string>B56FE57CC35806596D38118C</string>
 					<string>1CD33E884D9E3358252E82A1</string>
+					<string>242FC6168D4E123D99060E53</string>
 					<string>6DC40DD805B8D7BBA677A14C</string>
 					<string>D62F3E04A5125DF78F8859B1</string>
 					<string>12CEE754929E8DB692B2BBE6</string>
 					<string>0BE96166ED40A5D4B27C9C7E</string>
-					<string>A2B6FD1D1AF1667EDCD28068</string>
+					<string>A06A9F81C3B83D8FDD59C0C8</string>
 					<string>BBD9844681A294B282AAB320</string>
 					<string>0C038942B6A701062B7B70F2</string>
 					<string>7840F332D7330DAAD11D2250</string>
