@@ -104,6 +104,8 @@ public:
 	/// \param drawRectangle the rectangle that will define where to draw the VU meter.
 
 	void setDrawRectangle(const ofRectangle& drawRectangle);
+
+	const ofRectangle& getDrawRectangle(){return drawRect;};
 	
 	/// \brief Resets the peaks being held.
 	///
