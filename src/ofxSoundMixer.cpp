@@ -11,7 +11,7 @@ ofxSoundMixer::ofxSoundMixer():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
     masterVolume = 1.0f;
     masterPan = 0.5f;
 	
-	objectName = "Sound Mixer";
+	setName ("Sound Mixer");
 	
 	masterVol.set("Master Vol", 1, 0, 1);
 	masterVol.addListener(this, &ofxSoundMixer::masterVolChanged);

@@ -18,7 +18,8 @@ template<typename BufferType>
 class waveformDraw_: public ofRectangle, public ofxSoundObject{
 public:
 	
-	waveformDraw_():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR),objectName("waveForm"){
+	waveformDraw_():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
+		setName("waveForm");
 		bRenderWaveforms = false;
 		bMakeGrid = false;
 	}

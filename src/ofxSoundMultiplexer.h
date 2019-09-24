@@ -44,7 +44,7 @@ class ofxSoundInputMultiplexer: public ofxSoundBaseMultiplexer, public ofxSoundI
 public:
 	ofxSoundInputMultiplexer():ofxSoundInput(){
 		chanMod = OFX_SOUND_OBJECT_CHAN_DEMUX;
-		objectName = "Sound Input Multiplexer";
+		setName ("Sound Input Multiplexer");
 	}
 
 	/// this will connect a specific channel to the passes sound object.
@@ -67,7 +67,7 @@ class ofxSoundOutputMultiplexer: public ofxSoundBaseMultiplexer, public ofxSound
 public:
 	ofxSoundOutputMultiplexer():ofxSoundOutput(){
 		chanMod = OFX_SOUND_OBJECT_CHAN_MUX;
-		objectName = "Sound Output Multiplexer";
+		setName ("Sound Output Multiplexer");
 	}
 	virtual size_t getNumChannels() override;
 

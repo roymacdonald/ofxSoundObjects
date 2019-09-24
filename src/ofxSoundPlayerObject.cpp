@@ -19,7 +19,7 @@ ofxSoundPlayerObject::ofxSoundPlayerObject():ofxSoundObject(OFX_SOUND_OBJECT_SOU
 	bIsPlayingAny = false;
 	bListeningUpdate = false;
 	
-	objectName = "Player";
+	setName ("Player");
 	setNumInstances(1);
 
 	volume.set("Volume", 1, 0, 1);

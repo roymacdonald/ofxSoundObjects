@@ -6,7 +6,9 @@
 class SineWaveGenerator: public ofxSoundObject {
 public:
 	
-	SineWaveGenerator():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE), objectName("Sine Wave Gen"){}
+	SineWaveGenerator():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE){
+		setName ("Sine Wave Gen");
+	}
     void setup(float freq, float amplitude = 1.0, float phase = 0){
         this->freq = freq;
         this->amplitude = amplitude;

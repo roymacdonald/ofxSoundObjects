@@ -23,7 +23,8 @@ class LowPassFilter: public ofxSoundObject {
 	
 public:
 	
-	LowPassFilter():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR), objectName("LowPassFilter"){
+	LowPassFilter():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
+		setName("LowPassFilter");
 		res = 0;
 		fc = 1;
 	}

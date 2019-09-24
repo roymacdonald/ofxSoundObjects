@@ -23,7 +23,7 @@ class NoiseGenerator: public ofxSoundObject {
 public:
 
 	NoiseGenerator():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE){
-		objectName = "NoiseGenerator";
+		setName("NoiseGenerator");
 	}
 	void process(ofSoundBuffer &in, ofSoundBuffer &out) {
 		for(int i = 0; i < out.size(); i++) {

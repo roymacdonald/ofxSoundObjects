@@ -84,7 +84,7 @@ ofxSoundMatrixMixer::ofxSoundMatrixMixer():ofxSoundObject(OFX_SOUND_OBJECT_PROCE
 	numInputChannels = 0;
 	numOutputChannels = 0;
 	
-	objectName = "Matrix Mixer";
+	setName("Matrix Mixer");
 	
 	chanMod = OFX_SOUND_OBJECT_CHAN_MIXER;
 	//	masterVolume = 1.0f;	
