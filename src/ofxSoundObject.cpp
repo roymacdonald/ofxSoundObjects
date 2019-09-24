@@ -144,6 +144,16 @@ ofSoundDevice ofxSoundObject::getDeviceInfo(){
 	return ofxSoundUtils::getSoundDeviceInfo(this->getDeviceId());
 }
 //--------------------------------------------------------------
+const std::string& ofxSoundObject::getName(){
+	return objectName;
+}
+//--------------------------------------------------------------
+void ofxSoundObject::setName(const std::string& name){
+	objectName = name;
+}
+
+
+//--------------------------------------------------------------
 //  ofxSoundInput
 //--------------------------------------------------------------
 ofxSoundInput::ofxSoundInput():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE) {

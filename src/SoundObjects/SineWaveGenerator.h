@@ -6,13 +6,13 @@
 class SineWaveGenerator: public ofxSoundObject {
 public:
 	
-	SineWaveGenerator():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE){}
+	SineWaveGenerator():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE), objectName("Sine Wave Gen"){}
     void setup(float freq, float amplitude = 1.0, float phase = 0){
         this->freq = freq;
         this->amplitude = amplitude;
         currentPhase = phase;
+		
     }
-    virtual  std::string getName() override{ return "Sine Wave Gen";}
 	
 	void process(ofSoundBuffer &in, ofSoundBuffer &out) override{
         float m = TWO_PI* freq / in.getSampleRate();

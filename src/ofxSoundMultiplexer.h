@@ -44,8 +44,9 @@ class ofxSoundInputMultiplexer: public ofxSoundBaseMultiplexer, public ofxSoundI
 public:
 	ofxSoundInputMultiplexer():ofxSoundInput(){
 		chanMod = OFX_SOUND_OBJECT_CHAN_DEMUX;
+		objectName = "Sound Input Multiplexer";
 	}
-	virtual  std::string getName() override{ return "Sound Input Multiplexer";}
+
 	/// this will connect a specific channel to the passes sound object.
 	/// It will work as a kind of splitter.
 	ofxSoundObject &connectChannelTo(int channel,ofxSoundObject &soundObject);
@@ -66,9 +67,10 @@ class ofxSoundOutputMultiplexer: public ofxSoundBaseMultiplexer, public ofxSound
 public:
 	ofxSoundOutputMultiplexer():ofxSoundOutput(){
 		chanMod = OFX_SOUND_OBJECT_CHAN_MUX;
+		objectName = "Sound Output Multiplexer";
 	}
 	virtual size_t getNumChannels() override;
-	virtual  std::string getName() override{ return "Sound Output Multiplexer";}
+
 	virtual void audioOut(ofSoundBuffer &output) override;
 private:
 

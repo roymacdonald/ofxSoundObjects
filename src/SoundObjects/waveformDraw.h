@@ -18,9 +18,7 @@ template<typename BufferType>
 class waveformDraw_: public ofRectangle, public ofxSoundObject{
 public:
 	
-	virtual  std::string getName() override{ return "waveForm";}
-	
-	waveformDraw_():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
+	waveformDraw_():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR),objectName("waveForm"){
 		bRenderWaveforms = false;
 		bMakeGrid = false;
 	}

@@ -83,7 +83,6 @@ public:
 	size_t getNumInstances() { return instances.size(); }
 	
 	
-	virtual  std::string getName() override{ return "Player";}
 	
 	const std::string getFilePath() const;
 	

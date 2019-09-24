@@ -11,7 +11,6 @@ public:
 	ofxSoundMixer();
     virtual ~ofxSoundMixer();
 
-	virtual  std::string getName() override{ return "Sound Mixer";}
 	OF_DEPRECATED_MSG("Use getConnectionSource instead",ofxSoundObject* getChannelSource(int channelIndex));
 	
 	/// returns the connected object at the specified index

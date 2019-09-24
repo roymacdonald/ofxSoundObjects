@@ -93,8 +93,6 @@ public:
 	// get the VUMeter object that is in the output of the mixer.
 	const VUMeter& getOutputVUMeter();
 	
-	virtual  std::string getName() override{ return "Matrix Mixer";}
-	
 	
 	
 	void load(const std::string& path);

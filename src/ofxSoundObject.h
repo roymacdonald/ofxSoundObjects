@@ -30,7 +30,7 @@ public:
 
 	friend class ofxSoundInputMultiplexer; 
 	
-	virtual std::string getName() {return "ofxSoundObject";}
+	
 	/// Connects the output of this ofxSoundObject to the input of the parameter ofxSoundObject
 	ofxSoundObject &connectTo(ofxSoundObject &soundObject);
     void disconnect();
@@ -93,6 +93,9 @@ public:
 	virtual ofSoundDevice getDeviceInfo();
 	
 
+	const std::string& getName();
+	void setName(const std::string& name);
+	
 protected:
 
 	// this is the previous dsp object in the chain
@@ -105,6 +108,7 @@ protected:
 	
 	ofxSoundObjectsChannelCountModifier chanMod = OFX_SOUND_OBJECT_CHAN_UNCHAGED; 
 	 
+	std::string objectName = "ofxSoundObject";
 	
 private:
 	ofSoundStream* outputStream = nullptr;

@@ -11,6 +11,7 @@
 
 //--------------------------------------------------------------
 ofxSoundRecorderObject::ofxSoundRecorderObject():ofxSoundObject(OFX_SOUND_OBJECT_DESTINATION), recState(IDLE){
+	objectName = "Recorder";
 #ifdef OFX_SOUND_ENABLE_THREADED_RECORDER
 	startThread();
 #endif

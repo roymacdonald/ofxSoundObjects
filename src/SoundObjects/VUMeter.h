@@ -18,7 +18,7 @@ class VUMeter:  public ofxSoundObject{
 public:
 	friend class ofxSoundMatrixMixer;
 
-	virtual  std::string getName() override{ return "VUMeter";}
+
 	
 	VUMeter();
 	VUMeter(const VUMeter& a);

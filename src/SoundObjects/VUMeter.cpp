@@ -8,7 +8,7 @@
 #include "VUMeter.h"
 
 
-VUMeter::VUMeter():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){}
+VUMeter::VUMeter():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR), objectName("VUMeter"){}
 //--------------------------------------------------------------
 VUMeter::VUMeter(const VUMeter& a): ofxSoundObject(a){
 	this->drawMode = a.drawMode;

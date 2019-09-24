@@ -21,8 +21,10 @@
 
 class NoiseGenerator: public ofxSoundObject {
 public:
-	virtual  std::string getName() override{ return "NoiseGenerator";}
-	NoiseGenerator():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE){}
+
+	NoiseGenerator():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE){
+		objectName = "NoiseGenerator";
+	}
 	void process(ofSoundBuffer &in, ofSoundBuffer &out) {
 		for(int i = 0; i < out.size(); i++) {
 			out[i] = ofRandom(-1, 1);
