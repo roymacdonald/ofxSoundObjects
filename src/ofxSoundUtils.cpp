@@ -60,6 +60,8 @@ void ofxSoundUtils::setBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer
 }
 //--------------------------------------------------------------
 bool ofxSoundUtils::checkBuffers(const ofSoundBuffer& src, ofSoundBuffer& dst, bool bSetDst){
+	dst.setTickCount(src.getTickCount());
+	dst.setDeviceID(src.getDeviceID());
 	if(dst.size()!=src.size()) {
 		ofLogVerbose("ofxSoundObject") << "working buffer size != output buffer size. " << dst.size() << " != " <<src.size();
 		if(bSetDst){
