@@ -37,7 +37,7 @@ public:
 	
 	void setGridSpacingByNumSamples(size_t spacing);
 	
-
+	
 protected:
 	
 	virtual void updateWaveformMesh();

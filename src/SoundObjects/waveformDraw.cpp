@@ -51,18 +51,33 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
 	
 	ofPushStyle();
 	ofNoFill();
-	ofSetColor(100);
+	ofSetColor(ofColor::red);
+	//Draw bounding box
 	ofDrawRectangle({0,0,this->width , this->height});
+	ofSetColor(255,100);
+	
+	
 	ofPopStyle();
 		
 	ofPushMatrix();
 	
 	ofScale(this->width, this->height);
 	if(gridSpacing > 0) gridMesh.draw();
+	
+	//Draw center line
+	auto chans = getNumChannels();
+	if(chans > 0){
+		float h  = 1.0f/chans;
+		for(int i = 0; i < chans; ++i){
+			ofDrawLine(0, h*(0.5f + i), 1,h*(0.5f + i) );
+		}
+	}
+	
+	
 	ofSetColor(ofColor::white);
 	for(auto& w: waveforms){
 		w.draw();
-	}	
+	}
 	ofPopMatrix();
 	canvas.end();
 }
@@ -97,9 +112,8 @@ void waveformDraw_<BufferType>::updateWaveformMesh(){
 		float h = 1.0f / float(chans);
 		for (int j = 0; j < chans; j++) {
 			auto & wv = waveforms[j].getVertices();
-			size_t bi = wv.size() - 1;
-			for(size_t i=0; i< wv.size(); i++, --bi){
-				wv[i].y = ofMap(buffer[bi*chans + j], -1, 1, h*(j+1), h*j );
+			for(size_t i=0; i< wv.size(); i++){
+				wv[i].y = ofMap(buffer[i*chans + j], -1, 1, h*(j+1), h*j );
 			}
 		}
 	}
@@ -120,7 +134,7 @@ void waveformDraw_<BufferType>::makeWaveformMesh(){
 			}
 			float h = 1.0f / float(chans);
 			
-			float xInc = 1.0f/(float)(buffer.getNumFrames() -1);
+			float xInc = 1.0f/(float)(buffer.getNumFrames());
 			glm::vec3 v;
 			v.x =0;
 			for(int i=0; i<buffer.getNumFrames(); i++){
