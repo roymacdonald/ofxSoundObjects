@@ -14,7 +14,7 @@ class ofx2DCanvas: public ofRectangle{
 public:
 
 	void begin(const ofRectangle& viewport);
-	void end();
+	void end(bool bDrawInfo = true);
 	
 	void enableMouse();
 	void disableMouse();
@@ -32,7 +32,13 @@ private:
 	void mousePressed(ofMouseEventArgs & m);
 	void mouseReleased(ofMouseEventArgs & m);
 	void mouseDragged(ofMouseEventArgs & m);
-	void updateMouse(glm::vec2& m);
+	void mouseScrolled(ofMouseEventArgs & m);
+	void keyPressed(ofKeyEventArgs& key);
+	void keyReleased(ofKeyEventArgs& key);
+	void updateMouse(ofMouseEventArgs& m, bool bMouseScroll);
+	
+	void mouseActionSetup(ofMouseEventArgs & m, bool bMouseScroll);
+	
 	
 	bool bIsDragging = false;
 	
@@ -51,4 +57,7 @@ private:
 	bool bTransformAxisSet = false;
 	
 	unsigned long lastTap = 0;
+	
+	bool bScrolling = false;
+	bool bAltPressed = false;
 };
