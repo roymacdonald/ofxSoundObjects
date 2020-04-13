@@ -1,6 +1,15 @@
 
 #include "waveformDraw.h"
-
+//--------------------------------------------------------------
+template<typename BufferType>
+waveformDraw_<BufferType>::waveformDraw_():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
+	setName("waveForm");
+	bRenderWaveforms = false;
+	bMakeGrid = false;
+	waveColor = ofColor::white;
+	
+	marginColor = ofColor::red;
+}
 //--------------------------------------------------------------
 template<typename BufferType>
 void waveformDraw_<BufferType>::setup(const ofRectangle& r){
@@ -51,10 +60,10 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
 	
 	ofPushStyle();
 	ofNoFill();
-	ofSetColor(ofColor::red);
+	ofSetColor(marginColor);
 	//Draw bounding box
 	ofDrawRectangle({0,0,this->width , this->height});
-	ofSetColor(255,100);
+//	ofSetColor(255,100);
 	
 	
 	ofPopStyle();
@@ -74,7 +83,7 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
 	}
 	
 	
-	ofSetColor(ofColor::white);
+	ofSetColor(waveColor);
 	for(auto& w: waveforms){
 		w.draw();
 	}
@@ -148,7 +157,6 @@ void waveformDraw_<BufferType>::makeWaveformMesh(){
 	}
 }
 //--------------------------------------------------------------
-
 template<typename BufferType>
 void waveformDraw_<BufferType>::makeGrid(){
 	if(bMakeGrid){
@@ -183,6 +191,36 @@ void waveformDraw_<BufferType>::makeGrid(){
 			}
 		}
 	}
+}
+//--------------------------------------------------------------
+template<typename BufferType>
+void waveformDraw_<BufferType>::setWaveColor(const ofColor& color){
+	waveColor = color;
+}
+//--------------------------------------------------------------
+//template<typename BufferType>
+//void waveformDraw_<BufferType>::setBackgroundColor(const ofColor& color){
+//	backgroundColor = color;
+//}
+//--------------------------------------------------------------
+template<typename BufferType>
+void waveformDraw_<BufferType>::setMarginColor(const ofColor& color){
+	marginColor = color;
+}
+//--------------------------------------------------------------
+template<typename BufferType>
+const ofColor&  waveformDraw_<BufferType>::getWaveColor(){
+	return waveColor;
+}
+//--------------------------------------------------------------
+//template<typename BufferType>
+//const ofColor&  waveformDraw_<BufferType>::getBackgroundColor(){
+//	return backgroundColor;
+//}
+//--------------------------------------------------------------
+template<typename BufferType>
+const ofColor&  waveformDraw_<BufferType>::getMarginColor(){
+	return marginColor;
 }
 //--------------------------------------------------------------
 //--------------------------------------------------------------

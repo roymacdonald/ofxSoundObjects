@@ -18,11 +18,7 @@ template<typename BufferType>
 class waveformDraw_: public ofRectangle, public ofxSoundObject{
 public:
 	
-	waveformDraw_():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
-		setName("waveForm");
-		bRenderWaveforms = false;
-		bMakeGrid = false;
-	}
+	waveformDraw_();
 	waveformDraw_(const waveformDraw_& a): ofRectangle(a), ofxSoundObject(a){}
 
 	void setup(const ofRectangle& r);
@@ -37,7 +33,14 @@ public:
 	
 	void setGridSpacingByNumSamples(size_t spacing);
 	
-	
+	void setWaveColor(const ofColor& color);
+//	void setBackgroundColor(const ofColor& color);
+	void setMarginColor(const ofColor& color);
+
+	const ofColor&  getWaveColor();
+//	const ofColor&  getBackgroundColor();
+	const ofColor&  getMarginColor();
+
 protected:
 	
 	virtual void updateWaveformMesh();
@@ -64,6 +67,9 @@ protected:
 	
 	BufferType buffer;
 
+	ofColor  waveColor;
+//	ofColor  backgroundColor;
+	ofColor  marginColor;
 };
 
 typedef waveformDraw_<ofSoundBuffer> waveformDraw;
