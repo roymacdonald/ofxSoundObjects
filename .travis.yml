@@ -25,7 +25,7 @@ matrix:
   - os: linux
     dist: trusty
     sudo: required
-    env: BADGE=linux64 TARGET="linux64" OF_BRANCH="master"
+    env: BADGE=linux TARGET="linux64" OF_BRANCH="master"
     compiler: gcc
     addons:
       apt:
@@ -36,19 +36,19 @@ matrix:
           - g++-4.9
           - gdb
 
-  - os: linux
-    sudo: required
-    dist: trusty
-    env: BADGE=linuxarmv6l TARGET="linuxarmv6l"
+  # - os: linux
+  #   sudo: required
+  #   dist: trusty
+  #   env: BADGE=linuxarmv6l TARGET="linuxarmv6l"
 
 
-  - os: linux
-    sudo: required
-    dist: trusty
-    env: BADGE=linuxarmv7l TARGET="linuxarmv7l"
-    cache:
-      directories:
-        - ~/.ccache
+  # - os: linux
+  #   sudo: required
+  #   dist: trusty
+  #   env: BADGE=linuxarmv7l TARGET="linuxarmv7l"
+  #   cache:
+  #     directories:
+  #       - ~/.ccache
 
 
   # - os: linux
@@ -68,15 +68,15 @@ matrix:
     compiler: clang
     env: BADGE=osx TARGET="osx" OF_BRANCH="master"
 
-    - os: osx
-    osx_image: xcode9.4
-    compiler: clang
-    env: BADGE=ios TARGET="ios"
+  #   - os: osx
+  #   osx_image: xcode9.4
+  #   compiler: clang
+  #   env: BADGE=ios TARGET="ios"
 
-  - os: osx
-    osx_image: xcode9.4
-    compiler: clang
-    env: BADGE=tvos TARGET="tvos"
+  # - os: osx
+  #   osx_image: xcode9.4
+  #   compiler: clang
+  #   env: BADGE=tvos TARGET="tvos"
 
 
 
@@ -108,8 +108,7 @@ matrix:
   #       - ~/.gradle
   #       - ~/android-ndk-r15c
 
-  exclude:
-    - compiler: gcc
+
 
 install:
   - cd ~
@@ -125,4 +124,3 @@ script:
 
 git:
   depth: 10
-
