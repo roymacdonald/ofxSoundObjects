@@ -25,7 +25,8 @@ matrix:
   - os: linux
     dist: trusty
     sudo: required
-    env: BADGE=linux TARGET="linux64" OF_BRANCH="master"
+    env: BADGE=linux64 TARGET="linux64" OF_BRANCH="master"
+    cache: ccache
     compiler: gcc
     addons:
       apt:
@@ -36,12 +37,84 @@ matrix:
           - g++-4.9
           - gdb
 
+  - os: linux
+    sudo: required
+    dist: trusty
+    env: BADGE=linuxarmv6l TARGET="linuxarmv6l"
+    cache: ccache
+
+
+  - os: linux
+    sudo: required
+    dist: trusty
+    env: BADGE=linuxarmv7l TARGET="linuxarmv7l"
+    cache:
+      directories:
+        - ~/.ccache
+
+
+  - os: linux
+    sudo: required
+    dist: trusty
+    env: BADGE=emscripten TARGET="emscripten"
+    services:
+      - docker
+    before_install:
+      - docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash
+
+
+
 # OSX, OF master
   - os: osx
-    osx_image: xcode8
+    osx_image: xcode9.4
     compiler: clang
     env: BADGE=osx TARGET="osx" OF_BRANCH="master"
+    cache: ccache
 
+    - os: osx
+    osx_image: xcode9.4
+    compiler: clang
+    env: BADGE=ios TARGET="ios"
+    cache: ccache
+
+  - os: osx
+    osx_image: xcode9.4
+    compiler: clang
+    env: BADGE=tvos TARGET="tvos"
+    cache: ccache
+
+
+
+  - os: linux
+    language: android
+    dist: trusty
+    sudo: required
+    env: BADGE=androidArm TARGET="android" NDK_DIR="android-ndk-r15c" GRADLE_TARGET="compileArm7DebugSources"
+    android:
+      components:
+        - build-tools-25.0.3
+        - android-25
+    cache:
+      directories:
+        - ~/.gradle
+        - ~/android-ndk-r15c
+
+  - os: linux
+    language: android
+    dist: trusty
+    sudo: required
+    env: BADGE=androidX86 TARGET="android" NDK_DIR="android-ndk-r15c" GRADLE_TARGET="compileX86DebugSources"
+    android:
+      components:
+        - build-tools-25.0.3
+        - android-25
+    cache:
+      directories:
+        - ~/.gradle
+        - ~/android-ndk-r15c
+
+  exclude:
+    - compiler: gcc
 
 install:
   - cd ~
@@ -53,7 +126,9 @@ install:
   - travis_wait 30 scripts/ci/addons/install.sh
 
 script:
+  - ccache -z
+  - ccache -s
   - scripts/ci/addons/build.sh
-
+  - ccache -s
 git:
-depth: 10
+  depth: 10
