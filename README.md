@@ -19,14 +19,7 @@ Made as addon, improoved and updated by Roy Macdonald.
 Platform                     | CI Status
 -----------------------------|:---------
 OSX                          | [![OSX Build Status](http://badges.herokuapp.com/travis/roymacdonald/ofxSoundObjects?env=BADGE=osx&label=build&branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
-iOS                          | [![iOS Build Status](http://badges.herokuapp.com/travis/roymacdonald/ofxSoundObjects?env=BADGE=ios&label=build&branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
-tvOS                         | [![tvOS Build Status](http://badges.herokuapp.com/travis/roymacdonald/ofxSoundObjects?env=BADGE=tvos&label=build&branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
 Linux  64bit                 | [![Linux64 Build Status](http://badges.herokuapp.com/travis/roymacdonald/ofxSoundObjects?env=BADGE=linux64&label=build&branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
-Linux armv6l                 | [![Linux Armv6 Build Status](http://badges.herokuapp.com/travis/roymacdonald/ofxSoundObjects?env=BADGE=linuxarmv6l&label=build&branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
-Linux armv7l                 | [![Linux Armv7 Build Status](http://badges.herokuapp.com/travis/roymacdonald/ofxSoundObjects?env=BADGE=linuxarmv7l&label=build&branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
-Emscripten                   | [![Emscripten Build Status](http://badges.herokuapp.com/travis/roymacdonald/ofxSoundObjects?env=BADGE=emscripten&label=build&branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
-Android Arm                  | [![Android Arm Build Status](http://badges.herokuapp.com/travis/roymacdonald/ofxSoundObjects?env=BADGE=androidArm&label=build&branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
-Android X86                  | [![Android X86 Build Status](http://badges.herokuapp.com/travis/roymacdonald/ofxSoundObjects?env=BADGE=androidX86&label=build&branch=master)](https://travis-ci.org/roymacdonald/ofxSoundObjects)
 Windows MSYS2 32bits         | [![Build status](https://appveyor-matrix-badges.herokuapp.com/repos/roymacdonald/ofxsoundobjects/branch/master/1)](https://ci.appveyor.com/project/roymacdonald/ofxsoundobjects/branch/master)
 Windows Visual Studio 32bits | [![Build status](https://appveyor-matrix-badges.herokuapp.com/repos/roymacdonald/ofxsoundobjects/branch/master/2)](https://ci.appveyor.com/project/roymacdonald/ofxsoundobjects/branch/master)
 Windows Visual Studio 64bits | [![Build status](https://appveyor-matrix-badges.herokuapp.com/repos/roymacdonald/ofxsoundobjects/branch/master/3)](https://ci.appveyor.com/project/roymacdonald/ofxsoundobjects/branch/master)
