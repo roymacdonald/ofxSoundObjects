@@ -13,7 +13,7 @@ The developers involved in this were:
 
 The original development branch can be found [here](https://github.com/admsyn/openFrameworks/tree/feature-sound-objects).
 
-Made as addon, improoved and updated by Roy Macdonald.
+Made as addon, improved and updated by Roy Macdonald.
 
 ## Continous Integration (CI) builds status
 Platform                     | CI Status
