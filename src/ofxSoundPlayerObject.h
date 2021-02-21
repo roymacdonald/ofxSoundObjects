@@ -48,7 +48,7 @@ public:
 	float getPan(size_t index =0) const;
 	bool  isLoaded() const;
 	float getVolume(int index =-1) const;
-	bool  getIsLooping(size_t index =0) const;
+	bool  getIsLooping(size_t index =-1) const;
 	unsigned long getDurationMS();
 
 	const ofSoundBuffer & getCurrentBuffer() const;
@@ -119,6 +119,8 @@ private:
 	std::atomic<bool> bStreaming;
 	std::atomic<bool> bMultiplay;
 	std::atomic<bool> bIsPlayingAny;
+	
+	bool bDefaultlLooping = false;
 
 	void setNumInstances(const size_t & num);
 	

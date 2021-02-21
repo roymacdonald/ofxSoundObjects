@@ -192,18 +192,18 @@ int ofxSoundPlayerObject::play() {
 					instances.push_back(soundPlayInstance());
 					index =instances.size() - 1;
 					instances.back().id = index;
+					instances.back().loop  = bDefaultlLooping;
 				}
 			}
 		} else {
 			if (instances.size() == 0) {
 				setNumInstances(1);
 			}
-			setPosition(0,0);//Should the position be set to zero here? I'm not sure.
 			{std::lock_guard<std::mutex> lock(instacesMutex);
 				instances[0].id = 0;
 			}
-			setSpeed(1, 0);
 		}
+		setPosition(0,index);//Should the position be set to zero here? I'm not sure.
 		setSpeed(1, index);
 		setPaused(false, index);
 		return index;
@@ -307,6 +307,7 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
 			processBuffers(outputBuffer, instances[0], vol, nFrames, nChannels);
 		}
 		else {
+			outputBuffer.set(0);
 			for(auto& inst : instances){
 				processBuffers(resampledBuffer, inst, vol, nFrames, nChannels);
 				resampledBuffer.addTo(outputBuffer, 0, inst.loop);
@@ -405,7 +406,8 @@ void ofxSoundPlayerObject::setPaused(bool bP, int index){
 	checkPaused();
 }
 //--------------------------------------------------------------
-void ofxSoundPlayerObject::setLoop(bool bLp, int index){ 
+void ofxSoundPlayerObject::setLoop(bool bLp, int index){
+	if(index == -1)bDefaultlLooping = true;
 	updateInstance([&](soundPlayInstance& inst){
 		inst.loop = bLp;
 	},index, "ofxSoundPlayerObject::setLoop");
@@ -467,6 +469,7 @@ bool ofxSoundPlayerObject::isPlaying(int index) const {
 //--------------------------------------------------------------
 bool ofxSoundPlayerObject::getIsLooping(size_t index) const{
 	std::lock_guard<std::mutex> lock(instacesMutex);
+	if(index == -1) return bDefaultlLooping;
 	if(index < instances.size()){
 		return instances[index].loop;
 	}
