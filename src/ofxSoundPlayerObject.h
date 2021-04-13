@@ -89,21 +89,13 @@ public:
 			if(bPreprocess){
 				preprocessedBuffer = buffer;
 				preprocessedBuffer.resample(relativeSpeed);
-//				buffer.resampleTo(preprocessedBuffer, 0, buffer.getNumFrames(), relativeSpeed, loop, ofSoundBuffer::Linear);
-				
-//				cout << "preprocessedBuffer size: " << preprocessedBuffer.getBuffer().size() << "\n";
-//				cout << "preprocessedBuffer frames: " << preprocessedBuffer.getNumFrames() << "\n";
-//				cout << "preprocessedBuffer chans: " << preprocessedBuffer.getNumChannels() << "\n";
-//				cout << "preprocessedBuffer SR: " << preprocessedBuffer.getSampleRate() << "\n";
 			}
 			bUsePreprocessedBuffer = bPreprocess;
-		}
-		
+		}		
 
 		bool bUsePreprocessedBuffer = false;
 		ofSoundBuffer preprocessedBuffer;
-//	private:
-//		bool bNeedsPreprocessing = false;
+
 	};
 	ofParameter<float>volume;
 	bool canPlayInstance();
