@@ -304,13 +304,19 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
 			vol = volume.get();
 		}
 		if (instances.size() == 1){
-			processBuffers(outputBuffer, instances[0], vol, nFrames, nChannels);
+			if(instances[0].bIsPlaying){
+				processBuffers(outputBuffer, instances[0], vol, nFrames, nChannels);
+			}else{
+				outputBuffer.set(0);
+			}
 		}
 		else {
 			outputBuffer.set(0);
 			for(auto& inst : instances){
-				processBuffers(resampledBuffer, inst, vol, nFrames, nChannels);
-				resampledBuffer.addTo(outputBuffer, 0, inst.loop);
+				if(inst.bIsPlaying){
+					processBuffers(resampledBuffer, inst, vol, nFrames, nChannels);
+					resampledBuffer.addTo(outputBuffer, 0, inst.loop);
+				}
 			}
 		}
 		updatePositions(nFrames);
@@ -328,6 +334,8 @@ void ofxSoundPlayerObject::processBuffers(ofSoundBuffer& buf, soundPlayInstance&
 	}else{
 		if (ofIsFloatEqual( i.speed,  1.0f)) {
 			buffer.copyTo(buf, nFrames, nChannels, i.position, i.loop);
+		} else if(i.bUsePreprocessedBuffer){
+			i.preprocessedBuffer.copyTo(buf, nFrames, nChannels, i.position, i.loop);
 		}
 		else {
 			buffer.resampleTo(buf, i.position, nFrames, i.relativeSpeed, i.loop, ofSoundBuffer::Linear);
@@ -352,7 +360,13 @@ void ofxSoundPlayerObject::updatePositions(int nFrames){
 		}
 		for (auto& i : instances){
 			if(i.bIsPlaying){
-				i.position += nFrames*i.relativeSpeed;
+				i.position += nFrames;
+				if(i.bUsePreprocessedBuffer){
+					nf = i.preprocessedBuffer.getNumFrames();
+				}else{
+					i.position *=i.relativeSpeed;
+				}
+				 
 				if (i.loop) {
 					i.position %= nf;
 				} else {
@@ -388,7 +402,7 @@ void ofxSoundPlayerObject::setPan(float _pan, int index){
 	},index, "ofxSoundPlayerObject::setPan");
 }
 //--------------------------------------------------------------
-void ofxSoundPlayerObject::setSpeed(float spd, int index){
+void ofxSoundPlayerObject::setSpeed(float spd, int index, bool bPreprocess){
 	if ( bStreaming && !ofIsFloatEqual(spd, 1.0f) ){
 		ofLogWarning("ofxSoundPlayerObject") << "setting speed is not supported on bStreaming sounds";
 		return;
@@ -396,6 +410,11 @@ void ofxSoundPlayerObject::setSpeed(float spd, int index){
 	updateInstance([&](soundPlayInstance& inst){
 		inst.speed = spd;
 		inst.relativeSpeed = spd*(double(sourceSampleRate)/double(playerSampleRate));
+		
+		if(!bStreaming && isLoaded()){
+//			cout << "bStreaming: " << bStreaming << " isLoaded(): " << isLoaded() << "\n";
+			inst.preprocess(bPreprocess, buffer);
+		}
 	},index, "ofxSoundPlayerObject::setSpeed");
 }
 //--------------------------------------------------------------
@@ -423,12 +442,12 @@ void ofxSoundPlayerObject::setMultiPlay(bool bMp){
 void ofxSoundPlayerObject::setPosition(float pct, size_t index){
 	pct = ofClamp(pct, 0, 1);
 	updateInstance([&](soundPlayInstance& inst){
-		inst.position = pct* sourceNumFrames;
+		inst.position = pct* _getNumFrames(index);
 	},index, "ofxSoundPlayerObject::setPosition");
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setPositionMS(int ms, size_t index){
-	setPosition(float(sourceSampleRate * ms)/ (1000.0f* sourceNumFrames ), index);
+	setPosition(float(sourceSampleRate * ms)/ (1000.0f* _getNumFrames(index) ), index);
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setNumInstances(const size_t & num){
@@ -436,10 +455,15 @@ void ofxSoundPlayerObject::setNumInstances(const size_t & num){
 	instances.resize(num);
 }
 //========================GETTERS===============================
+size_t ofxSoundPlayerObject::_getNumFrames(size_t index) const{
+	auto& i = instances[index];
+	return (i.bUsePreprocessedBuffer?i.preprocessedBuffer.getNumFrames(): sourceNumFrames);
+}
+//--------------------------------------------------------------
 float ofxSoundPlayerObject::getPosition(size_t index) const{
 	std::lock_guard<std::mutex> lock(instacesMutex);
 	if(index < instances.size()){
-		return float(instances[index].position)/float(sourceNumFrames);
+		return float(instances[index].position)/float(_getNumFrames(index));
 	}
 	return 0;
 }

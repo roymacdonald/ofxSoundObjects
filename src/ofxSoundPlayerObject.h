@@ -33,7 +33,9 @@ public:
 	
 	void setVolume(float vol, int index =-1 );
 	void setPan(float vol, int index =-1 ); // -1 = left, 1 = right
-	void setSpeed(float spd, int index =-1 );
+	/// set speed. when preprocessed is chosen the whole audiofile buffer get preprocessed and resampled to the desired speed.
+	/// This reduces the computations done on each audio callback, allowing you to have more instances with different speeds played at once
+	void setSpeed(float spd, int index =-1 , bool bPreprocess = false);
 	void setPaused(bool bP, int index =-1 );
 	void setLoop(bool bLp, int index =-1 );
 	void setMultiPlay(bool bMp);
@@ -76,6 +78,32 @@ public:
         void updateVolumes(){
             ofStereoVolumes(volume, pan, volumeLeft, volumeRight);
         }
+		void preprocess(bool bPreprocess, const ofSoundBuffer & buffer){
+			if(!bPreprocess && bUsePreprocessedBuffer){
+				preprocessedBuffer.clear();
+			}else if(bPreprocess && !bUsePreprocessedBuffer){
+				preprocessedBuffer.allocate(buffer.getNumFrames() , buffer.getNumChannels());
+				preprocessedBuffer.setSampleRate(buffer.getSampleRate());
+			}
+			
+			if(bPreprocess){
+				preprocessedBuffer = buffer;
+				preprocessedBuffer.resample(relativeSpeed);
+//				buffer.resampleTo(preprocessedBuffer, 0, buffer.getNumFrames(), relativeSpeed, loop, ofSoundBuffer::Linear);
+				
+//				cout << "preprocessedBuffer size: " << preprocessedBuffer.getBuffer().size() << "\n";
+//				cout << "preprocessedBuffer frames: " << preprocessedBuffer.getNumFrames() << "\n";
+//				cout << "preprocessedBuffer chans: " << preprocessedBuffer.getNumChannels() << "\n";
+//				cout << "preprocessedBuffer SR: " << preprocessedBuffer.getSampleRate() << "\n";
+			}
+			bUsePreprocessedBuffer = bPreprocess;
+		}
+		
+
+		bool bUsePreprocessedBuffer = false;
+		ofSoundBuffer preprocessedBuffer;
+//	private:
+//		bool bNeedsPreprocessing = false;
 	};
 	ofParameter<float>volume;
 	bool canPlayInstance();
@@ -85,6 +113,8 @@ public:
 	
 	
 	const std::string getFilePath() const;
+	
+	vector<soundPlayInstance> instances;
 	
 private:
 	enum State{
@@ -124,7 +154,7 @@ private:
 
 	void setNumInstances(const size_t & num);
 	
-	vector<soundPlayInstance> instances;
+	
 
 	void checkPaused();
     
@@ -143,6 +173,8 @@ private:
 
 	
 	void processBuffers(ofSoundBuffer& buf, soundPlayInstance& i, const float& vol, const std::size_t& nFrames, const std::size_t& nChannels);
+	
+	size_t _getNumFrames(size_t index) const;
 	
 };
 
