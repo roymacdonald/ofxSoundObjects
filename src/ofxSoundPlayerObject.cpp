@@ -426,7 +426,7 @@ void ofxSoundPlayerObject::setPaused(bool bP, int index){
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setLoop(bool bLp, int index){
-	if(index == -1)bDefaultlLooping = true;
+	if(index == -1)bDefaultlLooping = bLp;
 	updateInstance([&](soundPlayInstance& inst){
 		inst.loop = bLp;
 	},index, "ofxSoundPlayerObject::setLoop");
