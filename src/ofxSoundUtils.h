@@ -8,7 +8,9 @@
 
 #pragma once
 #include "ofSoundBuffer.h"
-#include "ofSoundBaseTypes.h" 
+#include "ofSoundBaseTypes.h"
+#include "ofMath.h"
+
 namespace ofxSoundUtils{
     void getBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer, ofSoundBuffer & targetBuffer, std::vector<int> group);
     void setBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer, ofSoundBuffer & targetBuffer, const std::vector<int>& group);
@@ -29,6 +31,8 @@ namespace ofxSoundUtils{
 		if(vec.size() != newSize) vec.resize(newSize);
 	}
 	
+	void fadeBuffer(ofSoundBuffer& buffer, bool bFadeOut);
+
 };
 //--------------------------------------------------------------
 

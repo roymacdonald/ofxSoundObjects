@@ -168,6 +168,24 @@ bool ofxSoundUtils::getBufferPeaks(ofSoundBuffer& buffer, std::vector<float>& cu
 }
 
 
-
+//--------------------------------------------------------------
+void ofxSoundUtils::fadeBuffer(ofSoundBuffer& buffer, bool bFadeOut){
+	if(buffer.getNumFrames()<=1)
+	{
+		buffer.set(0);
+		return;
+	}
+	std::cout << "ofxSoundUtils::fadeBuffer\n";
+	auto & bf = buffer.getBuffer();
+	int c = buffer.getNumChannels();
+	for(size_t i = 0; i < buffer.getNumFrames(); i++){
+		float p = i/(float)(buffer.getNumFrames() -1);
+		float v = ofInterpolateCosine((bFadeOut?1.0f:0.0f), (bFadeOut?0.0f:1.0f), p);
+//		std::cout << v << "\n";
+		for(size_t j = 0; j < c; j++){
+			bf[i * c + j] *= v;
+		}
+	}
+}
 
 
