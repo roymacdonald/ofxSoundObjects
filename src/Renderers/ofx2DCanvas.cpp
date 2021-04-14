@@ -169,10 +169,8 @@ void ofx2DCanvas::updateMouse(ofMouseEventArgs& m, bool bMouseScroll){
 				}
 			}
 			
-			
-			
 		}else{
-			mouseVel = 1 * mouseVel /glm::vec2(width,height);
+			mouseVel = (bAltPressed?0.1:1.0) * mouseVel /glm::vec2(width,height);
 			scale += mouseVel + mouseVel * scale;
 			translate = onPressTranslate - relativePressPos*(scale - onPressScale);
 			
