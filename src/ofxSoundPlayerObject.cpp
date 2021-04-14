@@ -8,6 +8,7 @@
 #include "ofxSoundPlayerObject.h"
 #include <algorithm>
 #include <float.h>
+#include "ofxSoundUtils.h"
 
 //int ofxSoundPlayerObject::maxSoundsTotal=128;
 //int ofxSoundPlayerObject::maxSoundsPerPlayer=16;
@@ -313,7 +314,7 @@ void ofxSoundPlayerObject::audioOut(ofSoundBuffer& outputBuffer){
 		else {
 			outputBuffer.set(0);
 			for(auto& inst : instances){
-				if(inst.bIsPlaying){
+				if(inst.bIsPlaying ){
 					processBuffers(resampledBuffer, inst, vol, nFrames, nChannels);
 					resampledBuffer.addTo(outputBuffer, 0, inst.loop);
 				}
@@ -347,6 +348,12 @@ void ofxSoundPlayerObject::processBuffers(ofSoundBuffer& buf, soundPlayInstance&
 	}else{
 		buf *= vol*i.volume;
 	}
+	if(i.bNeedsFade ){
+		if(i.position > 0){
+			ofxSoundUtils::fadeBuffer(buf, !i.bFadeIn);
+		}
+		if(i.bFadeIn) i.bNeedsFade = false;
+	}
 
 }
 //--------------------------------------------------------------
@@ -375,6 +382,10 @@ void ofxSoundPlayerObject::updatePositions(int nFrames){
 						i.bIsPlaying = false;
 						addInstanceEndNotification(i.id);
 					}
+				}
+				if(i.bNeedsFade && !i.bFadeIn){
+					i.bNeedsFade = false;
+					i.bIsPlaying = false;
 				}
 			}
 		}
@@ -407,20 +418,29 @@ void ofxSoundPlayerObject::setSpeed(float spd, int index, bool bPreprocess){
 		ofLogWarning("ofxSoundPlayerObject") << "setting speed is not supported on bStreaming sounds";
 		return;
 	}
+	
+
+	
+	bool bWasPlaying = isPlaying(index);
+	if(bPreprocess && bWasPlaying) setPaused(true, index);
 	updateInstance([&](soundPlayInstance& inst){
 		inst.speed = spd;
 		inst.relativeSpeed = spd*(double(sourceSampleRate)/double(playerSampleRate));
 		
 		if(!bStreaming && isLoaded()){
-//			cout << "bStreaming: " << bStreaming << " isLoaded(): " << isLoaded() << "\n";
+
 			inst.preprocess(bPreprocess, buffer);
 		}
 	},index, "ofxSoundPlayerObject::setSpeed");
+	if(bPreprocess && bWasPlaying) setPaused(false, index);
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setPaused(bool bP, int index){
 	updateInstance([&](soundPlayInstance& inst){
-		inst.bIsPlaying = !bP;
+		if(!bP) inst.bIsPlaying = true;
+		
+		inst.bNeedsFade = true;
+		inst.bFadeIn =  !bP;
 	},index, "ofxSoundPlayerObject::setPaused");
 	checkPaused();
 }

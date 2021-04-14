@@ -75,6 +75,8 @@ public:
 		unsigned int position=0;
 		float volumeLeft, volumeRight;
 		size_t id = 0;
+		bool bNeedsFade = false;
+		bool bFadeIn = true;
         void updateVolumes(){
             ofStereoVolumes(volume, pan, volumeLeft, volumeRight);
         }
