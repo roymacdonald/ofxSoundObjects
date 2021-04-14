@@ -26,14 +26,9 @@ void waveformDraw_<BufferType>::setup(float x, float y, float w, float h){
 //--------------------------------------------------------------
 template<typename BufferType>
 void waveformDraw_<BufferType>::process(ofSoundBuffer &input, ofSoundBuffer &output){
-	{
-		std::lock_guard<std::mutex> lck(mutex1);
-		ofxSoundUtils::checkBuffers(input, buffer, true);
-		input.copyTo(this->buffer);
-		
-	}
-	bRenderWaveforms = true;
+	makeMeshFromBuffer(input);
 	output = input;
+	
 }
 //--------------------------------------------------------------
 template<typename BufferType>
@@ -97,7 +92,7 @@ void waveformDraw_<BufferType>::makeMeshFromBuffer(const ofSoundBuffer& buffer){
 	{
 		std::lock_guard<std::mutex> lck(mutex1);
 		ofxSoundUtils::checkBuffers(buffer, this->buffer, true);
-
+		
 		buffer.copyTo(this->buffer);
 		bRenderWaveforms = true;
 	}
@@ -166,7 +161,7 @@ void waveformDraw_<BufferType>::makeGrid(){
 				bMakeGrid = false;
 				gridMesh.setMode(OF_PRIMITIVE_TRIANGLES);
 				gridMesh.setUsage(GL_STATIC_DRAW);
-			
+
 				float xSpace = (float) gridSpacing / (float)(buffer.getNumFrames());
 				ofRectangle r(0,0, xSpace, 1);
 				
@@ -177,7 +172,7 @@ void waveformDraw_<BufferType>::makeGrid(){
 					gridMesh.addVertex(r.getTopLeft());
 					gridMesh.addVertex(r.getTopRight());
 					gridMesh.addVertex(r.getBottomLeft());
-					
+										
 					
 					gridMesh.addVertex(r.getTopRight());
 					gridMesh.addVertex(r.getBottomRight());
