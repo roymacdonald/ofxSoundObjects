@@ -94,7 +94,6 @@ private:
 	
 	ofSoundBuffer buffer;
 	
-	ofSoundBuffer streamReadBuffer;
 	
 	void setFromAudioFile(ofxAudioFile& audioFile);
 	
