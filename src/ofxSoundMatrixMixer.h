@@ -87,7 +87,6 @@ public:
 	
 	void setOutputVolumeForAllChannels(const float & volValue);
 	
-	
 	// get the VUMeter object for the connection at connectionIndex
 	const VUMeter& getVUMeterForConnection(const size_t& connectionIndex);
 	// get the VUMeter object that is in the output of the mixer.
@@ -100,6 +99,7 @@ public:
 	
 	static ofParameter<bool>& getComputeRMSandPeak();
 	
+
 protected:
 
 	class MatrixInputObject{ 
@@ -144,9 +144,9 @@ protected:
 	public:
 		friend class ofxSoundMatrixMixer;
 
-		void setup(const std::string& name){
+		void setup(const std::string& name, const float& vol){
 			ofParameterGroup::setName(name);
-			add(volume.set(name + " vol", 0,0,1));
+			add(volume.set(name + " vol", vol, 0, 1));
 			add(visibility.set(name + "visibility", 0, 0, 2));
 		}
 		
@@ -175,7 +175,6 @@ protected:
 	void updateNumInputChannels();
 	void updateNumOutputChannels(const size_t & nc);
 	
-	float masterVolume;
 	
 	void setInput(ofxSoundObject *obj) override;
 	
@@ -214,6 +213,8 @@ protected:
 	
 #endif
 
+	atomic<float> defaultOutputVol = {0.0f};
+	
 	
 private:
 	ofMutex mutex;

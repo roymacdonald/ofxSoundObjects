@@ -178,7 +178,7 @@ void ofxSoundMatrixMixer::updateNumOutputChannels(const size_t & nc){
 		size_t i = outputChannels.size(); 
 		outputChannels.resize(numOutputChannels);
 		for( ; i < numOutputChannels; i++){
-			outputChannels[i].setup("out " + ofToString(i));
+			outputChannels[i].setup("out " + ofToString(i), defaultOutputVol.load());
 		}
 		
 	}
@@ -242,6 +242,7 @@ void ofxSoundMatrixMixer::setOutputVolumeForAllChannels(const float & volValue){
 	for(auto& o: outputChannels){
 		o.volume = volValue;
 	}
+	defaultOutputVol = ofClamp(volValue, 0, 1);
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixer::setOutputVolumeForChannel (const float & volValue, const size_t& outputChannel){
