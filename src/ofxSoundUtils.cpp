@@ -63,11 +63,12 @@ bool ofxSoundUtils::checkBuffers(const ofSoundBuffer& src, ofSoundBuffer& dst, b
 	dst.setTickCount(src.getTickCount());
 	dst.setDeviceID(src.getDeviceID());
 	if(dst.size()!=src.size()) {
-		ofLogVerbose("ofxSoundObject") << "working buffer size != output buffer size. " << dst.size() << " != " <<src.size();
 		if(bSetDst){
 			dst.resize(src.size());
 			dst.setNumChannels(src.getNumChannels());
 			dst.setSampleRate(src.getSampleRate());
+		}else{
+			ofLogVerbose("ofxSoundObject") << "working buffer size != output buffer size. " << dst.size() << " != " <<src.size();
 		}
 		return true;
 	}
