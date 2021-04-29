@@ -17,6 +17,10 @@
 #include "ofxSoundObjects.h"
 
 
+#include "ofxSoundMixer.h"
+
+class ofxSimpleSoundPlayer;
+
 class ofxSoundPlayerObject:  public ofxSoundObject {
 public:
 	ofxSoundPlayerObject();
@@ -33,9 +37,8 @@ public:
 	
 	void setVolume(float vol, int index =-1 );
 	void setPan(float vol, int index =-1 ); // -1 = left, 1 = right
-	/// set speed. when preprocessed is chosen the whole audiofile buffer get preprocessed and resampled to the desired speed.
-	/// This reduces the computations done on each audio callback, allowing you to have more instances with different speeds played at once
-	void setSpeed(float spd, int index =-1 , bool bPreprocess = false);
+	
+	void setSpeed(float spd, int index =-1);
 	void setPaused(bool bP, int index =-1 );
 	void setLoop(bool bLp, int index =-1 );
 	void setMultiPlay(bool bMp);
@@ -50,7 +53,9 @@ public:
 	float getPan(size_t index =0) const;
 	bool  isLoaded() const;
 	float getVolume(int index =-1) const;
-	bool  getIsLooping(size_t index =-1) const;
+	
+	bool  isLooping(size_t index =-1) const;
+	OF_DEPRECATED_MSG("Use isLooping() instead", bool  getIsLooping(size_t index =-1) const);
 	unsigned long getDurationMS();
 
 	const ofSoundBuffer & getCurrentBuffer() const;
@@ -58,89 +63,24 @@ public:
     ofEvent<size_t> endEvent;
 	ofEvent<void>& getAsyncLoadEndEvent();
 
-    const ofxSoundFile& getSoundFile() const {return soundFile;}
-	ofxSoundFile& getSoundFile() { return soundFile;}
+	const ofxSoundFile& getSoundFile() const;
+	ofxSoundFile& getSoundFile();
 
-	class soundPlayInstance{
-	public:
-        soundPlayInstance(){
-            updateVolumes();
-        }
-		float volume = 1;
-		bool bIsPlaying =false;
-		bool loop = false;
-		float speed;
-		float pan = 0;
-		float relativeSpeed =1;
-		unsigned int position=0;
-		float volumeLeft, volumeRight;
-		size_t id = 0;
-		bool bNeedsFade = false;
-		bool bFadeIn = true;
-        void updateVolumes(){
-            ofStereoVolumes(volume, pan, volumeLeft, volumeRight);
-        }
-		void preprocess(bool bPreprocess, const ofSoundBuffer & buffer){
-			if(!bPreprocess && bUsePreprocessedBuffer){
-				preprocessedBuffer.clear();
-			}else if(bPreprocess && !bUsePreprocessedBuffer){
-				preprocessedBuffer.allocate(buffer.getNumFrames() , buffer.getNumChannels());
-				preprocessedBuffer.setSampleRate(buffer.getSampleRate());
-			}
-			
-			if(bPreprocess){
-				preprocessedBuffer = buffer;
-				preprocessedBuffer.resample(relativeSpeed);
-			}
-			bUsePreprocessedBuffer = bPreprocess;
-		}		
 
-		bool bUsePreprocessedBuffer = false;
-		ofSoundBuffer preprocessedBuffer;
-
-	};
 	ofParameter<float>volume;
 	bool canPlayInstance();
 	void drawDebug(float x, float y);
 	size_t getNumInstances() { return instances.size(); }
 	
-	
-	
 	const std::string getFilePath() const;
 	
-	vector<soundPlayInstance> instances;
+	vector<unique_ptr<ofxSimpleSoundPlayer>> instances;
 	
 private:
-	enum State{
-		UNLOADED = 0,
-		LOADING_ASYNC,
-		LOADING_ASYNC_AUTOPLAY,
-		LOADED
-	};
-	std::atomic<State> state;
-	void setState(State newState);
-	bool isState(State compState);
 	
-	void initFromSoundFile();
-	
-	
-	void audioOutBuffersChanged( int nFrames, int nChannels, int sampleRate );
 	virtual void audioOut(ofSoundBuffer& outputBuffer) override;
-	void updatePositions(int numFrames);
 	
-	std::atomic<size_t> playerSampleRate;
-	size_t playerNumFrames;
-	size_t playerNumChannels;
-	size_t sourceSampleRate;
-	size_t sourceNumFrames;
-	size_t sourceNumChannels;
-	size_t sourceDuration;
-
-	ofSoundBuffer buffer; 
-	ofSoundBuffer resampledBuffer;
-	ofxSoundFile soundFile;
-	
-	std::atomic<bool> bStreaming;
+//	std::atomic<bool> bStreaming;
 	std::atomic<bool> bMultiplay;
 	std::atomic<bool> bIsPlayingAny;
 	
@@ -148,27 +88,13 @@ private:
 
 	void setNumInstances(const size_t & num);
 	
-	
-
 	void checkPaused();
     
-    void updateInstance(std::function<void(soundPlayInstance& inst)> func, int index, string methodName);
-	ofMutex mutex;
-	mutable ofMutex instacesMutex, volumeMutex;
+    void updateInstance(std::function<void(ofxSimpleSoundPlayer* inst)> func, int index, string methodName);
 	
-	
-	void update(ofEventArgs&);
-	ofEventListener updateListener;
-	std::atomic<bool> bListeningUpdate;
-	std::vector<size_t> endedInstancesToNotify;
-	void addInstanceEndNotification(const size_t & id);
-	void clearInstanceEndNotificationQueue();
-	ofMutex instanceEndQueueMutex;
+	mutable ofMutex instacesMutex;
 
-	
-	void processBuffers(ofSoundBuffer& buf, soundPlayInstance& i, const float& vol, const std::size_t& nFrames, const std::size_t& nChannels);
-	
-	size_t _getNumFrames(size_t index) const;
+	ofxSoundMixer _mixer;
 	
 };
 
