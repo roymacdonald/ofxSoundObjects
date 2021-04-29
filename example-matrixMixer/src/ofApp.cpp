@@ -70,13 +70,15 @@ void ofApp::setup(){
 	input.setInputStream(stream);
 	mixer.setOutputStream(stream);
 	
-	mixer.setOutputVolumeForAllChannels(1);
+
 	
 //		mixerRenderer.setObject(&mixer);
 	mixerRenderer.obj = &mixer;
 	mixerRenderer.enableSliders();
 	mixerSettingsXmlPath = "mixerSettings.xml";
 	
+	
+	mixer.setOutputVolumeForAllChannels(1);
 	
 }
 //--------------------------------------------------------------
@@ -98,7 +100,7 @@ void ofApp::loadFolder(const string& path, bool bReload){
 		}
 		for (int i = 0; i < dir.size(); i++) {
 			if(!bReload) {
-				players[startIndex + i] = make_shared<ofxSoundPlayerObject>();
+				players[startIndex + i] = make_shared<ofxSimpleSoundPlayer>();
 			}
 			if(!bLoadAsync){
 				if(players[startIndex + i]->load(dir.getPath(i))){
@@ -235,6 +237,9 @@ void ofApp::keyPressed(int key){
 void ofApp::keyReleased(int key){
 	if(key == 's'){
 		mixer.save(mixerSettingsXmlPath);
+	}else if(key == 'v'){
+//		mixer.setOutputVolumeForChannel(1, 0);
+		mixer.setOutputVolumeForAllChannels(1);
 	}else if(key == 'l'){
 		mixer.load(mixerSettingsXmlPath);
 	}else if(key == 'e'){
