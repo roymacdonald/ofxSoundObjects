@@ -18,8 +18,9 @@
 
 
 #include "ofxSoundMixer.h"
+#include "ofxSimpleSoundPlayer.h"
 
-class ofxSimpleSoundPlayer;
+
 
 class ofxSoundPlayerObject:  public ofxSoundObject {
 public:

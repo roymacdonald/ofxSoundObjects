@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <float.h>
 #include "ofxSoundUtils.h"
-#include "ofxSimpleSoundPlayer.h"
+
 
 
 //int ofxSoundPlayerObject::maxSoundsTotal=128;

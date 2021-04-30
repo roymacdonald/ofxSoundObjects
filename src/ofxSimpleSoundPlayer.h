@@ -13,7 +13,13 @@
 #include "ofSoundUtils.h"
 #include "ofSoundStream.h"
 #include "ofEvents.h"
-#include "ofxSoundObjects.h"
+//#include "ofxSoundObjects.h"
+#include "ofxSoundObject.h"
+//#include "ofxSoundMixer.h"
+#include "ofxSoundFile.h"
+//#include "ofxSoundPlayerObject.h"
+#include "ofxSoundUtils.h"
+
 
 class ofxSoundPlayerObject;
 
