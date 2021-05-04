@@ -216,13 +216,10 @@ void ofxSoundPlayerObject::setNumInstances(const size_t & num){
 			if(instances[0]->getSharedSoundFile()){
 				instances[i]->load(instances[0]->getSharedSoundFile());
 			}else{
-				instances[i]->load(instances[0]->getSharedBuffer(), getName() + "_" + ofToString(i));
+				instances[i]->load(instances[0]->getBuffer(), getName() + "_" + ofToString(i));
 			}
 		}
 	}
-	
-	
-	
 }
 //========================GETTERS===============================
 //size_t ofxSoundPlayerObject::_getNumFrames(size_t index) const{
@@ -265,7 +262,7 @@ bool ofxSoundPlayerObject::isLooping(size_t index) const{
 	std::lock_guard<std::mutex> lock(instacesMutex);
 	if(index == -1) return bDefaultlLooping;
 	if(index < instances.size()){
-		return instances[index]->getIsLooping();
+		return instances[index]->isLooping();
 	}
 	return false;
 }
