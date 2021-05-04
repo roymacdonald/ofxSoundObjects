@@ -38,7 +38,6 @@ public:
 	
 	bool load(std::filesystem::path filePath, bool stream = false);
 	bool loadAsync(std::filesystem::path filePath, bool bAutoplay);
-	bool load(shared_ptr<ofSoundBuffer> sharedBuffer, const std::string& name);
 	
 	bool load(shared_ptr<ofxSoundFile> sharedFile);
 	
@@ -52,8 +51,10 @@ public:
 	void setPan(float pan ); // -1 = left, 1 = right
 	
 	///\brief set playback speed.
-	///
-	void setSpeed(float spd);
+	///\param speed the speed to set the audio playback to.
+	///\param preprocess when true it will make a copy of the audio buffer and resample it so there is less use
+	/// 				 of processing power while playing back. otherwise, when false (default) the audio is resampled on real time.
+	void setSpeed(float speed, bool preprocess = false);
 	void setPaused(bool bP );
 	void setLoop(bool bLp );
 	
@@ -76,7 +77,7 @@ public:
 	float getPan() const;
 	bool  isLoaded() const;
 	float getVolume() const;
-	bool  getIsLooping() const;
+	bool  isLooping() const;
 	unsigned long getDurationMS();
 	
 	size_t getNumFrames() const;
@@ -88,8 +89,6 @@ public:
 	ofEvent<void>& getAsyncLoadEndEvent();
 
 	const ofSoundBuffer & getBuffer() const;
-	///\returns a shared pointer of the buffer loaded in the player. This is useful when having multiple players playing the same sound, but you only want to load it once. Notice that the returned shared pointer can be null.
-	shared_ptr<ofSoundBuffer> getSharedBuffer() const;
 	
 	const ofxSoundFile& getSoundFile() const;
 	ofxSoundFile& getSoundFile();
@@ -120,11 +119,12 @@ private:
 		UNLOADED = 0,
 		LOADING_ASYNC,
 		LOADING_ASYNC_AUTOPLAY,
-		LOADED
+		LOADED,
+		RESAMPLING
 	};
 	std::atomic<State> state;
 	void setState(State newState);
-	bool isState(State compState);
+	bool isState(State compState)const;
 	
 	void initFromSoundFile();
 	void initFromSoundBuffer();
@@ -161,11 +161,14 @@ private:
 	void volumeChanged(float&);
 	
 	
-	shared_ptr<ofSoundBuffer> buffer = nullptr;
+	unique_ptr<ofSoundBuffer> buffer = nullptr;
+	unique_ptr<ofSoundBuffer> preprocessedBuffer = nullptr;
 	shared_ptr<ofxSoundFile> soundFile = nullptr;
 	
 	std::atomic<bool> bStreaming;
 	
+	bool preprocessBuffer();
+	std::atomic<bool> bNeedsPreprocessBuffer;
 
 	ofEventListener volumeListener;
     
@@ -180,9 +183,9 @@ private:
 	std::atomic<bool> bNotifyEnd ;
 	
 	void enableUpdateListener();
-	void disableUpdateListener();
+	void disableUpdateListener(bool forceDisable = false);
 	
-	void processBuffers(const ofSoundBuffer& sourceBuffer, ofSoundBuffer& outputBuffer);
+//	void processBuffers(const ofSoundBuffer& sourceBuffer, ofSoundBuffer& outputBuffer);
 	
 
 	void _makeSoundFile();

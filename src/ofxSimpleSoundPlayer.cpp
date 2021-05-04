@@ -31,7 +31,7 @@ ofxSimpleSoundPlayer::ofxSimpleSoundPlayer():ofxSoundObject(OFX_SOUND_OBJECT_SOU
 	bListeningUpdate = false;
 
 	bNotifyEnd = false;
-
+	
 	
 	setName ("Player");
 	
@@ -61,6 +61,7 @@ void ofxSimpleSoundPlayer::resetValues(){
 	position=0;
 	volume = 1;
 
+	bNeedsPreprocessBuffer = false;
 	bNotifyEnd = false;
 
 	bNeedsRelativeSpeedUpdate = false;
@@ -77,7 +78,7 @@ void ofxSimpleSoundPlayer::setState(State newState){
 }
 
 //--------------------------------------------------------------
-bool ofxSimpleSoundPlayer::isState(State compState){
+bool ofxSimpleSoundPlayer::isState(State compState) const{
 	return state == compState;
 }
 
@@ -136,19 +137,19 @@ bool ofxSimpleSoundPlayer::load(const ofSoundBuffer& loadBuffer, const std::stri
 	return isLoaded();
 }
 
-//--------------------------------------------------------------
-bool ofxSimpleSoundPlayer::load(shared_ptr<ofSoundBuffer> sharedBuffer, const std::string& name){
-	if(buffer == nullptr ){
-		ofLogError("ofxSimpleSoundPlayer::load") << "the passed shared buffer is null";
-		return false;
-	}
-	if(isLoaded())unload();
-	buffer = sharedBuffer;
-	bStreaming = false;
-		
-	initFromSoundBuffer();
-	return isLoaded();
-}
+////--------------------------------------------------------------
+//bool ofxSimpleSoundPlayer::load(shared_ptr<ofSoundBuffer> sharedBuffer, const std::string& name){
+//	if(buffer == nullptr ){
+//		ofLogError("ofxSimpleSoundPlayer::load") << "the passed shared buffer is null";
+//		return false;
+//	}
+//	if(isLoaded())unload();
+//	buffer = sharedBuffer;
+//	bStreaming = false;
+//
+//	initFromSoundBuffer();
+//	return isLoaded();
+//}
 
 //--------------------------------------------------------------
 bool ofxSimpleSoundPlayer::load(shared_ptr<ofxSoundFile> sharedFile){
@@ -204,7 +205,6 @@ void ofxSimpleSoundPlayer::initFromSoundFile(){
 //		}else{
 			volume.setName(name);
 			
-
 			sourceNumFrames = soundFile->getNumFrames();
 			sourceNumChannels = soundFile->getNumChannels();
 			sourceSampleRate = soundFile->getSampleRate();
@@ -239,7 +239,7 @@ void ofxSimpleSoundPlayer::unload(){
 	setState(UNLOADED);
 	stop();
 	resetValues();
-	disableUpdateListener();
+	disableUpdateListener(true);
 	{
 		std::lock_guard<std::mutex> lock(mutex);
 		if(buffer){
@@ -251,6 +251,9 @@ void ofxSimpleSoundPlayer::unload(){
 //			soundFile.reset();
 			soundFile =nullptr;
 		}
+		if(preprocessedBuffer){
+			preprocessedBuffer = nullptr;
+		}
 	}
 }
 
@@ -259,7 +262,7 @@ void ofxSimpleSoundPlayer::play() {
 	if (isLoaded()) {
 
 		setPosition(0);//Should the position be set to zero here? I'm not sure.
-		setSpeed(1);
+//		setSpeed(1);
 		setPaused(false);
 		
 	}
@@ -276,6 +279,11 @@ void ofxSimpleSoundPlayer::update(ofEventArgs&){
 	if(bNotifyEnd){
 		ofNotifyEvent(endEvent, _id, this);
 		bNotifyEnd = false;
+	}
+	if(bNeedsPreprocessBuffer){
+		if(preprocessBuffer()){
+			disableUpdateListener();
+		}
 	}
 }
 
@@ -298,7 +306,8 @@ void ofxSimpleSoundPlayer::drawDebug(float x, float y){
 //--------------------------------------------------------------
 void ofxSimpleSoundPlayer::checkBuffer(const ofSoundBuffer& outputBuffer){
 	auto sr = outputBuffer.getSampleRate();
-	if(sourceSampleRate != sr && sr != outputSampleRate ){
+	
+	if(sourceSampleRate != sr || sr != outputSampleRate ){
 		outputSampleRate = sr;
 		updateRelativeSpeed();
 	}
@@ -310,25 +319,27 @@ void ofxSimpleSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
 		
 		checkBuffer(outputBuffer);
 		auto nFrames = outputBuffer.getNumFrames();
-//		auto nChannels = outputBuffer.getNumChannels();
-//		if (playerNumChannels != nChannels || playerNumFrames != nFrames || playerSampleRate != outputBuffer.getSampleRate()) {
-//			audioOutBuffersChanged(nFrames, nChannels, outputBuffer.getSampleRate());
-//		}
+		
 		if(bNeedsRelativeSpeedUpdate){
 			updateRelativeSpeed();
 		}
 		
-		if(soundFile != nullptr){
-			if(bStreaming){
-				soundFile->readTo(outputBuffer, nFrames, position, loop);
-			}else{
-				processBuffers(soundFile->getBuffer(), outputBuffer);
-			}
-		}else if(buffer != nullptr){
-				processBuffers(*buffer, outputBuffer);
-		}
-		else{
+		if(bNeedsPreprocessBuffer){
+			outputBuffer.set(0);
 			return;
+		}
+		
+		if(soundFile != nullptr && bStreaming){
+				soundFile->readTo(outputBuffer, nFrames, position, loop);
+		}else{
+			auto &sourceBuffer = getBuffer();
+			
+			if ((preprocessedBuffer && !bNeedsPreprocessBuffer) || ofIsFloatEqual( relativeSpeed.load(),  1.0f)) {
+				sourceBuffer.copyTo(outputBuffer, outputBuffer.getNumFrames(), outputBuffer.getNumChannels(), position, loop.load());
+			}
+			else {
+				sourceBuffer.resampleTo(outputBuffer, position, outputBuffer.getNumFrames(), relativeSpeed, loop.load(), ofSoundBuffer::Linear);
+			}
 		}
 		
 		if(outputBuffer.getNumChannels() == 2){
@@ -348,17 +359,6 @@ void ofxSimpleSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
 		
 	}else{
 		outputBuffer.set(0);//if not playing clear the passed buffer, because it might contain junk data
-	}
-}
-
-//--------------------------------------------------------------
-void ofxSimpleSoundPlayer::processBuffers(const ofSoundBuffer& sourceBuffer, ofSoundBuffer& outputBuffer){
-	
-	if (ofIsFloatEqual( relativeSpeed.load(),  1.0f)) {
-		sourceBuffer.copyTo(outputBuffer, outputBuffer.getNumFrames(), outputBuffer.getNumChannels(), position, loop);
-	}
-	else {
-		sourceBuffer.resampleTo(outputBuffer, position, outputBuffer.getNumFrames(), relativeSpeed, loop, ofSoundBuffer::Linear);
 	}
 }
 
@@ -387,6 +387,7 @@ void ofxSimpleSoundPlayer::updatePositions(int nFrames){
 	}
 }
 //========================END RUNNING ON AUDIO THREAD===============================
+
 //========================SETTERS===============================
 void ofxSimpleSoundPlayer::setVolume(float vol){
 	volume = vol;
@@ -400,7 +401,7 @@ void ofxSimpleSoundPlayer::setPan(float _pan){
 }
 
 //--------------------------------------------------------------
-void ofxSimpleSoundPlayer::setSpeed(float spd){
+void ofxSimpleSoundPlayer::setSpeed(float spd, bool preprocess){
 	if ( bStreaming && !ofIsFloatEqual(spd, 1.0f) ){
 		ofLogWarning("ofxSoundPlayerObject") << "setting speed is not supported on bStreaming sounds";
 		return;
@@ -408,13 +409,60 @@ void ofxSimpleSoundPlayer::setSpeed(float spd){
 	
 	speed = spd;
 	updateRelativeSpeed();
+	if(preprocess){
+		preprocessBuffer();
+	}
+}
+
+//--------------------------------------------------------------
+bool ofxSimpleSoundPlayer::preprocessBuffer(){
+	bNeedsPreprocessBuffer = true;
+	if(isLoaded() && !bNeedsRelativeSpeedUpdate && outputSampleRate != 0 && sourceSampleRate != 0){
+		setState(RESAMPLING);
+		preprocessedBuffer = make_unique<ofSoundBuffer>();
+	
+	
+		cout << "ofxSimpleSoundPlayer::preprocessBuffer ";
+		if(buffer != nullptr){
+			(*preprocessedBuffer) = (*buffer);
+//			(ofSoundBuffer & soundBuffer, std::size_t nFrames, std::size_t outChannels,std::size_t fromFrame,bool loop) const{
+//				buffer->copyTo(*preprocessedBuffer, buffer->getNumFrames(), buffer->getNumChannels(), 0, false);
+			cout << " buffer: " << buffer->size() << endl;
+		}else if (soundFile != nullptr){
+			*preprocessedBuffer =soundFile->getBuffer();
+//			auto & buff = soundFile->getBuffer();
+//			buff.copyTo(*preprocessedBuffer, buff.getNumFrames(), buff.getNumChannels(), 0, false);
+			cout << " sound file: " << soundFile->getBuffer().size() << endl;
+		}else{
+			cout << "no bufffers!!";
+			return false;
+		}
 		
+//		relativeSpeed is 0 because it needs the destination sample rate to be set properly.
+		preprocessedBuffer->setSampleRate(sourceSampleRate);
+		
+		if(preprocessedBuffer->size()){
+			cout << "PreprocessBuffer\n";
+			preprocessedBuffer->resample(relativeSpeed);
+		}else{
+			cout << "preprocessed buffer size == 0\n";
+		}
+		bNeedsPreprocessBuffer = false;
+		setState(LOADED);
+		return true;
+	}else{
+		enableUpdateListener();
+	}
+	cout << "ofxSimpleSoundPlayer::preprocessBuffer return false\n";
+	return false;
 }
 
 //--------------------------------------------------------------
 void ofxSimpleSoundPlayer::updateRelativeSpeed(){
+	cout << "ofxSimpleSoundPlayer::updateRelativeSpeed  outputSampleRate: " << outputSampleRate.load() << "  sourceSampleRate: " << sourceSampleRate.load() <<endl;
 	if(outputSampleRate != 0 && sourceSampleRate != 0) {
 		relativeSpeed = speed.load() *(double(sourceSampleRate)/double(outputSampleRate));
+		cout << "update relative speed: " << relativeSpeed.load() << "  speed: " << speed.load() << endl;
 		bNeedsRelativeSpeedUpdate = false;
 	}else{
 		bNeedsRelativeSpeedUpdate = true;
@@ -471,7 +519,7 @@ bool ofxSimpleSoundPlayer::isPlaying() const {
 }
 
 //--------------------------------------------------------------
-bool ofxSimpleSoundPlayer::getIsLooping() const{
+bool ofxSimpleSoundPlayer::isLooping() const{
 	return loop;
 }
 
@@ -512,18 +560,15 @@ unsigned long ofxSimpleSoundPlayer::getDurationMS(){
 
 //--------------------------------------------------------------
 const ofSoundBuffer & ofxSimpleSoundPlayer::getBuffer() const{
-	if(buffer != nullptr){
+	if(preprocessedBuffer != nullptr && !isState(RESAMPLING)){
+		return *preprocessedBuffer;
+	}else if(buffer != nullptr){
 		return *buffer;
 	}else if (soundFile != nullptr){
 		return soundFile->getBuffer();
 	}
 	ofLogError("ofxSimpleSoundPlayer::getBuffer()") << "Can not return buffer as there is none loaded. returning an empty buffer";
 	return _dummyBuffer;
-}
-
-//--------------------------------------------------------------
-shared_ptr<ofSoundBuffer> ofxSimpleSoundPlayer::getSharedBuffer() const{
-	return buffer;
 }
 
 //--------------------------------------------------------------
@@ -561,15 +606,12 @@ size_t ofxSimpleSoundPlayer::getNumChannels() {
 //--------------------------------------------------------------
 ofEvent<void>& ofxSimpleSoundPlayer::getAsyncLoadEndEvent(){
 	_makeSoundFile();
-	
 	return soundFile->loadAsyncEndEvent;
-	
 }
 
 //--------------------------------------------------------------
 std::string ofxSimpleSoundPlayer::getFilePath() const{
 	if(soundFile == nullptr) return "";
-	
 	return soundFile->getPath();
 }
 
@@ -589,14 +631,16 @@ void ofxSimpleSoundPlayer::updateVolumes(){
 //--------------------------------------------------------------
 void ofxSimpleSoundPlayer::enableUpdateListener(){
 	if(!bListeningUpdate){
+		cout << "enableUpdateListener\n";
 		updateListener = ofEvents().update.newListener(this, &ofxSimpleSoundPlayer::update);
 		bListeningUpdate = true;
 	}
 }
 
 //--------------------------------------------------------------
-void ofxSimpleSoundPlayer::disableUpdateListener(){
-	if(bListeningUpdate){
+void ofxSimpleSoundPlayer::disableUpdateListener(bool forceDisable){
+	if(bListeningUpdate && ((!bNeedsPreprocessBuffer && !loop)  || forceDisable)){
+		cout << "disableUpdateListener\n";
 		updateListener.unsubscribe();
 		bListeningUpdate = false;
 	}
@@ -612,7 +656,7 @@ void ofxSimpleSoundPlayer::_makeSoundFile(){
 //--------------------------------------------------------------
 void ofxSimpleSoundPlayer::_makeSoundBuffer(){
 	if(buffer == nullptr){
-		buffer = make_shared<ofSoundBuffer>();
+		buffer = make_unique<ofSoundBuffer>();
 	}
 }
 
@@ -638,7 +682,7 @@ std::string  ofxSimpleSoundPlayer::getPlaybackInfo() const {
 	ss << "Rel. Speed: " << getRelativeSpeed() << endl;
 	ss << "Pan: " << getPan() << endl;
 	ss << "Volume: " << getVolume() << endl;
-	ss << "IsLooping: " << boolalpha << getIsLooping() << endl;
+	ss << "IsLooping: " << boolalpha << isLooping() << endl;
 
 	return ss.str();
 	
