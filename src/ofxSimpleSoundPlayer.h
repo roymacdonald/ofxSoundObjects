@@ -39,7 +39,7 @@ public:
 	bool load(std::filesystem::path filePath, bool stream = false);
 	bool loadAsync(std::filesystem::path filePath, bool bAutoplay);
 	
-	bool load(shared_ptr<ofxSoundFile> sharedFile);
+	bool load(shared_ptr<ofxSoundFile>& sharedFile);
 	
 	void unload();
 	void play();
@@ -94,7 +94,8 @@ public:
 	ofxSoundFile& getSoundFile();
 	
 	///\returns a shared pointer of the sound file loaded in the player. This is useful when having multiple players playing the same sound, but you only want to load it once. Notice that the returned shared pointer can be null.
-	shared_ptr <ofxSoundFile> getSharedSoundFile() const;
+	const shared_ptr <ofxSoundFile>& getSharedSoundFile() const;
+	shared_ptr <ofxSoundFile>& getSharedSoundFile();
 	
 	
 	ofParameter<float>volume;
