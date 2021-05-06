@@ -1,5 +1,5 @@
 /*
- * ofxSoundPlayerObject.h
+ * ofxMultiPlayerObject.h
  *
  *  Created on: 25/07/2012
  *      Author: arturo
@@ -22,15 +22,15 @@
 
 
 
-class ofxMultiSoundPlayer:  public ofxSoundObject {
+class ofxMultiSoundPlayer:  public ofxBaseSoundPlayer {
 public:
 	ofxMultiSoundPlayer();
 	
-	bool load(const ofSoundBuffer& loadBuffer, const std::string& name);
+	virtual bool load(const ofSoundBuffer& loadBuffer, const std::string& name) override;
 	
-	bool load(std::filesystem::path filePath, bool stream = false);
-	bool loadAsync(std::filesystem::path filePath, bool bAutoplay);
-	void unload();
+	virtual bool load(std::filesystem::path filePath, bool stream = false) override;
+	virtual bool loadAsync(std::filesystem::path filePath, bool bAutoplay) override;
+	virtual void unload() override;
 	int play();// when play is called and multiplay enabled a new playing instance is setup and it's index returned. If it is not possible to play -1 is returned;
 	void stop(size_t index =0);
 	
@@ -46,18 +46,18 @@ public:
 	void setPosition(float pct, size_t index =0 ); // pct: 0 = start, 1 = end;
 	void setPositionMS(int ms, size_t index =0 );
 
-	float getPosition(size_t index =0) const;
-	int	  getPositionMS(size_t index =0) const;
-	bool  isPlaying(int index = -1) const;
-	float getSpeed(size_t index =0) const;
-	float getRelativeSpeed(size_t index =0) const;
-	float getPan(size_t index =0) const;
-	bool  isLoaded() const;
-	float getVolume(int index =-1) const;
+	float getPosition(size_t index ) const;
+	int	  getPositionMS(size_t index ) const;
+	bool  isPlaying(int index ) const;
+	float getSpeed(size_t index ) const;
+	float getRelativeSpeed(size_t index ) const;
+	float getPan(size_t index ) const;
+	virtual bool  isLoaded() const override;
+	float getVolume(int index ) const;
 	
-	bool  isLooping(size_t index =-1) const;
+	bool  isLooping(size_t index ) const;
 	OF_DEPRECATED_MSG("Use isLooping() instead", bool  getIsLooping(size_t index =-1) const);
-	unsigned long getDurationMS();
+	virtual unsigned long getDurationMS() override;
 
 	const ofSoundBuffer & getCurrentBuffer() const;
 	const ofSoundBuffer & getBuffer() const;
@@ -73,11 +73,23 @@ public:
 	void drawDebug(float x, float y);
 	size_t getNumInstances() { return instances.size(); }
 	
-	const std::string getFilePath() const;
+	virtual std::string getFilePath() const override;
 	
-	vector<unique_ptr<ofxSingleSoundPlayer>> instances;
+	
+	///overrides of base class to make it easier to check this values 
+	virtual float getPosition() const override { return getPosition(0);}
+	virtual int	  getPositionMS() const override { return getPositionMS(0);}
+	virtual bool  isPlaying() const override { return isPlaying(-1);}
+	virtual float getSpeed() const override { return getSpeed(0);}
+	virtual float getRelativeSpeed() const override { return getRelativeSpeed(0);}
+	virtual float getPan() const override { return getPan(0);}
+	virtual float getVolume() const override { return getVolume(-1);}
+	virtual bool  isLooping() const override { return isLooping(-1);}
+	
 	
 private:
+	
+	vector<unique_ptr<ofxSingleSoundPlayer>> instances;
 	
 	virtual void audioOut(ofSoundBuffer& outputBuffer) override;
 	
@@ -98,5 +110,7 @@ private:
 	ofxSoundMixer _mixer;
 	
 };
+
+typedef ofxMultiSoundPlayer ofxSoundPlayerObject;
 
 

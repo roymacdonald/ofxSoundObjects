@@ -12,7 +12,7 @@
 
 
 //--------------------------------------------------------------
-ofxMultiSoundPlayer::ofxMultiSoundPlayer():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE) {
+ofxMultiSoundPlayer::ofxMultiSoundPlayer() {
 	
 	bMultiplay = false;
 	bIsPlayingAny = false;
@@ -91,7 +91,7 @@ int ofxMultiSoundPlayer::play() {
 			}
 		}
 		setPosition(0,index);//Should the position be set to zero here? I'm not sure.
-		setSpeed(1, index);
+//		setSpeed(1, index);
 		setPaused(false, index);
 		return index;
 	
@@ -357,7 +357,7 @@ ofEvent<void>& ofxMultiSoundPlayer::getAsyncLoadEndEvent(){
 	return getSoundFile().loadAsyncEndEvent;
 }
 //--------------------------------------------------------------
-const std::string ofxMultiSoundPlayer::getFilePath() const{
+std::string ofxMultiSoundPlayer::getFilePath() const{
 	return getSoundFile().getPath();
 }
 

@@ -7,4 +7,3 @@
 #pragma once
 #include "ofxMultiSoundPlayer.h"
 
-typedef ofxMultiSoundPlayer ofxSoundPlayerObject;
