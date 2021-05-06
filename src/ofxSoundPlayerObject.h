@@ -18,7 +18,7 @@
 
 
 #include "ofxSoundMixer.h"
-#include "ofxSimpleSoundPlayer.h"
+#include "ofxSingleSoundPlayer.h"
 
 
 
@@ -75,7 +75,7 @@ public:
 	
 	const std::string getFilePath() const;
 	
-	vector<unique_ptr<ofxSimpleSoundPlayer>> instances;
+	vector<unique_ptr<ofxSingleSoundPlayer>> instances;
 	
 private:
 	
@@ -91,7 +91,7 @@ private:
 	
 	void checkPaused();
     
-    void updateInstance(std::function<void(ofxSimpleSoundPlayer* inst)> func, int index, string methodName);
+    void updateInstance(std::function<void(ofxSingleSoundPlayer* inst)> func, int index, string methodName);
 	
 	mutable ofMutex instacesMutex;
 

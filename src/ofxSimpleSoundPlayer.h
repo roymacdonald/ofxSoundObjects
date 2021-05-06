@@ -20,6 +20,7 @@
 //#include "ofxSoundPlayerObject.h"
 #include "ofxSoundUtils.h"
 
+#include "ofxSamplerate.h"
 
 class ofxSoundPlayerObject;
 
@@ -28,9 +29,9 @@ class ofxSoundPlayerObject;
 /// This means that each time you call play() the sound will start playing again from the begining of the file,
 /// instead of playing a new "instance" of the sound alongside the one that is currently sounding.
 /// The purpose of having this class is that it demands less work and processes faster than ofxSoundPlayerObject
-class ofxSimpleSoundPlayer:  public ofxSoundObject {
+class ofxSingleSoundPlayer:  public ofxSoundObject {
 public:
-	ofxSimpleSoundPlayer();
+	ofxSingleSoundPlayer();
 	
 	friend class ofxSoundPlayerObject;
 	
@@ -198,6 +199,8 @@ private:
 	static ofxSoundFile& _getDummySoundFile();
 	
 	size_t _id = 0;
+	
+	unique_ptr<ofxSamplerate> sampleRateConverter = nullptr;
 	
 };
 

@@ -147,26 +147,26 @@ void ofxSoundPlayerObject::setVolume(float vol, int index){
 	if(index <= -1){
 		volume = vol;
 	}else{
-		updateInstance([&](ofxSimpleSoundPlayer* inst){
+		updateInstance([&](ofxSingleSoundPlayer* inst){
 			inst->volume = vol;
 		},index, "ofxSoundPlayerObject::setVolume");
 	}
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setPan(float _pan, int index){
-	updateInstance([&](ofxSimpleSoundPlayer* inst){
+	updateInstance([&](ofxSingleSoundPlayer* inst){
 		inst->setPan(_pan);
 	},index, "ofxSoundPlayerObject::setPan");
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setSpeed(float spd, int index){
-	updateInstance([&](ofxSimpleSoundPlayer* inst){
+	updateInstance([&](ofxSingleSoundPlayer* inst){
 		inst->setSpeed(spd);
 	},index, "ofxSoundPlayerObject::setSpeed");
 }
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setPaused(bool bP, int index){
-	updateInstance([&](ofxSimpleSoundPlayer* inst){
+	updateInstance([&](ofxSingleSoundPlayer* inst){
 		instances[index]->setPaused(bP);
 	},index, "ofxSoundPlayerObject::setPaused");
 	checkPaused();
@@ -174,7 +174,7 @@ void ofxSoundPlayerObject::setPaused(bool bP, int index){
 //--------------------------------------------------------------
 void ofxSoundPlayerObject::setLoop(bool bLp, int index){
 	if(index == -1)bDefaultlLooping = bLp;
-	updateInstance([&](ofxSimpleSoundPlayer* inst){
+	updateInstance([&](ofxSingleSoundPlayer* inst){
 		inst->setLoop(bLp);
 	},index, "ofxSoundPlayerObject::setLoop");
 }
@@ -208,7 +208,7 @@ void ofxSoundPlayerObject::setNumInstances(const size_t & num){
 	/// the instances will get automatically disconnected from the mixer upon their destruction.
 	instances.resize(num);
 	for(size_t i = prevSize; i < instances.size(); i++){
-		instances[i] = make_unique<ofxSimpleSoundPlayer>();
+		instances[i] = make_unique<ofxSingleSoundPlayer>();
 		instances[i]->setId(i);
 		instances[i]->setLoop(bDefaultlLooping);
 		instances[i]->connectTo(_mixer);
@@ -323,7 +323,7 @@ const ofSoundBuffer & ofxSoundPlayerObject::getBuffer() const{
 	if(instances.size() > 0){
 		return instances[0]->getBuffer();
 	}
-	return ofxSimpleSoundPlayer::_dummyBuffer;
+	return ofxSingleSoundPlayer::_dummyBuffer;
 }
 //--------------------------------------------------------------
 //--------------------------------------------------------------
@@ -338,7 +338,7 @@ void ofxSoundPlayerObject::checkPaused(){
 	}
 }
 //--------------------------------------------------------------
-void ofxSoundPlayerObject::updateInstance(std::function<void(ofxSimpleSoundPlayer* inst)> func, int index, string methodName) {
+void ofxSoundPlayerObject::updateInstance(std::function<void(ofxSingleSoundPlayer* inst)> func, int index, string methodName) {
 	
 	std::lock_guard<std::mutex> lock(instacesMutex);
 	if(index <= -1){
@@ -368,7 +368,7 @@ const std::string ofxSoundPlayerObject::getFilePath() const{
 const ofxSoundFile& ofxSoundPlayerObject::getSoundFile() const{
 	
 	if(instances.size() == 0){
-		return ofxSimpleSoundPlayer::_getDummySoundFile();
+		return ofxSingleSoundPlayer::_getDummySoundFile();
 	}
 	return instances[0]->getSoundFile();
 }
