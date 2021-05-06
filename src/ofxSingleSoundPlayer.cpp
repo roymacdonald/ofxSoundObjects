@@ -55,12 +55,14 @@ void ofxSingleSoundPlayer::resetValues(){
 	sourceDuration = 0;
 	outputSampleRate = 0;
 	bIsPlaying =false;
-	loop = false;
+
 	speed = 1;
 	pan = 0;
 	relativeSpeed =1;
 	position=0;
 	volume = 1;
+
+	loopMode = OFX_SOUND_OBJECTS_NONE;
 
 	bNeedsPreprocessBuffer = false;
 	bNotifyEnd = false;
@@ -240,7 +242,9 @@ void ofxSingleSoundPlayer::play() {
 		
 		setPosition(0);//Should the position be set to zero here? I'm not sure.
 		setPaused(false);
-		
+
+		lastPlayTime = ofGetElapsedTimeMicros();
+
 	}
 }
 
@@ -291,7 +295,13 @@ void ofxSingleSoundPlayer::checkBuffer(const ofSoundBuffer& outputBuffer){
 
 //--------------------------------------------------------------
 void ofxSingleSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
-	if(isLoaded() && bIsPlaying){
+		
+	if(isLoaded()) {
+		
+		checkReplay();
+		
+
+		if(bIsPlaying){
 			
 			checkBuffer(outputBuffer);
 			auto nFrames = outputBuffer.getNumFrames();
@@ -305,14 +315,14 @@ void ofxSingleSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
 				return;
 			}
 			
-		
+			bool loop = isLooping();
 			if(soundFile != nullptr && bStreaming){
 				soundFile->readTo(outputBuffer, nFrames, position, loop);
 			}else{
 				auto &sourceBuffer = getBuffer();
 				
 				if ((preprocessedBuffer && !bNeedsPreprocessBuffer) || ofIsFloatEqual( relativeSpeed.load(),  1.0f)) {
-				sourceBuffer.copyTo(outputBuffer, nFrames, outputBuffer.getNumChannels(), position, loop.load());
+					sourceBuffer.copyTo(outputBuffer, nFrames, outputBuffer.getNumChannels(), position, loop);
 				}
 				else {
 #ifdef USE_OFX_SAMPLE_RATE
@@ -321,7 +331,7 @@ void ofxSingleSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
 					}
 					nFrames = sampleRateConverter->changeSpeed(sourceBuffer, outputBuffer, relativeSpeed.load(), position,loop);
 #else
-				sourceBuffer.resampleTo(outputBuffer, position, nFrames, relativeSpeed, loop.load(), ofSoundBuffer::Linear);
+					sourceBuffer.resampleTo(outputBuffer, position, nFrames, relativeSpeed, loop, ofSoundBuffer::Linear);
 #endif
 				}
 			}
@@ -340,9 +350,35 @@ void ofxSingleSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
 			
 			
 			updatePositions(nFrames);
-		
-	}else{
+			return;
+		}
+	}
 	outputBuffer.set(0);//if not playing clear the passed buffer, because it might contain junk data
+	
+}
+
+//--------------------------------------------------------------
+void ofxSingleSoundPlayer::checkReplay()
+{
+
+	if(isReplaying()){
+		if(replayTimes > 0 || replayTimes == -1){
+			auto now = ofGetElapsedTimeMicros();
+			if(now - lastPlayTime >= replayInterval){
+				if(replayTimes > 0 ){
+					replayTimes -= 1;
+				}
+				if(replayTimes == 0 ){
+					loopMode = OFX_SOUND_OBJECTS_NONE;
+				}
+				lastPlayTime = now;
+				setPosition(0);
+				setPaused(false);
+				return ;
+			}
+		}else{
+			loopMode = OFX_SOUND_OBJECTS_NONE;
+		}
 	}
 }
 
@@ -467,7 +503,9 @@ void ofxSingleSoundPlayer::setPaused(bool bP){
 
 //--------------------------------------------------------------
 void ofxSingleSoundPlayer::setLoop(bool bLp){
-	loop = bLp;
+
+	loopMode = bLp?OFX_SOUND_OBJECTS_LOOP:OFX_SOUND_OBJECTS_NONE;
+
 }
 
 //--------------------------------------------------------------
@@ -498,7 +536,9 @@ bool ofxSingleSoundPlayer::isPlaying() const {
 
 //--------------------------------------------------------------
 bool ofxSingleSoundPlayer::isLooping() const{
-	return loop;
+
+	return loopMode == OFX_SOUND_OBJECTS_LOOP;
+
 }
 
 //--------------------------------------------------------------
@@ -676,3 +716,27 @@ size_t ofxSingleSoundPlayer::getId() const{
 void ofxSingleSoundPlayer::setId(size_t id){
 	_id = id;
 }
+
+//--------------------------------------------------------------
+void ofxSingleSoundPlayer::replayEvery(int interval, int times){
+	replayInterval = interval*1000;
+	replayTimes = times;
+	loopMode = OFX_SOUND_OBJECTS_REPEAT;
+}
+
+//--------------------------------------------------------------
+bool ofxSingleSoundPlayer::isReplaying() const{
+	return loopMode == OFX_SOUND_OBJECTS_REPEAT;
+}
+
+//--------------------------------------------------------------
+int ofxSingleSoundPlayer::getReplayInterval() const{
+	return replayInterval;
+}
+
+//--------------------------------------------------------------
+int ofxSingleSoundPlayer::getReplayRemainigTimes() const{
+	return replayTimes;
+}
+
+

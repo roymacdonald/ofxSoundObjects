@@ -25,10 +25,6 @@
 #include "ofxSamplerate.h"
 #endif
 
-//#define USE_REPLAY
-
-
-
 
 
 class ofxBaseSoundPlayer:  public ofxSoundObject{
@@ -146,6 +142,17 @@ public:
 	
 	void drawDebug(float x, float y);
 	
+
+	///\ will replay every certain amount of times
+	///\param interval. The time interval between each replay. in milliseconds
+	///\param times. How many times it should be repeated. Default is -1 which means an infinite number of times.
+	void replayEvery(int interval, int times = -1);
+	
+	bool isReplaying() const;
+	int getReplayInterval() const;
+	int getReplayRemainigTimes() const;
+
+	
 	
 protected:
 	static ofSoundBuffer _dummyBuffer;
@@ -154,6 +161,18 @@ protected:
 	static ofxSoundFile& _getDummySoundFile();
 	
 private:
+	enum LoopMode{
+		OFX_SOUND_OBJECTS_NONE=0,
+		OFX_SOUND_OBJECTS_LOOP,
+		OFX_SOUND_OBJECTS_REPEAT
+	};
+	std::atomic<LoopMode> loopMode;
+	std::atomic<int> replayInterval;
+	std::atomic<int> replayTimes;
+	
+	std::atomic<uint64_t> lastPlayTime;
+	
+	void checkReplay();
 
 	void updateVolumes();
 
@@ -195,7 +214,7 @@ private:
 	
 	
 	std::atomic<bool> bIsPlaying;
-	std::atomic<bool> loop ;
+
 	std::atomic<float> speed;
 	std::atomic<float> pan ;
 	std::atomic<float> relativeSpeed;

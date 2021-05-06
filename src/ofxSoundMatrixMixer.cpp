@@ -8,27 +8,27 @@
 
 #include "ofxSoundMatrixMixer.h"
 #include "ofxSoundUtils.h"
-#include "ofxSingleSoundPlayer.h"
+//#include "ofxSingleSoundPlayer.h"
 
 //--------------------------------------------------------------------------------------------------------
 //---------------------------------------   MatrixInputObject      --------------------------------------- 
 //--------------------------------------------------------------------------------------------------------
 
-bool shouldPullAudio(ofxSoundObject * source ){
-	// this is to avoid pulling audio when the player is not playing
-	auto player = dynamic_cast<ofxBaseSoundPlayer*>(source);
-	if(player) return player->isPlaying();
-	
-	//when it is not a player always pull
-	return true;
-}
+//bool shouldPullAudio(ofxSoundObject * source ){
+//	// this is to avoid pulling audio when the player is not playing
+//	auto player = dynamic_cast<ofxBaseSoundPlayer*>(source);
+//	if(player) return player->isPlaying();
+//
+//	//when it is not a player always pull
+//	return true;
+//}
 //----------------------------------------------------
 bool ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
 	bBufferProcessed = false;
 	if (obj != nullptr ) {
 		ofxSoundObject * source = obj->getSignalSourceObject();
 		if(source != nullptr){
-			if(shouldPullAudio(source)){
+			
 				size_t nc = source->getNumChannels();
 				if(nc == 0)return false;
 				buffer.setSampleRate(sampleRate);
@@ -39,7 +39,7 @@ bool ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
 					vuMeter.calculate(buffer);
 				}
 				return true;
-			}
+//			}
 		}else{
 			std::cout << "cant pullChannel. source is null" << std::endl;
 		}
