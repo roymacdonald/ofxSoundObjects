@@ -8,21 +8,29 @@
 
 #include "ofxSoundMatrixMixer.h"
 #include "ofxSoundUtils.h"
-#include "ofxSoundPlayerObject.h"
+#include "ofxSingleSoundPlayer.h"
 
 //--------------------------------------------------------------------------------------------------------
 //---------------------------------------   MatrixInputObject      --------------------------------------- 
 //--------------------------------------------------------------------------------------------------------
 
+bool shouldPullAudio(ofxSoundObject * source ){
+	// this is to avoid pulling audio when the player is not playing
+	auto player = dynamic_cast<ofxBaseSoundPlayer*>(source);
+	if(player) return player->isPlaying();
+	
+	//when it is not a player always pull
+	return true;
+}
 //----------------------------------------------------
 bool ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
 	bBufferProcessed = false;
 	if (obj != nullptr ) {
 		ofxSoundObject * source = obj->getSignalSourceObject();
-		if(source != nullptr){			
-			auto player = dynamic_cast<ofxSoundPlayerObject*>(source);
-			if((player && player->isPlaying()) || !player ){// this is to avoid pulling audio when the player is not playing
+		if(source != nullptr){
+			if(shouldPullAudio(source)){
 				size_t nc = source->getNumChannels();
+				if(nc == 0)return false;
 				buffer.setSampleRate(sampleRate);
 				buffer.allocate(this->numFramesToProcess, nc);
 				obj->audioOut(buffer);
