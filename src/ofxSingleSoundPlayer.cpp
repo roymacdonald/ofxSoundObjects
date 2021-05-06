@@ -322,11 +322,14 @@ void ofxSingleSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
 				sourceBuffer.copyTo(outputBuffer, nFrames, outputBuffer.getNumChannels(), position, loop.load());
 			}
 			else {
+#ifdef USE_OFX_SAMPLE_RATE
 				if(sampleRateConverter == nullptr){
 					sampleRateConverter = make_unique<ofxSamplerate>() ;
 				}
 				nFrames = sampleRateConverter->changeSpeed(sourceBuffer, outputBuffer, relativeSpeed.load(), position,loop );
-//				sourceBuffer.resampleTo(outputBuffer, position, nFrames, relativeSpeed, loop.load(), ofSoundBuffer::Linear);
+#else
+				sourceBuffer.resampleTo(outputBuffer, position, nFrames, relativeSpeed, loop.load(), ofSoundBuffer::Linear);
+#endif
 			}
 		}
 		

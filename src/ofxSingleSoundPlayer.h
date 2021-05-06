@@ -20,9 +20,13 @@
 //#include "ofxSoundPlayerObject.h"
 #include "ofxSoundUtils.h"
 
+//#define USE_OFX_SAMPLE_RATE
+#ifdef USE_OFX_SAMPLE_RATE
 #include "ofxSamplerate.h"
+#endif
 
-class ofxSoundPlayerObject;
+
+class ofxMultiSoundPlayer;
 
 /// \ brief
 /// This class is a fully featured sound file player, with the particularity that it does not have multi play.
@@ -199,9 +203,9 @@ private:
 	static ofxSoundFile& _getDummySoundFile();
 	
 	size_t _id = 0;
-	
+#ifdef USE_OFX_SAMPLE_RATE
 	unique_ptr<ofxSamplerate> sampleRateConverter = nullptr;
-	
+#endif
 };
 
 

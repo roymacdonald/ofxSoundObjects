@@ -22,9 +22,9 @@
 
 
 
-class ofxSoundPlayerObject:  public ofxSoundObject {
+class ofxMultiSoundPlayer:  public ofxSoundObject {
 public:
-	ofxSoundPlayerObject();
+	ofxMultiSoundPlayer();
 	
 	bool load(const ofSoundBuffer& loadBuffer, const std::string& name);
 	
