@@ -10,7 +10,7 @@
 #include "ofxSoundMatrixMixer.h"
 //#include "ofxGui.h"
 #include "ofxSlidersGrid.h"
-#include "ofxSoundPlayerObject.h"
+#include "ofxSingleSoundPlayer.h"
 
 #define DISABLE_SLIDERS
 class ofxSoundMatrixMixerRenderer: public ofxSoundObjectBaseRenderer<ofxSoundMatrixMixer>{
@@ -65,7 +65,7 @@ protected:
 	bool bDisableTextRendering = false;
 private:
 	
-	std::map<size_t, ofxSoundPlayerObject* > playheadsIndices;
+	std::map<size_t, ofxBaseSoundPlayer* > playheadsIndices;
 	size_t numChansIn = 0, numChansOut =0;
 
 	bool bMasterSliderSetup = false;

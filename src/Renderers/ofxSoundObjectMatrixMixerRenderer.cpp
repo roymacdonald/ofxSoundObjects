@@ -11,6 +11,7 @@
 #include "ofMain.h"
 //#include "ofxGui.h"
 #include "ofxSoundRendererUtils.h"
+#include "ofxSingleSoundPlayer.h"
 
 using namespace ofxSoundRendererUtils;
 
@@ -94,7 +95,7 @@ void ofxSoundMatrixMixerRenderer::buildPlayheads(){
 				y = p0.y;
 				
 				auto sgnlSrc = obj->inObjects[idx]->obj->getSignalSourceObject();
-				auto player = dynamic_cast<ofxSoundPlayerObject*>(sgnlSrc);
+				auto player = dynamic_cast<ofxBaseSoundPlayer*>(sgnlSrc);
 				
 				if(player){
 					playheadsIndices[idx] = player;
