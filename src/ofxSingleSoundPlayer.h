@@ -143,15 +143,6 @@ public:
 	void drawDebug(float x, float y);
 	
 
-	///\ will replay every certain amount of times
-	///\param interval. The time interval between each replay. in milliseconds
-	///\param times. How many times it should be repeated. Default is -1 which means an infinite number of times.
-	void replayEvery(int interval, int times = -1);
-	
-	bool isReplaying() const;
-	int getReplayInterval() const;
-	int getReplayRemainigTimes() const;
-
 	
 	///\brief will replay every certain amount of times
 	///\param interval. The time interval between each replay. in milliseconds
