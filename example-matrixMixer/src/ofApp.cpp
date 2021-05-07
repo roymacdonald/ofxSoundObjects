@@ -100,7 +100,7 @@ void ofApp::loadFolder(const string& path, bool bReload){
 		}
 		for (int i = 0; i < dir.size(); i++) {
 			if(!bReload) {
-				players[startIndex + i] = make_shared<ofxSimpleSoundPlayer>();
+				players[startIndex + i] = make_shared<ofxSingleSoundPlayer>();
 			}
 			if(!bLoadAsync){
 				if(players[startIndex + i]->load(dir.getPath(i))){

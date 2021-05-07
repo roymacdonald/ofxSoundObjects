@@ -3,7 +3,7 @@
 #include "ofMain.h"
 #include "ofxSoundObjects.h"
 #include "ofxSoundObjectMatrixMixerRenderer.h"
-#include "ofxSimpleSoundPlayer.h"
+#include "ofxSingleSoundPlayer.h"
 
 class ofApp : public ofBaseApp{
 	
@@ -32,7 +32,7 @@ public:
 
 	ofxSoundInput input;
 	
-	vector<shared_ptr<ofxSimpleSoundPlayer>> players;
+	vector<shared_ptr<ofxSingleSoundPlayer>> players;
 	
 	
 	size_t inDeviceIndex, outDeviceIndex;
