@@ -374,3 +374,14 @@ ofxSoundFile& ofxMultiSoundPlayer::getSoundFile(){
 	}
 	return instances[0]->getSoundFile();
 }
+
+ofxSingleSoundPlayer& ofxMultiSoundPlayer::getPlayInstance(size_t index){
+	return *instances[index];
+	
+}
+const ofxSingleSoundPlayer& ofxMultiSoundPlayer::getPlayInstance(size_t index) const{
+	return *instances[index];
+}
+size_t ofxMultiSoundPlayer::getNumPlayInstances() const{
+	return instances.size();
+}

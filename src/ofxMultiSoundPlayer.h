@@ -86,6 +86,9 @@ public:
 	virtual float getVolume() const override { return getVolume(-1);}
 	virtual bool  isLooping() const override { return isLooping(-1);}
 	
+	ofxSingleSoundPlayer& getPlayInstance(size_t index);
+	const ofxSingleSoundPlayer& getPlayInstance(size_t index) const;
+	size_t getNumPlayInstances() const;
 	
 private:
 	
