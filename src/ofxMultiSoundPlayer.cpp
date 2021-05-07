@@ -218,10 +218,6 @@ void ofxMultiSoundPlayer::setNumInstances(const size_t & num){
 	}
 }
 //========================GETTERS===============================
-//size_t ofxMultiSoundPlayer::_getNumFrames(size_t index) const{
-//	auto& i = instances[index];
-//	return (i.bUsePreprocessedBuffer?i.preprocessedBuffer.getNumFrames(): sourceNumFrames);
-//}
 //--------------------------------------------------------------
 float ofxMultiSoundPlayer::getPosition(size_t index) const{
 	std::lock_guard<std::mutex> lock(instacesMutex);
@@ -347,15 +343,18 @@ void ofxMultiSoundPlayer::updateInstance(std::function<void(ofxSingleSoundPlayer
 		ofLogVerbose(methodName) << "index out of range" << endl;
 	}
 }
+
 //--------------------------------------------------------------
 size_t ofxMultiSoundPlayer::getNumChannels() {
 	if(isLoaded()) return instances[0]->getNumChannels();
 	return 0;
 }
+
 //--------------------------------------------------------------
 ofEvent<void>& ofxMultiSoundPlayer::getAsyncLoadEndEvent(){
 	return getSoundFile().loadAsyncEndEvent;
 }
+
 //--------------------------------------------------------------
 std::string ofxMultiSoundPlayer::getFilePath() const{
 	return getSoundFile().getPath();

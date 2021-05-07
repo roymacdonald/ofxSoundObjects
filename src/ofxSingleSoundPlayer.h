@@ -153,6 +153,22 @@ public:
 	int getReplayRemainigTimes() const;
 
 	
+	///\brief will replay every certain amount of times
+	///\param interval. The time interval between each replay. in milliseconds
+	///\param times. How many times it should be repeated. Default is -1 which means an infinite number of times.
+	void replayEvery(int interval, int times = -1);
+	
+	///\brief Get if the player is currently in replay mode (set by calling repeatEvery(...))
+	///\returns true if in repeat mode false otherwise.
+	bool isReplaying() const;
+	
+	///\brief get the interval set by repeatEvery function
+	///\returns the interval in milliseconds
+	int getReplayInterval() const;
+	
+	///\get how many more times it is going to be repeated
+	///\returns remaining times to play sound
+	int getReplayRemainigTimes() const;
 	
 protected:
 	static ofSoundBuffer _dummyBuffer;
@@ -251,7 +267,6 @@ private:
 	void enableUpdateListener();
 	void disableUpdateListener(bool forceDisable = false);
 	
-//	void processBuffers(const ofSoundBuffer& sourceBuffer, ofSoundBuffer& outputBuffer);
 	
 	void _makeSoundFile();
 	void _makeSoundBuffer();
