@@ -76,6 +76,7 @@ public:
 	virtual std::string getFilePath() const override;
 	
 	
+	
 	///overrides of base class to make it easier to check this values 
 	virtual float getPosition() const override { return getPosition(0);}
 	virtual int	  getPositionMS() const override { return getPositionMS(0);}
@@ -85,6 +86,8 @@ public:
 	virtual float getPan() const override { return getPan(0);}
 	virtual float getVolume() const override { return getVolume(-1);}
 	virtual bool  isLooping() const override { return isLooping(-1);}
+	virtual bool isReplaying() const override;
+	virtual int getSourceSampleRate() const override;
 	
 	ofxSingleSoundPlayer& getPlayInstance(size_t index);
 	const ofxSingleSoundPlayer& getPlayInstance(size_t index) const;
@@ -111,7 +114,10 @@ private:
 	mutable ofMutex instacesMutex;
 
 	ofxSoundMixer _mixer;
+
+	ofEventListeners endEventListeners;
 	
+	void onInstanceEnd(size_t&);
 };
 
 typedef ofxMultiSoundPlayer ofxSoundPlayerObject;

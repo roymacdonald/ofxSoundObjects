@@ -67,20 +67,16 @@ int ofxMultiSoundPlayer::play() {
 			bool bFound = false;
 			{
 				std::lock_guard<std::mutex> lock(instacesMutex);
-				for (auto& i : instances) {
-					if (!i->isPlaying()) {
-						index = i->getId();
+				for (size_t i = 0; i < instances.size(); i++) {
+					if (!(instances[i]->isPlaying()) && !(instances[i]->isReplaying())) {
+						index = i;
 						bFound = true;
 						break;
 					}
 				}
-				if(!bFound){
-					setNumInstances(instances.size() + 1);
-//					instances.push_back(ofxSimpleSoundPlayer());
-//					index =instances.size() - 1;
-//					instances.back().setId(index);
-//					instances.back().setLoop(bDefaultlLooping);
-				}
+			}
+			if(!bFound){
+				setNumInstances(instances.size() + 1);
 			}
 		} else {
 			if (instances.size() == 0) {
@@ -91,7 +87,7 @@ int ofxMultiSoundPlayer::play() {
 			}
 		}
 		setPosition(0,index);//Should the position be set to zero here? I'm not sure.
-//		setSpeed(1, index);
+
 		setPaused(false, index);
 		return index;
 	
@@ -215,7 +211,18 @@ void ofxMultiSoundPlayer::setNumInstances(const size_t & num){
 				instances[i]->load(instances[0]->getBuffer(), getName() + "_" + ofToString(i));
 			}
 		}
+		endEventListeners.push(instances[i]->endEvent.newListener(this, &ofxMultiSoundPlayer::onInstanceEnd));
 	}
+	if(prevSize > num){
+		endEventListeners.unsubscribeAll();
+		for(size_t i = 0; i < instances.size(); i++){
+			endEventListeners.push(instances[i]->endEvent.newListener(this, &ofxMultiSoundPlayer::onInstanceEnd));
+		}
+	}
+	
+}
+void ofxMultiSoundPlayer::onInstanceEnd(size_t&){
+	checkPaused();
 }
 //========================GETTERS===============================
 //--------------------------------------------------------------
@@ -237,12 +244,15 @@ int ofxMultiSoundPlayer::getPositionMS(size_t index) const{
 //--------------------------------------------------------------
 bool ofxMultiSoundPlayer::isPlaying(int index) const {
 	if(!isLoaded()) return false;
-	std::lock_guard<std::mutex> lock(instacesMutex);
+
+	
 	if (index <= -1){
-		for (auto& i : instances) {
-			if (i->isPlaying())return true;
-		}
+		if(bIsPlayingAny) return true;
+//		for (auto& i : instances) {
+//			if (i->isPlaying())return true;
+//		}
 	}else{
+		std::lock_guard<std::mutex> lock(instacesMutex);
 		if(index < instances.size()){
 			return instances[index]->isPlaying();
 		}
@@ -323,7 +333,7 @@ void ofxMultiSoundPlayer::checkPaused(){
 	bIsPlayingAny = false;
 	std::lock_guard<std::mutex> lock(instacesMutex);
 	for (auto& i : instances) {
-		if (i->isPlaying()) {
+		if (i->isPlaying() || i->isReplaying()) {
 			bIsPlayingAny = true;
 			break;
 		}
@@ -384,4 +394,20 @@ const ofxSingleSoundPlayer& ofxMultiSoundPlayer::getPlayInstance(size_t index) c
 }
 size_t ofxMultiSoundPlayer::getNumPlayInstances() const{
 	return instances.size();
+}
+
+bool ofxMultiSoundPlayer::isReplaying() const{
+	for(auto& i: instances){
+		if(i->isReplaying()){
+			return true;
+		}
+	}
+	return false;
+}
+
+int ofxMultiSoundPlayer::getSourceSampleRate() const {
+	if(instances.size()){
+		return instances[0]->getSourceSampleRate();
+	}
+	return 0;
 }
