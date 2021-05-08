@@ -131,8 +131,9 @@ bool ofxSingleSoundPlayer::load(const ofSoundBuffer& loadBuffer, const std::stri
 	if(loadBuffer.size()){
 		volume.setName(name);
 		_makeSoundBuffer();
-		loadBuffer.copyTo(*buffer);
-		buffer->setSampleRate(loadBuffer.getSampleRate());
+		(*buffer.get()) = loadBuffer;
+//		loadBuffer.copyTo(*buffer);
+//		buffer->setSampleRate(loadBuffer.getSampleRate());
 		initFromSoundBuffer(*buffer);
 	}
 	
@@ -674,7 +675,7 @@ void ofxSingleSoundPlayer::_makeSoundFile(){
 
 //--------------------------------------------------------------
 void ofxSingleSoundPlayer::_makeSoundBuffer(){
-	if(buffer == nullptr){
+	if(!buffer){
 		buffer = make_unique<ofSoundBuffer>();
 	}
 }
@@ -715,6 +716,16 @@ size_t ofxSingleSoundPlayer::getId() const{
 //--------------------------------------------------------------
 void ofxSingleSoundPlayer::setId(size_t id){
 	_id = id;
+}
+
+//--------------------------------------------------------------
+int ofxSingleSoundPlayer::getSourceSampleRate() const{
+	if(soundFile){
+		return soundFile->getSampleRate();
+	}else if(buffer){
+		return buffer->getSampleRate();
+	}
+	return 0;
 }
 
 //--------------------------------------------------------------

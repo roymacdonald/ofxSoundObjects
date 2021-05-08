@@ -49,7 +49,8 @@ public:
 	virtual float getVolume() const = 0;
 	virtual bool  isLooping() const = 0;
 	virtual unsigned long getDurationMS() = 0;
-	
+	virtual bool isReplaying() const = 0;
+	virtual int getSourceSampleRate() const = 0;
 	virtual size_t getNumFrames() const = 0;
 	
 	virtual std::string getFilePath() const = 0;
@@ -116,7 +117,7 @@ public:
 	virtual float getVolume() const override;
 	virtual bool  isLooping() const override;
 	virtual unsigned long getDurationMS() override;
-	
+	virtual int getSourceSampleRate() const override;
 	virtual size_t getNumFrames() const override;
 	
 	size_t getId() const;
@@ -151,7 +152,7 @@ public:
 	
 	///\brief Get if the player is currently in replay mode (set by calling repeatEvery(...))
 	///\returns true if in repeat mode false otherwise.
-	bool isReplaying() const;
+	virtual bool isReplaying() const override;
 	
 	///\brief get the interval set by repeatEvery function
 	///\returns the interval in milliseconds
