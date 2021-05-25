@@ -55,6 +55,8 @@ public:
 	virtual bool  isLoaded() const override;
 	float getVolume(int index ) const;
 	
+	virtual size_t getNumFrames() const override;
+	
 	bool  isLooping(size_t index ) const;
 	OF_DEPRECATED_MSG("Use isLooping() instead", bool  getIsLooping(size_t index =-1) const);
 	virtual unsigned long getDurationMS() override;

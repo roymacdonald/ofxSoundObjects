@@ -36,7 +36,7 @@ public:
 	virtual bool load(std::filesystem::path filePath, bool stream = false) = 0;
 	virtual bool loadAsync(std::filesystem::path filePath, bool bAutoplay) = 0;
 	
-	virtual bool load(shared_ptr<ofxSoundFile>& sharedFile) = 0;
+//	virtual bool load(shared_ptr<ofxSoundFile>& sharedFile) = 0;
 	virtual void unload() = 0;
 	
 	virtual float getPosition() const = 0;
@@ -75,7 +75,7 @@ public:
 	virtual bool load(std::filesystem::path filePath, bool stream = false) override;
 	virtual bool loadAsync(std::filesystem::path filePath, bool bAutoplay) override;
 	
-	virtual bool load(shared_ptr<ofxSoundFile>& sharedFile) override;
+	virtual bool load(shared_ptr<ofxSoundFile>& sharedFile) ;
 	
 	virtual void unload() override;
 	void play();

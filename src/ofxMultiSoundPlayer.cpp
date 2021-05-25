@@ -411,3 +411,10 @@ int ofxMultiSoundPlayer::getSourceSampleRate() const {
 	}
 	return 0;
 }
+
+size_t ofxMultiSoundPlayer::getNumFrames() const {
+	if(instances.size()){
+		return instances[0]->getNumFrames();
+	}
+	return 0;
+}
