@@ -39,7 +39,7 @@ public:
 	void setMarginColor(const ofColor& color);
 
 	const ofColor&  getWaveColor();
-//	const ofColor&  getBackgroundColor();
+
 	const ofColor&  getMarginColor();
     
     ofx2DCanvas& getCanvas(){return canvas;}
@@ -50,8 +50,6 @@ public:
     void disableFbo();
     bool isFboEnabled() {return bUseFbo;}
     
-    ofParameter<int> multMatricesMode = {"Matrices Mode", 0, 0, 3};
-    
     
 protected:
     void drawWave();
@@ -61,7 +59,7 @@ protected:
     bool bUpdateFbo = false;
     bool bIsCanvasTransforming = false;
 
-    ofRectangle onTransformRect;    
+    ofRectangle onTransformRect;
     
     ofEventListeners listeners;
     
