@@ -37,13 +37,19 @@ bool ofxMultiSoundPlayer::canPlayInstance(){
 }
 //--------------------------------------------------------------
 bool ofxMultiSoundPlayer::loadAsync(std::filesystem::path filePath, bool bAutoplay){
+    
 	setNumInstances(1);
-	return instances[0]->loadAsync(filePath, bAutoplay);
+	
+    bool ret =  instances[0]->loadAsync(filePath, bAutoplay);
+    ofLogVerbose("ofxMultiSoundPlayer::loadAsync" ) << filePath << " success: " << boolalpha << ret;
+    return ret;
 }
 //--------------------------------------------------------------
 bool ofxMultiSoundPlayer::load(std::filesystem::path filePath, bool _stream){
 	setNumInstances(1);
-	return instances[0]->load(filePath, _stream);
+    bool ret = instances[0]->load(filePath, _stream);
+    ofLogVerbose("ofxMultiSoundPlayer::load" ) << filePath << " success: " << boolalpha << ret;
+    return ret;
 }
 //--------------------------------------------------------------
 bool ofxMultiSoundPlayer::load(const ofSoundBuffer& loadBuffer, const std::string& name){
@@ -298,7 +304,7 @@ float ofxMultiSoundPlayer::getPan(size_t index) const{
 }
 //--------------------------------------------------------------
 bool ofxMultiSoundPlayer::isLoaded() const{
-	if(instances.size() > 0) return instances[0]->isLoaded();
+	if(instances.size() > 0 && instances[0]) return instances[0]->isLoaded();
 	return false;
 }
 //--------------------------------------------------------------

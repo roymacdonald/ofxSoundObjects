@@ -26,7 +26,8 @@
 #endif
 
 
-
+///\class ofxBaseSoundPlayer
+///\brief this is a pure abstract base class. It has no implementation. The classes that inherit from it have to provide the implementation
 class ofxBaseSoundPlayer:  public ofxSoundObject{
 public:
 	ofxBaseSoundPlayer():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE){}
@@ -59,11 +60,11 @@ public:
 
 class ofxMultiSoundPlayer;
 
-/// \ brief
+/// \brief
 /// This class is a fully featured sound file player, with the particularity that it does not have multi play.
 /// This means that each time you call play() the sound will start playing again from the begining of the file,
 /// instead of playing a new "instance" of the sound alongside the one that is currently sounding.
-/// The purpose of having this class is that it demands less work and processes faster than ofxSoundPlayerObject
+/// The purpose of having this class is that it demands less work and processes faster than ofxMultiSoundPlayer (which provides multi play option)
 class ofxSingleSoundPlayer:  public ofxBaseSoundPlayer {
 public:
 	ofxSingleSoundPlayer();
@@ -161,6 +162,10 @@ public:
 	///\get how many more times it is going to be repeated
 	///\returns remaining times to play sound
 	int getReplayRemainigTimes() const;
+    
+    ///\brief overriden function. This is what gets called in order to process new audio data
+    ///you shouldn't need to use it unless you really know what it does.
+    virtual void audioOut(ofSoundBuffer& outputBuffer) override;
 	
 protected:
 	static ofSoundBuffer _dummyBuffer;
@@ -205,7 +210,7 @@ private:
 	
 	
 	void checkBuffer(const ofSoundBuffer& outputBuffer);
-	virtual void audioOut(ofSoundBuffer& outputBuffer) override;
+	
 	void updatePositions(int numFrames);
 	
 

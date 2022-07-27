@@ -330,7 +330,8 @@ void ofxSingleSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
 					if(sampleRateConverter == nullptr){
 						sampleRateConverter = make_unique<ofxSamplerate>() ;
 					}
-					nFrames = sampleRateConverter->changeSpeed(sourceBuffer, outputBuffer, relativeSpeed.load(), position,loop);
+					auto resamplingResults = sampleRateConverter->changeSpeed(sourceBuffer, outputBuffer, relativeSpeed.load(), position,loop);
+                    nFrames = resamplingResults.inputFramesUsed;
 #else
 					sourceBuffer.resampleTo(outputBuffer, position, nFrames, relativeSpeed, loop, ofSoundBuffer::Linear);
 #endif

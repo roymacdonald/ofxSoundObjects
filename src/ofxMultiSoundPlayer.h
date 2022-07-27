@@ -95,11 +95,16 @@ public:
 	const ofxSingleSoundPlayer& getPlayInstance(size_t index) const;
 	size_t getNumPlayInstances() const;
 	
+    
+    ///\brief overriden function. This is what gets called in order to process new audio data
+    ///you shouldn't need to use it unless you really know what it does.
+    virtual void audioOut(ofSoundBuffer& outputBuffer) override;
+    
 private:
 	
 	vector<unique_ptr<ofxSingleSoundPlayer>> instances;
 	
-	virtual void audioOut(ofSoundBuffer& outputBuffer) override;
+	
 	
 //	std::atomic<bool> bStreaming;
 	std::atomic<bool> bMultiplay;
