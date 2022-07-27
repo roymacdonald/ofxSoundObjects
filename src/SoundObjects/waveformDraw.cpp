@@ -31,10 +31,42 @@ void waveformDraw_<BufferType>::process(ofSoundBuffer &input, ofSoundBuffer &out
 	
 }
 
-//template<typename BufferType>
-//void waveformDraw_<BufferType>::updateFbo(){
-//    bUpdateFbo = true;
-//}
+template<typename BufferType>
+void waveformDraw_<BufferType>::updateFbo(){
+    bUpdateFbo = true;
+}
+template<typename BufferType>
+void waveformDraw_<BufferType>::initFbo(){
+    if(bUseFbo && (!fbo.isAllocated() || !ofIsFloatEqual(fbo.getWidth(), this->width) || !ofIsFloatEqual(fbo.getHeight(), this->height))){
+        fbo.allocate(width, height);
+        fbo.begin();
+        ofClear(0,0,0,0);
+        fbo.end();
+        bUpdateFbo = true;
+        if(listeners.empty()){
+            listeners.push(canvas.onTransformBegin.newListener([&](){
+                bIsCanvasTransforming = true;
+                onTransformRect.set(canvas.getCamera().screenToWorld(getMin(), (ofRectangle)*this), canvas.getCamera().screenToWorld(getMax(), (ofRectangle)*this));
+            }));
+            listeners.push(canvas.onTransformEnd.newListener([&](){
+                bIsCanvasTransforming = false;
+                updateFbo();
+            }));
+        }
+    }
+}
+
+template<typename BufferType>
+void waveformDraw_<BufferType>::enableFbo(){
+    bUseFbo = true;
+    
+}
+template<typename BufferType>
+void waveformDraw_<BufferType>::disableFbo(){
+    bUseFbo = false;
+    fbo.clear();
+    listeners.unsubscribeAll();
+}
 
 //--------------------------------------------------------------
 template<typename BufferType>
@@ -85,7 +117,6 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
 		if(bRenderWaveforms){
 			makeWaveformMesh();
 			updateWaveformMesh();
-//            initFbo();
 			bRenderWaveforms = false;
 		}
 	if(!bCanvasIsSetup){
@@ -93,52 +124,35 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
 		canvas.enableMouse();
 	}
 //
-//    if(bUseFbo){
-//        if(bUpdateFbo){
-////            cout << "bUpdateFbo\n";
-//
-//            bUpdateFbo = false;
-////            fbo.begin();
-////            ofClear(0, 0, 0,0);
-////            canvas.begin(ofRectangle(0,0,width, height));
-////            drawWave();
-////            canvas.end();
-////            fbo.end();
-////            canvas.set((ofRectangle)*this);
-//        }
-//        if(bIsCanvasTransforming){
-//            ofPushMatrix();
-//////            auto t = canvas.getTranslate();
-////            auto s = canvas.getScale();
-////
-////
-////
-////            glm::vec2 t = tranformBeginTranstation - relativePressPos*(s - tranformBeginScale);
-////
-////
-////            ofTranslate(t);
-////            s = s/ tranformBeginScale;
-////            ofScale(s.x,s.y,1.0f);
-////            auto p1 = canvas.screenToCanvas(getPosition());
-////            auto p2 = canvas.screenToCanvas(getBottomRight());
-//
-////            fbo.draw(ofRectangle(p1, p2));
-//
-//        }else{
-//            fbo.draw((ofRectangle)*this);
-//        }
-//
-//        if(bIsCanvasTransforming){
-//            ofPopMatrix();
-//        }
-//
-//    }else{
+    if(bUseFbo){
+        initFbo();
+        if(bUpdateFbo){
+            bUpdateFbo = false;
+            fbo.begin();
+            ofClear(0, 0, 0,0);
+            canvas.begin(ofRectangle(0,0,width, height));
+            drawWave();
+            canvas.end();
+            fbo.end();
+        }
+        if(bIsCanvasTransforming){
+            canvas.begin(*this);
+            fbo.draw(onTransformRect);
+        }
+        else{
+            fbo.draw((ofRectangle)*this);
+        }
+
+        if(bIsCanvasTransforming){
+            canvas.end();
+        }
+
+    }else{
         canvas.begin(*this);
         drawWave();
         canvas.end();
-//    }
-    
-    
+    }
+
 }
 //--------------------------------------------------------------
 
@@ -147,9 +161,10 @@ void waveformDraw_<BufferType>::makeMeshFromBuffer(const ofSoundBuffer& buffer, 
 	{
         
 		std::lock_guard<std::mutex> lck(mutex1);
-//        if(bRenderToFbo){
-//            canvas.enableFbo();
-//        }
+        if(bRenderToFbo){
+            bUseFbo = true;
+        }
+
 		ofxSoundUtils::checkBuffers(buffer, this->buffer, true);
 		
 		buffer.copyTo(this->buffer);

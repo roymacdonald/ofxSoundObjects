@@ -46,13 +46,26 @@ public:
     
     
 
+    void enableFbo();
+    void disableFbo();
+    bool isFboEnabled() {return bUseFbo;}
+    
+    ofParameter<int> multMatricesMode = {"Matrices Mode", 0, 0, 3};
+    
     
 protected:
     void drawWave();
-//    void initFbo();
-//    bool bUseFbo = false;
-//    bool bUpdateFbo = false;
-//    ofFbo fbo;
+    void initFbo();
+    void updateFbo();
+    bool bUseFbo = false;
+    bool bUpdateFbo = false;
+    bool bIsCanvasTransforming = false;
+
+    ofRectangle onTransformRect;    
+    
+    ofEventListeners listeners;
+    
+    ofFbo fbo;
     
 	virtual void updateWaveformMesh();
 	
