@@ -17,7 +17,7 @@ public:
     virtual ~ofx2DCanvas(){}
     
 	void begin(const ofRectangle& viewport);
-	void end(bool bDrawInfo = true);
+	void end(bool bDrawInfo = false);
 	
 	void enableMouse();
 	void disableMouse();
