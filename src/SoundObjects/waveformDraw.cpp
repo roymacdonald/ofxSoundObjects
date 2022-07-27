@@ -30,6 +30,47 @@ void waveformDraw_<BufferType>::process(ofSoundBuffer &input, ofSoundBuffer &out
 	output = input;
 	
 }
+
+//template<typename BufferType>
+//void waveformDraw_<BufferType>::updateFbo(){
+//    bUpdateFbo = true;
+//}
+
+//--------------------------------------------------------------
+template<typename BufferType>
+void waveformDraw_<BufferType>::drawWave(){
+    ofPushStyle();
+    ofNoFill();
+    ofSetColor(marginColor);
+    //Draw bounding box
+    ofDrawRectangle({0,0,this->width , this->height});
+//    ofSetColor(255,100);
+    
+    
+    ofPopStyle();
+        
+    ofPushMatrix();
+    
+    ofScale(this->width, this->height);
+    if(gridSpacing > 0) gridMesh.draw();
+    
+    //Draw center line
+    auto chans = getNumChannels();
+    if(chans > 0){
+        float h  = 1.0f/chans;
+        for(int i = 0; i < chans; ++i){
+            ofDrawLine(0, h*(0.5f + i), 1,h*(0.5f + i) );
+        }
+    }
+    
+    
+    ofSetColor(waveColor);
+    for(auto& w: waveforms){
+        w.draw();
+    }
+    ofPopMatrix();
+}
+
 //--------------------------------------------------------------
 template<typename BufferType>
 void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
@@ -44,53 +85,71 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
 		if(bRenderWaveforms){
 			makeWaveformMesh();
 			updateWaveformMesh();
+//            initFbo();
 			bRenderWaveforms = false;
 		}
 	if(!bCanvasIsSetup){
 		bCanvasIsSetup = true;
 		canvas.enableMouse();
 	}
-
-	canvas.begin((ofRectangle)*this);
-	
-	ofPushStyle();
-	ofNoFill();
-	ofSetColor(marginColor);
-	//Draw bounding box
-	ofDrawRectangle({0,0,this->width , this->height});
-//	ofSetColor(255,100);
-	
-	
-	ofPopStyle();
-		
-	ofPushMatrix();
-	
-	ofScale(this->width, this->height);
-	if(gridSpacing > 0) gridMesh.draw();
-	
-	//Draw center line
-	auto chans = getNumChannels();
-	if(chans > 0){
-		float h  = 1.0f/chans;
-		for(int i = 0; i < chans; ++i){
-			ofDrawLine(0, h*(0.5f + i), 1,h*(0.5f + i) );
-		}
-	}
-	
-	
-	ofSetColor(waveColor);
-	for(auto& w: waveforms){
-		w.draw();
-	}
-	ofPopMatrix();
-	canvas.end();
+//
+//    if(bUseFbo){
+//        if(bUpdateFbo){
+////            cout << "bUpdateFbo\n";
+//
+//            bUpdateFbo = false;
+////            fbo.begin();
+////            ofClear(0, 0, 0,0);
+////            canvas.begin(ofRectangle(0,0,width, height));
+////            drawWave();
+////            canvas.end();
+////            fbo.end();
+////            canvas.set((ofRectangle)*this);
+//        }
+//        if(bIsCanvasTransforming){
+//            ofPushMatrix();
+//////            auto t = canvas.getTranslate();
+////            auto s = canvas.getScale();
+////
+////
+////
+////            glm::vec2 t = tranformBeginTranstation - relativePressPos*(s - tranformBeginScale);
+////
+////
+////            ofTranslate(t);
+////            s = s/ tranformBeginScale;
+////            ofScale(s.x,s.y,1.0f);
+////            auto p1 = canvas.screenToCanvas(getPosition());
+////            auto p2 = canvas.screenToCanvas(getBottomRight());
+//
+////            fbo.draw(ofRectangle(p1, p2));
+//
+//        }else{
+//            fbo.draw((ofRectangle)*this);
+//        }
+//
+//        if(bIsCanvasTransforming){
+//            ofPopMatrix();
+//        }
+//
+//    }else{
+        canvas.begin(*this);
+        drawWave();
+        canvas.end();
+//    }
+    
+    
 }
 //--------------------------------------------------------------
 
 template<typename BufferType>
-void waveformDraw_<BufferType>::makeMeshFromBuffer(const ofSoundBuffer& buffer){
+void waveformDraw_<BufferType>::makeMeshFromBuffer(const ofSoundBuffer& buffer, bool bRenderToFbo){
 	{
+        
 		std::lock_guard<std::mutex> lck(mutex1);
+//        if(bRenderToFbo){
+//            canvas.enableFbo();
+//        }
 		ofxSoundUtils::checkBuffers(buffer, this->buffer, true);
 		
 		buffer.copyTo(this->buffer);

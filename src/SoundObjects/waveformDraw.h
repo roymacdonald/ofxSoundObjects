@@ -29,7 +29,8 @@ public:
 	void draw(const ofRectangle& viewport = ofRectangle());
 	
 	// you can use this method to render and draw a static buffer.
-	void makeMeshFromBuffer(const ofSoundBuffer& buffer);
+    // bRenderToFbo if true it will render into an fbo. use this when rendering static buffers.
+	void makeMeshFromBuffer(const ofSoundBuffer& buffer, bool bRenderToFbo = false);
 	
 	void setGridSpacingByNumSamples(size_t spacing);
 	
@@ -40,9 +41,19 @@ public:
 	const ofColor&  getWaveColor();
 //	const ofColor&  getBackgroundColor();
 	const ofColor&  getMarginColor();
+    
+    ofx2DCanvas& getCanvas(){return canvas;}
+    
+    
 
+    
 protected:
-	
+    void drawWave();
+//    void initFbo();
+//    bool bUseFbo = false;
+//    bool bUpdateFbo = false;
+//    ofFbo fbo;
+    
 	virtual void updateWaveformMesh();
 	
 	void makeWaveformMesh();
@@ -70,6 +81,7 @@ protected:
 	ofColor  waveColor;
 //	ofColor  backgroundColor;
 	ofColor  marginColor;
+
 };
 
 typedef waveformDraw_<ofSoundBuffer> waveformDraw;
