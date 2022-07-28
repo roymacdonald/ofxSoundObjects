@@ -25,7 +25,7 @@ public:
     
     ofEvent<void> onTransformBegin, onTransformEnd;
     
-    const ofCamera& getCamera() {return cam;}
+    ofCamera& getCamera() {return cam;}
     
     const ofRectangle& getViewport(){return viewport;}
     

@@ -105,6 +105,17 @@ void waveformDraw_<BufferType>::drawWave(){
 
 //--------------------------------------------------------------
 template<typename BufferType>
+void waveformDraw_<BufferType>::begin(){
+    canvas.begin(*this);
+}
+//--------------------------------------------------------------
+template<typename BufferType>
+void waveformDraw_<BufferType>::end(){
+    canvas.end();
+}
+
+//--------------------------------------------------------------
+template<typename BufferType>
 void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
 
 	if(!viewport.isZero() && viewport != (ofRectangle)*this){
@@ -136,7 +147,7 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
             fbo.end();
         }
         if(bIsCanvasTransforming){
-            canvas.begin(*this);
+            begin();
             fbo.draw(onTransformRect);
         }
         else{
@@ -144,13 +155,13 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
         }
 
         if(bIsCanvasTransforming){
-            canvas.end();
+            end();
         }
 
     }else{
-        canvas.begin(*this);
+        begin();
         drawWave();
-        canvas.end();
+        end();
     }
 
 }

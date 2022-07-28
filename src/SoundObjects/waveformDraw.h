@@ -51,6 +51,14 @@ public:
     bool isFboEnabled() {return bUseFbo;}
     
     
+    ///\brief Setups up the cameras to start drawing.
+    ///Call it for drawing an overlay over the waveform.
+    ///Make sure that you have called draw() before calling begin(), and you must call end() once done drawing.
+    ///While between the begin() and end() calls the coordinate space origin is at the top left corner of the viewport.
+    ///No need to worry about zooming and panning to match the waveform. This is the purpose of this function.
+    void begin();
+    void end();
+    
 protected:
     void drawWave();
     void initFbo();
@@ -60,6 +68,7 @@ protected:
     bool bIsCanvasTransforming = false;
 
     ofRectangle onTransformRect;
+    
     
     ofEventListeners listeners;
     
