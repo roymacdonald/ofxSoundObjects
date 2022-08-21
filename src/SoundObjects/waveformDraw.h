@@ -36,6 +36,7 @@ public:
 	
 	void setWaveColor(const ofColor& color);
 //	void setBackgroundColor(const ofColor& color);
+    void setGridColor(const ofColor& color);
 	void setMarginColor(const ofColor& color);
 
 	const ofColor&  getWaveColor();
@@ -99,7 +100,7 @@ protected:
 	BufferType buffer;
 
 	ofColor  waveColor;
-//	ofColor  backgroundColor;
+    ofFloatColor  gridColor = {(80.0f/255.0f)};
 	ofColor  marginColor;
 
 };
@@ -114,15 +115,10 @@ public:
 	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
 	
 	
-	void setNumBuffers(size_t numBuffers){
-		this->numBuffers = numBuffers;
-	}
+    void setNumBuffers(size_t numBuffers);
 
 protected:
 	virtual void updateWaveformMesh() override;
-	
-private:
-	size_t numBuffers = 100;
 
 };
 

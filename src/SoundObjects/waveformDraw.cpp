@@ -238,6 +238,16 @@ void waveformDraw_<BufferType>::makeWaveformMesh(){
 }
 //--------------------------------------------------------------
 template<typename BufferType>
+void waveformDraw_<BufferType>::setGridColor(const ofColor& color){
+    gridColor = ofFloatColor(color.r/255.0f, color.g/255.0f, color.b/255.0f, color.a/255.0f );
+    
+    if(gridMesh.getColors().size()){
+        vector<ofFloatColor> newColors (gridMesh.getColors().size(), gridColor);
+        gridMesh.getColors() = newColors;
+    }
+}
+//--------------------------------------------------------------
+template<typename BufferType>
 void waveformDraw_<BufferType>::makeGrid(){
 	if(bMakeGrid){
 		gridMesh.clear();
@@ -250,7 +260,7 @@ void waveformDraw_<BufferType>::makeGrid(){
 				float xSpace = (float) gridSpacing / (float)(buffer.getNumFrames());
 				ofRectangle r(0,0, xSpace, 1);
 				
-				vector<ofFloatColor> colors(6, ofFloatColor(80.0f/255.0f));
+				vector<ofFloatColor> colors(6, gridColor);
 				
 				for(int i = 0; i < buffer.getNumFrames(); i+= (gridSpacing *2)){
 					
@@ -308,16 +318,14 @@ const ofColor&  waveformDraw_<BufferType>::getMarginColor(){
 void circularBufferWaveformDraw::process(ofSoundBuffer &input, ofSoundBuffer &output){
 	{
 		std::lock_guard<std::mutex> lck(mutex1);
-		if(buffer.getNumFrames() != input.getNumFrames() * numBuffers){
-			
-			buffer.allocate(input.getNumFrames() * numBuffers, input.getNumChannels());
-			cout << "circularBufferWaveformDraw::process  " << buffer.size() << endl;
-			buffer.setSampleRate(input.getSampleRate());
-		}
 		buffer.push(input);
 	}
 	bRenderWaveforms = true;
 	output = input;
+}
+//--------------------------------------------------------------
+void circularBufferWaveformDraw::setNumBuffers(size_t numBuffers){
+    buffer.setNumBuffersToStore(numBuffers);
 }
 //--------------------------------------------------------------
 void circularBufferWaveformDraw::updateWaveformMesh() {
@@ -339,7 +347,7 @@ void circularBufferWaveformDraw::updateWaveformMesh() {
 			size_t bIndex = buffer.getPushIndex() / buffer.getNumChannels();
 			
 			for(size_t i=0; i< wv.size(); i++){
-				wv[i].y = ofMap(buffer[bIndex * chans + j], -1, 1, h*(j+1), h*j );
+				wv[i].y = ofMap(buffer[(bIndex * chans) + j], -1, 1, h*(j+1), h*j );
 				if(bIndex > 0){
 					-- bIndex ;
 				}else{
