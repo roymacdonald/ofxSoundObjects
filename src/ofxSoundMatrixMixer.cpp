@@ -205,7 +205,7 @@ void ofxSoundMatrixMixer::setVolumeForConnectionChannel(const float& volValue, c
 			if(outputChannel < inObjects[connectionIndex]->channelsVolumes[inputChannel].size()){
 				inObjects[connectionIndex]->channelsVolumes[inputChannel][outputChannel] = volValue;
 			}else{
-				ofLogWarning("ofxSoundMatrixMixer::setVolumeForConnectionChannel") << "outputChannel index out of bounds";
+				ofLogWarning("ofxSoundMatrixMixer::setVolumeForConnectionChannel") << "outputChannel index out of bounds. " << outputChannel;
 			}
 		}else{
 			ofLogWarning("ofxSoundMatrixMixer::setVolumeForConnectionChannel") << "inputChannel " << inputChannel << " index out of bounds";

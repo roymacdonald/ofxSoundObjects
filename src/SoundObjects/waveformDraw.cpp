@@ -340,11 +340,13 @@ void circularBufferWaveformDraw::updateWaveformMesh() {
 		}
 		
 		float h = 1.0f / float(chans);
-		
+
+        size_t bIndex = buffer.getPushIndex() / buffer.getNumChannels();
+        
 		for (int j = 0; j < chans; j++) {
 			
 			auto & wv = waveforms[j].getVertices();
-			size_t bIndex = buffer.getPushIndex() / buffer.getNumChannels();
+
 			
 			for(size_t i=0; i< wv.size(); i++){
 				wv[i].y = ofMap(buffer[(bIndex * chans) + j], -1, 1, h*(j+1), h*j );
