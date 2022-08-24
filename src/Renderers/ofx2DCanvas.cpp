@@ -18,13 +18,16 @@ ofx2DCanvas::ofx2DCanvas(){
     cam.setVFlip(true);
     applyConstraints();
 }
-
+//--------------------------------------------------------------
+void ofx2DCanvas::setCamNeedsUpdate(){
+    bCamPosNeedsUpdate = true;
+}
 //--------------------------------------------------------------
 void ofx2DCanvas::begin(const ofRectangle& viewport){
     this->viewport = viewport;
-    if(bCamPosNeedsIniting){
-        bCamPosNeedsIniting = false;
-        initCameraPos();
+    if(bCamPosNeedsUpdate){
+        bCamPosNeedsUpdate = false;
+        updateCameraPos();
         applyConstraints();
     }
     cam.begin(viewport);
@@ -243,12 +246,12 @@ void ofx2DCanvas::keyReleased(ofKeyEventArgs& key){
 //--------------------------------------------------------------
 void ofx2DCanvas::reset(){
     cam.setScale({1,1,1});
-    initCameraPos();
+    updateCameraPos();
 	bIsDragging = false;
     ofNotifyEvent(onTransformEnd, this);
 }
 //--------------------------------------------------------------
-void ofx2DCanvas::initCameraPos(){
+void ofx2DCanvas::updateCameraPos(){
     //    cam.setPosition(0, 0, -100);
     auto c = viewport.getCenter();
     cam.setPosition(c.x, c.y, -100);

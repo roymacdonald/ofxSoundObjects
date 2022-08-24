@@ -29,6 +29,7 @@ public:
     
     const ofRectangle& getViewport(){return viewport;}
     
+    void setCamNeedsUpdate();
     
 private:
     
@@ -78,8 +79,8 @@ private:
 	bool bAltPressed = false;
     
     
-    void initCameraPos();
-    bool bCamPosNeedsIniting = true;
+    void updateCameraPos();
+    bool bCamPosNeedsUpdate = true;
     
     
 };
