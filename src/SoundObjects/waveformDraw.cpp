@@ -13,8 +13,9 @@ waveformDraw_<BufferType>::waveformDraw_():ofxSoundObject(OFX_SOUND_OBJECT_PROCE
 //--------------------------------------------------------------
 template<typename BufferType>
 void waveformDraw_<BufferType>::setup(const ofRectangle& r){
-		this->set(r);
-		bRenderWaveforms = true;
+    this->set(r);
+    bRenderWaveforms = true;
+    canvas.setCamNeedsUpdate();
 }
 //--------------------------------------------------------------
 template<typename BufferType>
