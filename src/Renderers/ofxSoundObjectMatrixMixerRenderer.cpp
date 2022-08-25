@@ -98,12 +98,12 @@ void ofxSoundMatrixMixerRenderer::buildPlayheads(){
 				auto player = dynamic_cast<ofxBaseSoundPlayer*>(sgnlSrc);
 				
 				if(player){
-					playheadsIndices[idx] = player;
-					y -= playheadHeight;
-					addRectToMesh(playheadMesh,{p0.x, y,
-						ofMap(player->getPositionMS(), 0, player->getDurationMS(), 0, leftR.width - vuWidth),
-						playheadHeight
-					},ofColor(0),false);
+//					playheadsIndices[idx] = player;
+//					y -= playheadHeight;
+//					addRectToMesh(playheadMesh,{p0.x, y,
+//						ofMap(player->getPositionMS(), 0, player->getDurationMS(), 0, leftR.width - vuWidth),
+//						playheadHeight
+//					},ofColor(0),false);
 					if(!bDisableTextRendering)	txt = "Player: " + ofFilePath::getFileName(player->getFilePath());
 				}else if(sgnlSrc){
 					if(!bDisableTextRendering) txt = sgnlSrc->getName();
@@ -204,23 +204,23 @@ void ofxSoundMatrixMixerRenderer::buildMeshes(){
 //----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::updatePlayheads(){
 	
-	auto & v = playheadMesh.getVertices();
-	
-	float mn = leftR.getMinX();
-	float mx = leftR.getMaxX() - vuWidth;
-	for(auto& p: playheadsIndices){
-		if(p.second){
-			if(p.second->isPlaying()){
-			auto i = p.first *4;
-			if(i < v.size() -3){
-				
-				float pos = ofMap(p.second->getPositionMS(), 0, p.second->getDurationMS(), mn, mx);
-				v[i+1].x = pos;
-				v[i+2].x = pos;
-			}
-			}
-		}
-	}
+//	auto & v = playheadMesh.getVertices();
+//
+//	float mn = leftR.getMinX();
+//	float mx = leftR.getMaxX() - vuWidth;
+//	for(auto& p: playheadsIndices){
+//		if(p.second){
+//			if(p.second->isPlaying()){
+//			auto i = p.first *4;
+//			if(i < v.size() -3){
+//
+//				float pos = ofMap(p.second->getPositionMS(), 0, p.second->getDurationMS(), mn, mx);
+//				v[i+1].x = pos;
+//				v[i+2].x = pos;
+//			}
+//			}
+//		}
+//	}
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::drawStatus(float x, float y){
@@ -262,9 +262,9 @@ void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 			bf.getTexture().unbind();
 		}
 		
-		updatePlayheads();
+//		updatePlayheads();
 
-		playheadMesh.draw();
+//		playheadMesh.draw();
 		
 		
 		for(size_t idx =0 ; idx < obj->inObjects.size(); idx++ ){
