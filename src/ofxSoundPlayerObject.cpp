@@ -367,11 +367,11 @@ void ofxSoundPlayerObject::updatePositions(int nFrames){
 		}
 		for (auto& i : instances){
 			if(i.bIsPlaying){
-				i.position += nFrames;
 				if(i.bUsePreprocessedBuffer){
 					nf = i.preprocessedBuffer.getNumFrames();
+                    i.position += nFrames;
 				}else{
-					i.position *=i.relativeSpeed;
+					i.position += i.relativeSpeed * nFrames;
 				}
 				 
 				if (i.loop) {
