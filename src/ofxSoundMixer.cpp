@@ -123,12 +123,14 @@ float ofxSoundMixer::getConnectionVolume(int channelNumber){
 void ofxSoundMixer::audioOut(ofSoundBuffer &output) {
     if(connections.size()>0) {
 		output.set(0);//clears the output buffer as its memory might come with junk
+		ofSoundBuffer tempBuffer;
+		tempBuffer.resize(output.size());
+		tempBuffer.setNumChannels(output.getNumChannels());
+		tempBuffer.setSampleRate(output.getSampleRate());
+		
         for(int i = 0; i < connections.size(); i++){
             if (connections[i] != nullptr && connectionVolume[i] > 0) {
-                ofSoundBuffer tempBuffer;
-                tempBuffer.resize(output.size());
-                tempBuffer.setNumChannels(output.getNumChannels());
-                tempBuffer.setSampleRate(output.getSampleRate());
+				tempBuffer.set(0);
                 connections[i]->audioOut(tempBuffer);
                 
                 float v = connectionVolume[i];

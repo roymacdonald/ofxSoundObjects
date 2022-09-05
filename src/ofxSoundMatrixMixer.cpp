@@ -8,7 +8,7 @@
 
 #include "ofxSoundMatrixMixer.h"
 #include "ofxSoundUtils.h"
-#include "ofxSoundPlayerObject.h"
+#include "ofxSingleSoundPlayer.h"
 
 //--------------------------------------------------------------------------------------------------------
 //---------------------------------------   MatrixInputObject      --------------------------------------- 
@@ -19,10 +19,13 @@ bool ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
 	bBufferProcessed = false;
 	if (obj != nullptr ) {
 		ofxSoundObject * source = obj->getSignalSourceObject();
-		if(source != nullptr){			
-			auto player = dynamic_cast<ofxSoundPlayerObject*>(source);
-			if((player && player->isPlaying()) || !player ){// this is to avoid pulling audio when the player is not playing
-				size_t nc = source->getNumChannels();
+		if(source != nullptr){
+			size_t nc = source->getNumChannels();
+			if(nc == 0)return false;
+			auto player = dynamic_cast<ofxBaseSoundPlayer*>(source);
+			//only pull audio if the source is not  a player or if the player is playing or waiting for a replay
+			//This is done to make better use of resources
+			if((player && (player->isPlaying() || player->isReplaying())) || !player){
 				buffer.setSampleRate(sampleRate);
 				buffer.allocate(this->numFramesToProcess, nc);
 				obj->audioOut(buffer);
@@ -202,7 +205,7 @@ void ofxSoundMatrixMixer::setVolumeForConnectionChannel(const float& volValue, c
 			if(outputChannel < inObjects[connectionIndex]->channelsVolumes[inputChannel].size()){
 				inObjects[connectionIndex]->channelsVolumes[inputChannel][outputChannel] = volValue;
 			}else{
-				ofLogWarning("ofxSoundMatrixMixer::setVolumeForConnectionChannel") << "outputChannel index out of bounds";
+				ofLogWarning("ofxSoundMatrixMixer::setVolumeForConnectionChannel") << "outputChannel index out of bounds. " << outputChannel;
 			}
 		}else{
 			ofLogWarning("ofxSoundMatrixMixer::setVolumeForConnectionChannel") << "inputChannel " << inputChannel << " index out of bounds";

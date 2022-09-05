@@ -7,54 +7,52 @@
 //
 
 #include "ofx2DCanvas.h"
+#include "glm/mat4x4.hpp"
+
+
+ofx2DCanvas::ofx2DCanvas(){
+    cam.enableOrtho();
+    cam.setPosition(0, 0, -100);
+    cam.setNearClip(-1000000);
+    cam.setFarClip(1000000);
+    cam.setVFlip(true);
+    applyConstraints();
+}
+//--------------------------------------------------------------
+void ofx2DCanvas::setCamNeedsUpdate(){
+    bCamPosNeedsUpdate = true;
+}
 //--------------------------------------------------------------
 void ofx2DCanvas::begin(const ofRectangle& viewport){
-	this->set(viewport);
-	ofPushView();
-	ofViewport(viewport);
-	ofSetupScreenOrtho();
-	ofPushMatrix();
-	ofTranslate( translate);
-	ofScale(scale.x, scale.y, 1);
-
+    this->viewport = viewport;
+    if(bCamPosNeedsUpdate){
+        bCamPosNeedsUpdate = false;
+        updateCameraPos();
+        applyConstraints();
+    }
+    cam.begin(viewport);
+}
+string ofx2DCanvas::getDebugInfo(){
+    stringstream ss;
+    
+    ss << "prevPos: " << prevMouse << "\n";
+    ss << "currentMouse: " << currentMouse << "\n";
+    ss << "mouseVel: " << mouseVel << "\n";
+    ss << "pressPos" << pressPos << "\n";
+    ss << "cam pos: " << cam.getPosition() << "\n";
+    ss << "cam scale: " << cam.getScale() << "\n";
+    ss << "bTranslate: " << boolalpha << bTranslate << "\n";
+    ss << "viewport: " << viewport << "\n";
+    ss << "canvasConstraint: " << canvasConstraint << "\n";
+    
+    
+    return ss.str();
 }
 //--------------------------------------------------------------
 void ofx2DCanvas::end(bool bDrawInfo){
-	ofPopMatrix();
-	ofPopView();
-//	if(bDrawInfo){
-	
-//	stringstream ss;
-//		glm::vec2 size(width, height);
-//	ss << "rect " << (ofRectangle)*this<<endl;
-//	ss << "translate * scale " << (translate * scale) <<endl;
-//	ss << "scale * size " << scale * size << endl;
-//	ss << "translate - size "<< translate - size << endl;
-//	
-//	ss << "pressPos " << pressPos << endl;
-//	ss << "relativePressPos " << relativePressPos << endl;
-//	ss << "prevMouse " << prevMouse << endl;
-//	ss << "mouseVel " << mouseVel << endl;
-//	ss << "scale " << scale << endl;
-//	ss << "onPressScale  " << onPressScale  << endl;
-//	ss << "translate " << translate << endl;
-//	ss << "onPressTranslate " << onPressTranslate << endl;
-//	ss << "IsDragging " << boolalpha << bIsDragging << endl;
-//	ss << "Translate " << boolalpha << bTranslate << endl;
-//	ss << "TransformAxisSet " << boolalpha << bTransformAxisSet << endl;
-//	ss << "Scrolling " << boolalpha << bScrolling << endl;
-//	ss << "lastTap " << lastTap << endl;
-	
-//	ss << "transformAxis ";
-//	switch(transformAxis){
-//		case TRANSFORM_BOTH: ss << "BOTH" << endl; break;
-//		case TRANSFORM_X: ss << "X" << endl; break;
-//		case TRANSFORM_Y: ss << "Y" << endl; break;
-//	
-//	}
-//
-//	ofDrawBitmapStringHighlight(ss.str(), x+ 20, y+20);
-//	}
+    cam.end();
+    if(bDrawInfo)
+        ofDrawBitmapStringHighlight(getDebugInfo(), 20,20);
 }
 //--------------------------------------------------------------
 void ofx2DCanvas::enableMouse(){
@@ -82,38 +80,33 @@ void ofx2DCanvas::mouseActionSetup(ofMouseEventArgs & m, bool bMouseScroll){
 		m.x = ofGetMouseX();
 		m.y = ofGetMouseY();
 	}
-	if(inside(m)){
-		
+	if(viewport.inside(m)){
 		
 		if(!bScrolling){
 			auto curTap = ofGetElapsedTimeMillis();
 			if(lastTap != 0 && curTap - lastTap < 300){
-			reset();
-			return;
+                reset();
+                return;
 			}
 			lastTap = curTap;
 			
 			bIsDragging = true;
-			bTranslate	=(m.button == OF_MOUSE_BUTTON_LEFT);
-			pressPos = m;
+			bTranslate	= (m.button == OF_MOUSE_BUTTON_LEFT);
 		}else{
 			
 			bIsDragging = false;
-			pressPos = {0,0};
+
 		}
 		
-		prevMouse = m;
-		onPressScale = scale;
-		onPressTranslate = translate;
-		
-		
-		
-		relativePressPos = m - translate - getPosition();
-		relativePressPos /= scale;
+        pressPos = m;
+        prevMouse = m;
+
 		
 		bTransformAxisSet = !(ofGetKeyPressed(OF_KEY_SHIFT));
 		transformAxis = TRANSFORM_BOTH;
-		
+        
+        ofNotifyEvent(onTransformBegin, this);
+        
 	}else{
 		bScrolling = false;
 	}
@@ -126,6 +119,7 @@ void ofx2DCanvas::mousePressed(ofMouseEventArgs & m){
 void ofx2DCanvas::mouseReleased(ofMouseEventArgs & m){
 	updateMouse(m, false);
 	bIsDragging = false;
+    ofNotifyEvent(onTransformEnd, this);
 }
 //--------------------------------------------------------------
 void ofx2DCanvas::mouseDragged(ofMouseEventArgs & m){
@@ -134,8 +128,7 @@ void ofx2DCanvas::mouseDragged(ofMouseEventArgs & m){
 //--------------------------------------------------------------
 void ofx2DCanvas::updateMouse(ofMouseEventArgs& m, bool bMouseScroll){
 	if(!bMouseScroll) bScrolling = false;
-	if(bScrolling){
-	   }
+	
 	if(bIsDragging || bScrolling){
 		
 		glm::vec2  d;
@@ -144,10 +137,17 @@ void ofx2DCanvas::updateMouse(ofMouseEventArgs& m, bool bMouseScroll){
 			pressPos += mouseVel;
 			d = pressPos;
 		}else{
-			mouseVel = m  - prevMouse;
+            
+            currentMouse = cam.screenToWorld({m.x,m.y,0}, viewport);
+            mouseVel =  currentMouse - cam.screenToWorld({prevMouse.x,prevMouse.y,0}, viewport);   ;
+            
+            
+            
 			d = m - pressPos;
 		}
 		
+        
+        
 		
 		if(!bTransformAxisSet){
 			auto l2 = glm::length2(d);
@@ -156,54 +156,83 @@ void ofx2DCanvas::updateMouse(ofMouseEventArgs& m, bool bMouseScroll){
 				transformAxis = ((fabs(d.x) > fabs(d.y))?TRANSFORM_X:TRANSFORM_Y);
 			}
 		}
+        
+        if(transformAxis != TRANSFORM_BOTH){
+            if(transformAxis == TRANSFORM_X){
+                mouseVel.y = 0;
+            }else if(transformAxis == TRANSFORM_Y){
+                mouseVel.x = 0;
+            }
+        }
 		
-		
-		if(bTranslate){
-			translate += mouseVel;
-			
-			if(transformAxis != TRANSFORM_BOTH){
-				if(transformAxis == TRANSFORM_X){
-					translate.y = onPressTranslate.y;
-				}else if(transformAxis == TRANSFORM_Y){
-					translate.x = onPressTranslate.x;
-				}
-			}
-			
-		}else{
-			mouseVel = (bAltPressed?0.1:1.0) * mouseVel /glm::vec2(width,height);
-			scale += mouseVel + mouseVel * scale;
-			translate = onPressTranslate - relativePressPos*(scale - onPressScale);
-			
-			if(transformAxis != TRANSFORM_BOTH){
-				if(transformAxis == TRANSFORM_X){
-					scale.y = onPressScale.y;
-				}else if(transformAxis == TRANSFORM_Y){
-					scale.x = onPressScale.x;
-				}
-			}
-			
-			if(scale.x < 1.0f) scale.x = 1.0f;
-			if(scale.y < 1.0f) scale.y = 1.0f;
-			
-		}
-		
-		
-		
-		if(translate.x > 0.0f) translate.x = 0.0f;
-		if(translate.y > 0.0f) translate.y = 0.0f;
-		
-		glm::vec2 size(width, height);
-		auto ss = scale*size -size;
-		
-		
-		
-		if(translate.x < -ss.x) translate.x = -ss.x;
-		if(translate.y < -ss.y) translate.y = -ss.y;
-		
-		
+        
+        glm::vec3 mousePre ;
+        glm::vec3 newScale;
+        if (!bTranslate) {
+            mousePre = cam.screenToWorld(glm::vec3(pressPos,0));
+            mouseVel = (bAltPressed?0.1:1.0) * mouseVel /glm::vec2(viewport.width,viewport.height);
+            mouseVel *= -1.0f;
+            newScale = cam.getScale() + glm::vec3(mouseVel, 0);
+            if(newScale.x > 1.0f){
+                newScale.x = 1;
+            }
+            if(newScale.y > 1.0f){
+                newScale.y = 1;
+            }
+        }
+        
+    
+        cam.move({- mouseVel.x, - mouseVel.y, 0});
+            
+            
+        if(!bTranslate)
+        {
+            cam.setScale(newScale);
+                // this move call is to keep the scaling centered below the mouse.
+            cam.move(mousePre - cam.screenToWorld(glm::vec3(pressPos,0)));
+        }
+        applyConstraints();
+
 		prevMouse = m;
 	}
 }
+//--------------------------------------------------------------
+void ofx2DCanvas::applyConstraints()
+{
+    
+    canvasConstraint = ofRectangle(cam.screenToWorld(viewport.getMin(), viewport),  cam.screenToWorld(viewport.getMax(), viewport));
+    
+    ofRectangle canvasRect;
+    
+//    canvasRect.setFromCenter(0, 0, viewport.width, viewport.height);
+    canvasRect.set(0, 0, viewport.width, viewport.height);
+    glm::vec3 canvasAdjust = {0,0,0};
+    bool bAdjustCanvas = false;
+    if(canvasRect.x > canvasConstraint.x){
+        canvasAdjust.x =  canvasRect.x - canvasConstraint.x;
+        bAdjustCanvas = true;
+    }
+    if(canvasRect.getMaxX() < canvasConstraint.getMaxX()){
+        canvasAdjust.x = canvasRect.getMaxX() - canvasConstraint.getMaxX() ;
+        bAdjustCanvas = true;
+    }
+    
+    if(canvasRect.y > canvasConstraint.y){
+        canvasAdjust.y =  canvasRect.y - canvasConstraint.y ;
+        bAdjustCanvas = true;
+    }
+    if(canvasRect.getMaxY() < canvasConstraint.getMaxY()){
+        canvasAdjust.y =  canvasRect.getMaxY() - canvasConstraint.getMaxY();
+        bAdjustCanvas = true;
+    }
+    
+
+    if(bAdjustCanvas){
+        cam.move(canvasAdjust);
+    }
+}
+
+
 //--------------------------------------------------------------
 void ofx2DCanvas::keyPressed(ofKeyEventArgs& key){
 	bAltPressed = key.hasModifier(OF_KEY_ALT);
@@ -216,9 +245,15 @@ void ofx2DCanvas::keyReleased(ofKeyEventArgs& key){
 }
 //--------------------------------------------------------------
 void ofx2DCanvas::reset(){
-	scale = {1,1};
-	onPressScale  = {1,1};
-	translate = {0,0};
-	onPressTranslate = {0,0};
+    cam.setScale({1,1,1});
+    updateCameraPos();
 	bIsDragging = false;
+    ofNotifyEvent(onTransformEnd, this);
 }
+//--------------------------------------------------------------
+void ofx2DCanvas::updateCameraPos(){
+    //    cam.setPosition(0, 0, -100);
+    auto c = viewport.getCenter();
+    cam.setPosition(c.x, c.y, -100);
+}
+

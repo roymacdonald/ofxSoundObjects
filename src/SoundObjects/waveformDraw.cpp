@@ -13,8 +13,9 @@ waveformDraw_<BufferType>::waveformDraw_():ofxSoundObject(OFX_SOUND_OBJECT_PROCE
 //--------------------------------------------------------------
 template<typename BufferType>
 void waveformDraw_<BufferType>::setup(const ofRectangle& r){
-		this->set(r);
-		bRenderWaveforms = true;
+    this->set(r);
+    bRenderWaveforms = true;
+    canvas.setCamNeedsUpdate();
 }
 //--------------------------------------------------------------
 template<typename BufferType>
@@ -30,6 +31,90 @@ void waveformDraw_<BufferType>::process(ofSoundBuffer &input, ofSoundBuffer &out
 	output = input;
 	
 }
+
+template<typename BufferType>
+void waveformDraw_<BufferType>::updateFbo(){
+    bUpdateFbo = true;
+}
+template<typename BufferType>
+void waveformDraw_<BufferType>::initFbo(){
+    if(bUseFbo && (!fbo.isAllocated() || !ofIsFloatEqual(fbo.getWidth(), this->width) || !ofIsFloatEqual(fbo.getHeight(), this->height))){
+        fbo.allocate(width, height);
+        fbo.begin();
+        ofClear(0,0,0,0);
+        fbo.end();
+        bUpdateFbo = true;
+        if(listeners.empty()){
+            listeners.push(canvas.onTransformBegin.newListener([&](){
+                bIsCanvasTransforming = true;
+                onTransformRect.set(canvas.getCamera().screenToWorld(getMin(), (ofRectangle)*this), canvas.getCamera().screenToWorld(getMax(), (ofRectangle)*this));
+            }));
+            listeners.push(canvas.onTransformEnd.newListener([&](){
+                bIsCanvasTransforming = false;
+                updateFbo();
+            }));
+        }
+    }
+}
+
+template<typename BufferType>
+void waveformDraw_<BufferType>::enableFbo(){
+    bUseFbo = true;
+    
+}
+template<typename BufferType>
+void waveformDraw_<BufferType>::disableFbo(){
+    bUseFbo = false;
+    fbo.clear();
+    listeners.unsubscribeAll();
+}
+
+//--------------------------------------------------------------
+template<typename BufferType>
+void waveformDraw_<BufferType>::drawWave(){
+    ofPushStyle();
+    ofNoFill();
+    ofSetColor(marginColor);
+    //Draw bounding box
+    ofDrawRectangle({0,0,this->width , this->height});
+//    ofSetColor(255,100);
+    
+    
+    ofPopStyle();
+        
+    ofPushMatrix();
+    
+    ofScale(this->width, this->height);
+    if(gridSpacing > 0) gridMesh.draw();
+    
+    //Draw center line
+    auto chans = getNumChannels();
+    if(chans > 0){
+        float h  = 1.0f/chans;
+        for(int i = 0; i < chans; ++i){
+            ofDrawLine(0, h*(0.5f + i), 1,h*(0.5f + i) );
+        }
+    }
+    
+    
+    ofSetColor(waveColor);
+    for(auto& w: waveforms){
+        w.draw();
+    }
+    ofPopMatrix();
+}
+
+//--------------------------------------------------------------
+template<typename BufferType>
+void waveformDraw_<BufferType>::begin(){
+    canvas.begin(*this);
+}
+//--------------------------------------------------------------
+template<typename BufferType>
+void waveformDraw_<BufferType>::end(){
+    canvas.end();
+}
+
 //--------------------------------------------------------------
 template<typename BufferType>
 void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
@@ -50,47 +135,48 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
 		bCanvasIsSetup = true;
 		canvas.enableMouse();
 	}
+//
+    if(bUseFbo){
+        initFbo();
+        if(bUpdateFbo){
+            bUpdateFbo = false;
+            fbo.begin();
+            ofClear(0, 0, 0,0);
+            canvas.begin(ofRectangle(0,0,width, height));
+            drawWave();
+            canvas.end();
+            fbo.end();
+        }
+        if(bIsCanvasTransforming){
+            begin();
+            fbo.draw(onTransformRect);
+        }
+        else{
+            fbo.draw((ofRectangle)*this);
+        }
 
-	canvas.begin((ofRectangle)*this);
-	
-	ofPushStyle();
-	ofNoFill();
-	ofSetColor(marginColor);
-	//Draw bounding box
-	ofDrawRectangle({0,0,this->width , this->height});
-//	ofSetColor(255,100);
-	
-	
-	ofPopStyle();
-		
-	ofPushMatrix();
-	
-	ofScale(this->width, this->height);
-	if(gridSpacing > 0) gridMesh.draw();
-	
-	//Draw center line
-	auto chans = getNumChannels();
-	if(chans > 0){
-		float h  = 1.0f/chans;
-		for(int i = 0; i < chans; ++i){
-			ofDrawLine(0, h*(0.5f + i), 1,h*(0.5f + i) );
-		}
-	}
-	
-	
-	ofSetColor(waveColor);
-	for(auto& w: waveforms){
-		w.draw();
-	}
-	ofPopMatrix();
-	canvas.end();
+        if(bIsCanvasTransforming){
+            end();
+        }
+
+    }else{
+        begin();
+        drawWave();
+        end();
+    }
+
 }
 //--------------------------------------------------------------
 
 template<typename BufferType>
-void waveformDraw_<BufferType>::makeMeshFromBuffer(const ofSoundBuffer& buffer){
+void waveformDraw_<BufferType>::makeMeshFromBuffer(const ofSoundBuffer& buffer, bool bRenderToFbo){
 	{
+        
 		std::lock_guard<std::mutex> lck(mutex1);
+        if(bRenderToFbo){
+            bUseFbo = true;
+        }
+
 		ofxSoundUtils::checkBuffers(buffer, this->buffer, true);
 		
 		buffer.copyTo(this->buffer);
@@ -153,6 +239,16 @@ void waveformDraw_<BufferType>::makeWaveformMesh(){
 }
 //--------------------------------------------------------------
 template<typename BufferType>
+void waveformDraw_<BufferType>::setGridColor(const ofColor& color){
+    gridColor = ofFloatColor(color.r/255.0f, color.g/255.0f, color.b/255.0f, color.a/255.0f );
+    
+    if(gridMesh.getColors().size()){
+        vector<ofFloatColor> newColors (gridMesh.getColors().size(), gridColor);
+        gridMesh.getColors() = newColors;
+    }
+}
+//--------------------------------------------------------------
+template<typename BufferType>
 void waveformDraw_<BufferType>::makeGrid(){
 	if(bMakeGrid){
 		gridMesh.clear();
@@ -165,7 +261,7 @@ void waveformDraw_<BufferType>::makeGrid(){
 				float xSpace = (float) gridSpacing / (float)(buffer.getNumFrames());
 				ofRectangle r(0,0, xSpace, 1);
 				
-				vector<ofFloatColor> colors(6, ofFloatColor(80.0f/255.0f));
+				vector<ofFloatColor> colors(6, gridColor);
 				
 				for(int i = 0; i < buffer.getNumFrames(); i+= (gridSpacing *2)){
 					
@@ -223,16 +319,14 @@ const ofColor&  waveformDraw_<BufferType>::getMarginColor(){
 void circularBufferWaveformDraw::process(ofSoundBuffer &input, ofSoundBuffer &output){
 	{
 		std::lock_guard<std::mutex> lck(mutex1);
-		if(buffer.getNumFrames() != input.getNumFrames() * numBuffers){
-			
-			buffer.allocate(input.getNumFrames() * numBuffers, input.getNumChannels());
-			cout << "circularBufferWaveformDraw::process  " << buffer.size() << endl;
-			buffer.setSampleRate(input.getSampleRate());
-		}
 		buffer.push(input);
 	}
 	bRenderWaveforms = true;
 	output = input;
+}
+//--------------------------------------------------------------
+void circularBufferWaveformDraw::setNumBuffers(size_t numBuffers){
+    buffer.setNumBuffersToStore(numBuffers);
 }
 //--------------------------------------------------------------
 void circularBufferWaveformDraw::updateWaveformMesh() {
@@ -247,14 +341,16 @@ void circularBufferWaveformDraw::updateWaveformMesh() {
 		}
 		
 		float h = 1.0f / float(chans);
-		
+
+        size_t bIndex = buffer.getPushIndex() / buffer.getNumChannels();
+        
 		for (int j = 0; j < chans; j++) {
 			
 			auto & wv = waveforms[j].getVertices();
-			size_t bIndex = buffer.getPushIndex() / buffer.getNumChannels();
+
 			
 			for(size_t i=0; i< wv.size(); i++){
-				wv[i].y = ofMap(buffer[bIndex * chans + j], -1, 1, h*(j+1), h*j );
+				wv[i].y = ofMap(buffer[(bIndex * chans) + j], -1, 1, h*(j+1), h*j );
 				if(bIndex > 0){
 					-- bIndex ;
 				}else{

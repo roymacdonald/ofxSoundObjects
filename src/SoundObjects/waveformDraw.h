@@ -29,20 +29,52 @@ public:
 	void draw(const ofRectangle& viewport = ofRectangle());
 	
 	// you can use this method to render and draw a static buffer.
-	void makeMeshFromBuffer(const ofSoundBuffer& buffer);
+    // bRenderToFbo if true it will render into an fbo. use this when rendering static buffers.
+	void makeMeshFromBuffer(const ofSoundBuffer& buffer, bool bRenderToFbo = false);
 	
 	void setGridSpacingByNumSamples(size_t spacing);
 	
 	void setWaveColor(const ofColor& color);
 //	void setBackgroundColor(const ofColor& color);
+    void setGridColor(const ofColor& color);
 	void setMarginColor(const ofColor& color);
 
 	const ofColor&  getWaveColor();
-//	const ofColor&  getBackgroundColor();
-	const ofColor&  getMarginColor();
 
+	const ofColor&  getMarginColor();
+    
+    ofx2DCanvas& getCanvas(){return canvas;}
+    
+    
+
+    void enableFbo();
+    void disableFbo();
+    bool isFboEnabled() {return bUseFbo;}
+    
+    
+    ///\brief Setups up the cameras to start drawing.
+    ///Call it for drawing an overlay over the waveform.
+    ///Make sure that you have called draw() before calling begin(), and you must call end() once done drawing.
+    ///While between the begin() and end() calls the coordinate space origin is at the top left corner of the viewport.
+    ///No need to worry about zooming and panning to match the waveform. This is the purpose of this function.
+    void begin();
+    void end();
+    
 protected:
-	
+    void drawWave();
+    void initFbo();
+    void updateFbo();
+    bool bUseFbo = false;
+    bool bUpdateFbo = false;
+    bool bIsCanvasTransforming = false;
+
+    ofRectangle onTransformRect;
+    
+    
+    ofEventListeners listeners;
+    
+    ofFbo fbo;
+    
 	virtual void updateWaveformMesh();
 	
 	void makeWaveformMesh();
@@ -68,8 +100,9 @@ protected:
 	BufferType buffer;
 
 	ofColor  waveColor;
-//	ofColor  backgroundColor;
+    ofFloatColor  gridColor = {(80.0f/255.0f)};
 	ofColor  marginColor;
+
 };
 
 typedef waveformDraw_<ofSoundBuffer> waveformDraw;
@@ -82,15 +115,10 @@ public:
 	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
 	
 	
-	void setNumBuffers(size_t numBuffers){
-		this->numBuffers = numBuffers;
-	}
+    void setNumBuffers(size_t numBuffers);
 
 protected:
 	virtual void updateWaveformMesh() override;
-	
-private:
-	size_t numBuffers = 100;
 
 };
 

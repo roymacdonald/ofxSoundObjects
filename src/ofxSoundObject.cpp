@@ -8,14 +8,23 @@
 #include "ofxSoundUtils.h"
 #include "ofSoundStream.h"
 #include "ofLog.h"
+#include "ofEvents.h"
 //--------------------------------------------------------------
 //  ofxSoundObject
 //--------------------------------------------------------------
 ofxSoundObject::ofxSoundObject() {
 	ofLogWarning("ofxSoundObject::ofxSoundObject()", "the ofxSoundObjects' no args constructor should not be called. ");
+    ofAddListener(ofEvents().exit, this, &ofxSoundObject::onExit);
 }
 ofxSoundObject::ofxSoundObject(ofxSoundObjectsType t){
 	type = t;
+    
+    ofAddListener(ofEvents().exit, this, &ofxSoundObject::onExit);
+    
+}
+ofxSoundObject::~ofxSoundObject() {
+    ofRemoveListener(ofEvents().exit, this, &ofxSoundObject::onExit);
+    disconnect();
 }
 //--------------------------------------------------------------
 ofxSoundObject &ofxSoundObject::connectTo(ofxSoundObject &soundObject) {
@@ -150,6 +159,11 @@ const std::string& ofxSoundObject::getName(){
 //--------------------------------------------------------------
 void ofxSoundObject::setName(const std::string& name){
 	objectName = name;
+}
+
+//--------------------------------------------------------------
+void ofxSoundObject::onExit(ofEventArgs&){
+    disconnect();
 }
 
 

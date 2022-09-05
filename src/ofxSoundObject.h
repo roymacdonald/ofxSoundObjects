@@ -24,9 +24,7 @@ class ofxSoundObject: public ofBaseSoundOutput {
 public:
 	ofxSoundObject();
 	ofxSoundObject(ofxSoundObjectsType);
-	virtual ~ofxSoundObject() {
-		disconnect();
-	}
+    virtual ~ofxSoundObject() ;
 
 	friend class ofxSoundInputMultiplexer; 
 	
@@ -128,8 +126,10 @@ private:
 //		OFX_SOUND_OBJECT_OFFLINE
 	} signalFlowMode;
 
-	
-	
+
+    // listener to disconnect upon exit to avoid crash
+//    ofEventListener exitListener;
+    void onExit(ofEventArgs&);
 };
 
 //--------------------------------------------------------------

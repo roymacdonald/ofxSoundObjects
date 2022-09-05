@@ -10,21 +10,41 @@
 #include "ofMain.h"
 
 
-class ofx2DCanvas: public ofRectangle{
+class ofx2DCanvas{
 public:
 
+    ofx2DCanvas();
+    virtual ~ofx2DCanvas(){}
+    
 	void begin(const ofRectangle& viewport);
-	void end(bool bDrawInfo = true);
+	void end(bool bDrawInfo = false);
 	
 	void enableMouse();
 	void disableMouse();
 	void reset();
+    
+    ofEvent<void> onTransformBegin, onTransformEnd;
+    
+    ofCamera& getCamera() {return cam;}
+    
+    const ofRectangle& getViewport(){return viewport;}
+    
+    void setCamNeedsUpdate();
+    
 private:
+    
+    ofCamera cam;
+    ofRectangle viewport;
+    ofRectangle canvasConstraint;
+    
+    string getDebugInfo();
 	
+    
+    void applyConstraints();
 	
 	glm::vec2 pressPos = {0,0};
-	glm::vec2 relativePressPos;
-	glm::vec2 prevMouse, mouseVel;
+    
+	glm::vec2 prevMouse, mouseVel, currentMouse;
 	
 	
 	ofEventListeners mouseListeners;
@@ -42,10 +62,7 @@ private:
 	
 	bool bIsDragging = false;
 	
-	glm::vec2 scale = {1,1};
-	glm::vec2 onPressScale  = {1,1};
-	glm::vec2 translate = {0,0};
-	glm::vec2 onPressTranslate = {0,0};
+
 	bool bTranslate = false;
 	
 	enum TransformAxis {
@@ -60,4 +77,10 @@ private:
 	
 	bool bScrolling = false;
 	bool bAltPressed = false;
+    
+    
+    void updateCameraPos();
+    bool bCamPosNeedsUpdate = true;
+    
+    
 };
