@@ -11,27 +11,21 @@ on:
 jobs:
 
   build-osx:
-    runs-on: macos-10.15
+    runs-on: macos-12
     strategy:
         matrix:
           cfg:
-          - {target: osx, opt: ""}
-          - {target: osx, opt: "makefiles"}
+          - {target: osx}
     env:
      TARGET: ${{matrix.cfg.target}}
-     OPT: ${{matrix.cfg.opt}}
     steps:
     - uses: actions/checkout@v2
-    - name: Download libs
-      run: cd ~
-           git clone --depth=1 https://github.com/openframeworks/openFrameworks.git
-           cd openFrameworks
-           git clone --depth=1 --branch=master https://github.com/npisanti/ofxAudioFile addons/ofxAudioFile
-           git clone --depth=1 --branch=master https://github.com/kylemcdonald/ofxFft addons/ofxFft
-    - name: install
-      run: ./scripts/ci/addons/install.sh
+      with:
+          node-version: '14'
+    - name: rm-dev
+      run: sudo rm -rf /Library/Developer
     - name: Build
-      run: scripts/ci/addons/build.sh
+      run: scripts/ci/osx/build.sh
       env:
-        DEVELOPER_DIR: "/Applications/Xcode_12.2.app/Contents/Developer"
-        SDKROOT: "/Applications/Xcode_12.2.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
+        DEVELOPER_DIR: "/Applications/Xcode_13.4.1.app/Contents/Developer"
+        SDKROOT: "/Applications/Xcode_13.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
