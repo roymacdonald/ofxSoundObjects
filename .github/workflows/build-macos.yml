@@ -20,8 +20,6 @@ jobs:
      TARGET: ${{matrix.cfg.target}}
     steps:
     - uses: actions/checkout@v2
-      with:
-          node-version: '14'
     - name: rm-dev
       run: sudo rm -rf /Library/Developer
     - name: Build
