@@ -23,7 +23,7 @@ jobs:
     - name: rm-dev
       run: sudo rm -rf /Library/Developer
     - name: Build
-      run: scripts/ci/osx/build.sh
+      run: ./scripts/ci/osx/build.sh
       env:
         DEVELOPER_DIR: "/Applications/Xcode_13.4.1.app/Contents/Developer"
         SDKROOT: "/Applications/Xcode_13.4.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
