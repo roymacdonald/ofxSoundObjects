@@ -442,9 +442,11 @@ void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 		size_t numFrames = output.getNumFrames();
 		unsigned int samplerate = output.getSampleRate();
 		updateNumInputChannels();
-		for(size_t i = 0; i < inObjects.size(); i++){	
-			inObjects[i]->sampleRate = samplerate;
-			inObjects[i]->numFramesToProcess = numFrames;
+		for(size_t i = 0; i < inObjects.size(); i++){
+            if(inObjects[i]){
+                inObjects[i]->sampleRate = samplerate;
+                inObjects[i]->numFramesToProcess = numFrames;
+            }
 #ifdef OFX_SOUND_ENABLE_MULTITHREADING
 		}
 		size_t n = inObjects.size();
@@ -456,7 +458,7 @@ void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 			mixChannelBufferIntoOutput(i, output);
 		}
 #else
-			if(inObjects[i]->pullChannel()){
+			if(inObjects[i] && inObjects[i]->pullChannel()){
 				mixChannelBufferIntoOutput(i, output);
 			}
 		}
