@@ -98,28 +98,6 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
-			<key>7CAF1A5AEF6F06B39340FF34</key>
-			<dict>
-				<key>fileRef</key>
-				<string>32760A1072C0D245FD13490D</string>
-				<key>isa</key>
-				<string>PBXBuildFile</string>
-			</dict>
-			<key>32760A1072C0D245FD13490D</key>
-			<dict>
-				<key>explicitFileType</key>
-				<string>sourcecode.cpp.cpp</string>
-				<key>fileEncoding</key>
-				<string>4</string>
-				<key>isa</key>
-				<string>PBXFileReference</string>
-				<key>name</key>
-				<string>ofxSoundPlayerObject.cpp</string>
-				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/ofxSoundPlayerObject.cpp</string>
-				<key>sourceTree</key>
-				<string>SOURCE_ROOT</string>
-			</dict>
 			<key>C0AFEFB4B45F19694B280408</key>
 			<dict>
 				<key>explicitFileType</key>
@@ -335,6 +313,80 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
+			<key>F3733EB2F93E83929B2E2F2D</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSingleSoundPlayer.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/ofxSingleSoundPlayer.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>D926717084BED72592F91D7B</key>
+			<dict>
+				<key>fileRef</key>
+				<string>7C73A4FD12F16BE233524D9A</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>7C73A4FD12F16BE233524D9A</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSingleSoundPlayer.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/ofxSingleSoundPlayer.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>265D41940074B699150B9255</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxMultiSoundPlayer.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/ofxMultiSoundPlayer.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>88FB07CD10505BD830DCC69E</key>
+			<dict>
+				<key>fileRef</key>
+				<string>F437454E880EF421A34DBBB2</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>F437454E880EF421A34DBBB2</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxMultiSoundPlayer.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/ofxMultiSoundPlayer.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>486582E0863B80FABE19AA90</key>
 			<dict>
 				<key>explicitFileType</key>
@@ -350,6 +402,28 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
+			<key>A06A9F81C3B83D8FDD59C0C8</key>
+			<dict>
+				<key>fileRef</key>
+				<string>CB0E65868B71BE8879F04AB5</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>CB0E65868B71BE8879F04AB5</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>waveformDraw.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/SoundObjects/waveformDraw.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>540EDF6E2F1CA24B5211673F</key>
 			<dict>
 				<key>explicitFileType</key>
@@ -362,6 +436,28 @@
 				<string>VUMeter.h</string>
 				<key>path</key>
 				<string>../../../addons/ofxSoundObjects/src/SoundObjects/VUMeter.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>0BE96166ED40A5D4B27C9C7E</key>
+			<dict>
+				<key>fileRef</key>
+				<string>91B7BCA1CD2E2C5F1B776324</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>91B7BCA1CD2E2C5F1B776324</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>VUMeter.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/SoundObjects/VUMeter.cpp</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -418,7 +514,9 @@
 					<string>DBF555CF2E50BC6F8C44A805</string>
 					<string>4DDD5A51152F1581BDF9CCCF</string>
 					<string>7E5FAD2B1CAA506583AF8584</string>
+					<string>91B7BCA1CD2E2C5F1B776324</string>
 					<string>540EDF6E2F1CA24B5211673F</string>
+					<string>CB0E65868B71BE8879F04AB5</string>
 					<string>486582E0863B80FABE19AA90</string>
 				</array>
 				<key>isa</key>
@@ -440,6 +538,21 @@
 				<string>DigitalDelay.h</string>
 				<key>path</key>
 				<string>../../../addons/ofxSoundObjects/src/SoundObjects/DigitalDelay.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>0B3B64FB195094680309F214</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSoundRendererUtils.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofxSoundRendererUtils.h</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -532,16 +645,56 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
+			<key>6DC40DD805B8D7BBA677A14C</key>
+			<dict>
+				<key>fileRef</key>
+				<string>44FF76267C6B169C837295F7</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>44FF76267C6B169C837295F7</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSlidersGrid.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofxSlidersGrid.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>39140C5962784444DA3091CE</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofx2DCanvas.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofx2DCanvas.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>E4C2833BEB24063CF3644AD9</key>
 			<dict>
 				<key>children</key>
 				<array>
+					<string>67FD96F7C241D53BFCF35195</string>
+					<string>39140C5962784444DA3091CE</string>
 					<string>44FF76267C6B169C837295F7</string>
 					<string>20FBE1E214C2DC0FEEFC1973</string>
 					<string>FCE5CA29FCA21152CFEA85AE</string>
 					<string>404DA65FD7204024A8A15803</string>
 					<string>CE32325B7AC136FE083E72EB</string>
 					<string>6E855C4504BF9FE548126EEE</string>
+					<string>0B3B64FB195094680309F214</string>
 				</array>
 				<key>isa</key>
 				<string>PBXGroup</string>
@@ -556,6 +709,10 @@
 				<array>
 					<string>E4C2833BEB24063CF3644AD9</string>
 					<string>F458332A72530CBF5B51D7B7</string>
+					<string>F437454E880EF421A34DBBB2</string>
+					<string>265D41940074B699150B9255</string>
+					<string>7C73A4FD12F16BE233524D9A</string>
+					<string>F3733EB2F93E83929B2E2F2D</string>
 					<string>1517C892632CE73885FA803C</string>
 					<string>0E08C3779A6B40C22BD6ADEC</string>
 					<string>D6613DB597B6AD58800E7670</string>
@@ -568,7 +725,6 @@
 					<string>1602920CA9506139A0D594F8</string>
 					<string>EB0153789FDCEF9B5303141A</string>
 					<string>C0AFEFB4B45F19694B280408</string>
-					<string>32760A1072C0D245FD13490D</string>
 					<string>4F565F42275196FC67B85122</string>
 					<string>CF643211551EF37A2EECB096</string>
 					<string>325B8956037E1EF26E7E0A74</string>
@@ -595,14 +751,14 @@
 				<key>sourceTree</key>
 				<string>&lt;group&gt;</string>
 			</dict>
-			<key>6DC40DD805B8D7BBA677A14C</key>
+			<key>242FC6168D4E123D99060E53</key>
 			<dict>
 				<key>fileRef</key>
-				<string>44FF76267C6B169C837295F7</string>
+				<string>67FD96F7C241D53BFCF35195</string>
 				<key>isa</key>
 				<string>PBXBuildFile</string>
 			</dict>
-			<key>44FF76267C6B169C837295F7</key>
+			<key>67FD96F7C241D53BFCF35195</key>
 			<dict>
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
@@ -611,9 +767,9 @@
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
-				<string>ofxSlidersGrid.cpp</string>
+				<string>ofx2DCanvas.cpp</string>
 				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/Renderers/ofxSlidersGrid.cpp</string>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofx2DCanvas.cpp</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -1310,6 +1466,8 @@ IFS=$(echo -en "\n\b")
 # Loop through all items.
 for ITEM in $ITEMS;
 do
+echo "Stripping invalid archs '${ITEM}'"
+lipo -extract x86_64 "${ITEM}" -o "${ITEM}"
 echo "Signing '${ITEM}'"
 codesign --force --verbose --sign "${CODE_SIGN_IDENTITY_FOR_ITEMS}" --entitlements "${CODE_SIGN_ENTITLEMENTS}" "${ITEM}"
 RESULT=$?
@@ -1380,10 +1538,11 @@ fi
 					</array>
 					<key>MACOSX_DEPLOYMENT_TARGET</key>
 					<string>10.9</string>
+					<key>OTHER_CODE_SIGN_FLAGS</key>
+					<string>--deep</string>
 					<key>OTHER_CPLUSPLUSFLAGS</key>
 					<array>
 						<string>-D__MACOSX_CORE__</string>
-						<string>-mtune=native</string>
 					</array>
 					<key>SDKROOT</key>
 					<string>macosx</string>
@@ -4239,10 +4398,11 @@ fi
 					<string>10.9</string>
 					<key>ONLY_ACTIVE_ARCH</key>
 					<string>YES</string>
+					<key>OTHER_CODE_SIGN_FLAGS</key>
+					<string>--deep</string>
 					<key>OTHER_CPLUSPLUSFLAGS</key>
 					<array>
 						<string>-D__MACOSX_CORE__</string>
-						<string>-mtune=native</string>
 					</array>
 					<key>SDKROOT</key>
 					<string>macosx</string>
@@ -4304,10 +4464,11 @@ fi
 					</array>
 					<key>MACOSX_DEPLOYMENT_TARGET</key>
 					<string>10.9</string>
+					<key>OTHER_CODE_SIGN_FLAGS</key>
+					<string>--deep</string>
 					<key>OTHER_CPLUSPLUSFLAGS</key>
 					<array>
 						<string>-D__MACOSX_CORE__</string>
-						<string>-mtune=native</string>
 					</array>
 					<key>SDKROOT</key>
 					<string>macosx</string>
@@ -4336,15 +4497,19 @@ fi
 					<string>837220E80EB56CD44AD27F2A</string>
 					<string>B56FE57CC35806596D38118C</string>
 					<string>1CD33E884D9E3358252E82A1</string>
+					<string>242FC6168D4E123D99060E53</string>
 					<string>6DC40DD805B8D7BBA677A14C</string>
 					<string>D62F3E04A5125DF78F8859B1</string>
 					<string>12CEE754929E8DB692B2BBE6</string>
+					<string>0BE96166ED40A5D4B27C9C7E</string>
+					<string>A06A9F81C3B83D8FDD59C0C8</string>
+					<string>88FB07CD10505BD830DCC69E</string>
+					<string>D926717084BED72592F91D7B</string>
 					<string>BBD9844681A294B282AAB320</string>
 					<string>0C038942B6A701062B7B70F2</string>
 					<string>7840F332D7330DAAD11D2250</string>
 					<string>26A94B3736756ADEB2293EDD</string>
 					<string>878C0EFF16E187226B0148FA</string>
-					<string>7CAF1A5AEF6F06B39340FF34</string>
 					<string>A951B37B85BE9D9E912D0BD3</string>
 					<string>4D112DC30F41BF74A9CA4C79</string>
 				</array>
@@ -4650,8 +4815,9 @@ fi
 # Copy default icon file into App/Resources
 rsync -aved "$ICON_FILE" "$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Resources/"
 # Copy libfmod and change install directory for fmod to run
-rsync -aved "$OF_PATH/libs/fmodex/lib/osx/libfmodex.dylib" "$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/";
-install_name_tool -change @executable_path/libfmodex.dylib @executable_path/../Frameworks/libfmodex.dylib "$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME";
+rsync -aved "$OF_PATH/libs/fmod/lib/osx/libfmod.dylib" "$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/Frameworks/";
+# Not needed as we now call install_name_tool -id @loader_path/../Frameworks/libfmod.dylib libfmod.dylib on the dylib directly which prevents the need for calling every post build - keeping here for reference and possible legacy usage 
+# install_name_tool -change @rpath/libfmod.dylib @executable_path/../Frameworks/libfmod.dylib "$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME";
 
 echo "$GCC_PREPROCESSOR_DEFINITIONS";
 </string>

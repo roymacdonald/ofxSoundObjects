@@ -5,15 +5,12 @@ cd ..
 of_root=${PWD}/openFrameworks
 snd_obj_root=${PWD}/openFrameworks/addons/ofxSoundObjects
 
-git clone --depth=1 https://github.com/openframeworks/openFrameworks
 #cp not move so github actions can do cleanup without error
 cp -r ofxSoundObjects openFrameworks/addons/
 cd openFrameworks
 git clone --depth=1 --branch=master https://github.com/npisanti/ofxAudioFile addons/ofxAudioFile
 git clone --depth=1 --branch=master https://github.com/kylemcdonald/ofxFft addons/ofxFft
 
-cd ${of_root}
-scripts/osx/download_libs.sh
 
 # Compile commandline tool
 cd ${snd_obj_root}

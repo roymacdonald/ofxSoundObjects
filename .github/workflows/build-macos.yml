@@ -25,9 +25,11 @@ jobs:
       shell: bash
       run: cd .. 
            git clone --depth=1 https://github.com/openframeworks/openFrameworks
-    - name: Check OF
-      shell: bash
-      run: ls ..
+           ls
+           ls ..
+           ls ../..
+           cd ~
+           ls
     - name: Cache compile
       id: cache-compile
       uses: actions/cache@v3
@@ -37,7 +39,7 @@ jobs:
         path: ../openFrameworks/libs/openFrameworksCompiled/lib/osx/**/
         key: ${{ runner.os }}-${{matrix.cfg.opt}}-${{ env.cache-name }}-${{ hashFiles('**/*.cpp') }}
         restore-keys: |
-          ${{ runner.os }}-${{matrix.cfg.opt}}-${{ env.cache-name }}-        
+          ${{ runner.os }}-${{matrix.cfg.opt}}-${{ env.cache-name }}-
     - name: Cache libs
       id: cache-libs
       uses: actions/cache@v3
@@ -71,7 +73,7 @@ jobs:
     - if: ${{ steps.cache-libs.outputs.cache-hit != 'true' }}
       # name: Download libs
       # continue-on-error: true
-      run: ./scripts/$TARGET/download_libs.sh
+      run: ../openFrameworks/scripts/$TARGET/download_libs.sh
 
     - name: rm-dev
       run: sudo rm -rf /Library/Developer
