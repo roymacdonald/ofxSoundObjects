@@ -61,7 +61,6 @@ public:
 	OF_DEPRECATED_MSG("Use isLooping() instead", bool  getIsLooping(size_t index =-1) const);
 	virtual unsigned long getDurationMS() override;
 
-	const ofSoundBuffer & getCurrentBuffer() const;
 	const ofSoundBuffer & getBuffer() const;
     ofEvent<size_t> endEvent;
 	ofEvent<void>& getAsyncLoadEndEvent();
