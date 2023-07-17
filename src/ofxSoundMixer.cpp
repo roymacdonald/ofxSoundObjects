@@ -24,16 +24,20 @@ void ofxSoundMixer::masterVolChanged(float& f) {
 }
 //----------------------------------------------------
 ofxSoundMixer::~ofxSoundMixer(){
+    std::lock_guard<std::mutex> lck(connectionMutex);
 	connections.clear();
 	connectionVolume.clear();
 }
 //----------------------------------------------------
-ofxSoundObject* ofxSoundMixer::getConnectionSource(int connectionNumber){
-	if (connectionNumber < connections.size()) {
-		return connections[connectionNumber];
-	}else{
-		return nullptr;
-	}
+ofxSoundObject* ofxSoundMixer::getConnectionSource(size_t connectionNumber){
+    ofxSoundObject* src = nullptr;
+    {
+        std::lock_guard<std::mutex> lck(connectionMutex);
+        if (connectionNumber < connections.size()) {
+            src = connections[connectionNumber];
+        }
+    }
+    return src;
 }
 //----------------------------------------------------
 ofxSoundObject* ofxSoundMixer::getChannelSource(int channelNumber){
@@ -41,7 +45,9 @@ ofxSoundObject* ofxSoundMixer::getChannelSource(int channelNumber){
 }
 //----------------------------------------------------
 void ofxSoundMixer::disconnectInput(ofxSoundObject * input){
-    for (int i =0; i<connections.size(); i++) {
+    std::lock_guard<std::mutex> lck(connectionMutex);
+    
+    for (size_t i =0; i<connections.size(); i++) {
         if (input == connections[i]) {
             connections.erase(connections.begin() + i);
             connectionVolume.erase(connectionVolume.begin() + i);
@@ -51,7 +57,8 @@ void ofxSoundMixer::disconnectInput(ofxSoundObject * input){
 }
 //----------------------------------------------------
 void ofxSoundMixer::setInput(ofxSoundObject *obj){
-    for (int i =0; i<connections.size(); i++) {
+    std::lock_guard<std::mutex> lck(connectionMutex);
+    for (size_t i =0; i<connections.size(); i++) {
         if (obj == connections[i]) {
             ofLogNotice("ofxSoundMixer::setInput") << " already connected" << endl;
             return;
@@ -62,9 +69,11 @@ void ofxSoundMixer::setInput(ofxSoundObject *obj){
 }
 //----------------------------------------------------
 size_t ofxSoundMixer::getNumChannels(){
+    std::lock_guard<std::mutex> lck(connectionMutex);
 	return connections.size();
 }
 size_t ofxSoundMixer::getNumConnections(){
+    std::lock_guard<std::mutex> lck(connectionMutex);
     return connections.size();
 }
 //----------------------------------------------------
@@ -88,8 +97,20 @@ void ofxSoundMixer::setMasterPan(float pan){
 	mutex.unlock();
 }
 //----------------------------------------------------
+bool ofxSoundMixer::getObjectConnectionIndex(ofxSoundObject& obj, size_t& index){
+    std::lock_guard<std::mutex> lck(connectionMutex);
+    for (size_t i =0; i<connections.size(); i++) {
+        if (&obj == connections[i]) {
+            index = i;
+            return true;
+        }
+    }
+    return false;
+}
+//----------------------------------------------------
 bool ofxSoundMixer::isConnectedTo(ofxSoundObject& obj){
-    for (int i =0; i<connections.size(); i++) {
+    std::lock_guard<std::mutex> lck(connectionMutex);
+    for (size_t i =0; i<connections.size(); i++) {
         if (&obj == connections[i]) {
             return true;
         }
@@ -101,9 +122,10 @@ void ofxSoundMixer::setChannelVolume(int channelNumber, float vol){
 	setConnectionVolume(channelNumber, vol);
 }
 //----------------------------------------------------
-void  ofxSoundMixer::setConnectionVolume(int channelNumber, float vol){
-	if (channelNumber < connectionVolume.size()) {
-		connectionVolume[channelNumber] = vol;
+void  ofxSoundMixer::setConnectionVolume(size_t connectionIndex, float vol){
+    std::lock_guard<std::mutex> lck(connectionMutex);
+	if (connectionIndex < connectionVolume.size()) {
+		connectionVolume[connectionIndex] = vol;
 	}
 }
 //----------------------------------------------------
@@ -111,9 +133,10 @@ float ofxSoundMixer::getChannelVolume(int channelNumber){
 	return getConnectionVolume(channelNumber);
 }
 //----------------------------------------------------
-float ofxSoundMixer::getConnectionVolume(int channelNumber){
-    if (channelNumber < connectionVolume.size()) {
-        return connectionVolume[channelNumber];
+float ofxSoundMixer::getConnectionVolume(size_t connectionIndex){
+    std::lock_guard<std::mutex> lck(connectionMutex);
+    if (connectionIndex < connectionVolume.size()) {
+        return connectionVolume[connectionIndex];
     }
     return 0;
 }
