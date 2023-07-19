@@ -227,8 +227,9 @@ void ofxMultiSoundPlayer::setNumInstances(const size_t & num){
 	}
 	
 }
-void ofxMultiSoundPlayer::onInstanceEnd(size_t&){
+void ofxMultiSoundPlayer::onInstanceEnd(size_t& i){
 	checkPaused();
+	ofNotifyEvent(endEvent, i, this);
 }
 //========================GETTERS===============================
 //--------------------------------------------------------------

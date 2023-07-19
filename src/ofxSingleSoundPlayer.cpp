@@ -258,7 +258,8 @@ void ofxSingleSoundPlayer::stop(){
 //--------------------------------------------------------------
 void ofxSingleSoundPlayer::update(ofEventArgs&){
 	if(bNotifyEnd){
-		ofNotifyEvent(endEvent, _id, this);
+		auto i = _id;// make a copy so it is not possible to modify it through the callback, as it is passed by nonconst reference
+		ofNotifyEvent(endEvent, i, this);
 		bNotifyEnd = false;
 	}
 	if(bNeedsPreprocessBuffer){
