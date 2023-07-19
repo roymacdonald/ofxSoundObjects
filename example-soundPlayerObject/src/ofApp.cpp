@@ -97,10 +97,10 @@ void ofApp::setup(){
 	// set if you want to either have the player looping (playing over and over again) or not (stop once it reaches the its end).
 	player.setLoop(true);
 	
-	if(!player.getIsLooping()){
-		// if the player is not looping you can register  to the end event, which will get triggered when the player reaches the end of the file.
-		playerEndListener = player.endEvent.newListener(this, &ofApp::playerEnded);
-	}
+    // the endEvent gets triggered when it reaches the end of the file, regardless of it being
+    // in looping or not
+    playerEndListener = player.endEvent.newListener(this, &ofApp::playerEnded);
+
 }
 //--------------------------------------------------------------
 void ofApp::playerEnded(size_t & id){
