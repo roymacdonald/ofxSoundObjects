@@ -69,7 +69,8 @@ common:
 	# a specific platform
 	# ADDON_INCLUDES_EXCLUDE =
 	
-    	
+	ADDON_DEFINES = USING_OFX_SOUND_OBJECTS
+
 linux64:
 	ADDON_INCLUDES += ../ofxAudioFile/src
 	ADDON_INCLUDES += ../ofxAudioFile/libs
