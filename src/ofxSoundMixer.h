@@ -16,8 +16,9 @@ public:
 	/// returns the connected object at the specified index
 	ofxSoundObject* getConnectionSource(size_t connectionIndex);
 	/// get the number of connected objects.
-	OF_DEPRECATED_MSG("Use getNumConnections() instead", size_t getNumChannels() override;)
-	size_t getNumConnections();
+    OF_DEPRECATED_MSG("Use getNumConnections() instead", size_t getNumChannels() override);
+
+    size_t getNumConnections();
 	
 	
 	
