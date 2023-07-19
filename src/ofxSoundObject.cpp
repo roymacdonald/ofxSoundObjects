@@ -14,16 +14,16 @@
 //--------------------------------------------------------------
 ofxSoundObject::ofxSoundObject() {
 	ofLogWarning("ofxSoundObject::ofxSoundObject()", "the ofxSoundObjects' no args constructor should not be called. ");
-    ofAddListener(ofEvents().exit, this, &ofxSoundObject::onExit);
+//    ofAddListener(ofEvents().exit, this, &ofxSoundObject::onExit);
 }
 ofxSoundObject::ofxSoundObject(ofxSoundObjectsType t){
 	type = t;
     
-    ofAddListener(ofEvents().exit, this, &ofxSoundObject::onExit);
+//    ofAddListener(ofEvents().exit, this, &ofxSoundObject::onExit);
     
 }
 ofxSoundObject::~ofxSoundObject() {
-    ofRemoveListener(ofEvents().exit, this, &ofxSoundObject::onExit);
+//    ofRemoveListener(ofEvents().exit, this, &ofxSoundObject::onExit);
     disconnect();
 }
 //--------------------------------------------------------------
@@ -161,10 +161,10 @@ void ofxSoundObject::setName(const std::string& name){
 	objectName = name;
 }
 
-//--------------------------------------------------------------
-void ofxSoundObject::onExit(ofEventArgs&){
-    disconnect();
-}
+////--------------------------------------------------------------
+//void ofxSoundObject::onExit(ofEventArgs&){
+//    disconnect();
+//}
 
 
 //--------------------------------------------------------------

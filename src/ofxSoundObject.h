@@ -129,7 +129,7 @@ private:
 
     // listener to disconnect upon exit to avoid crash
 //    ofEventListener exitListener;
-    void onExit(ofEventArgs&);
+//    void onExit(ofEventArgs&);
 };
 
 //--------------------------------------------------------------
