@@ -23,7 +23,7 @@ public:
 	void disableMouse();
 	void reset();
     
-    ofEvent<void> onTransformBegin, onTransformEnd;
+    ofEvent<void> onTransformBegin, onTransformEnd, onTransformUpdate;
     
     ofCamera& getCamera() {return cam;}
     
@@ -31,7 +31,11 @@ public:
     
     void setCamNeedsUpdate();
     
+    size_t getId(){return uniqueId;}
+    
 private:
+    
+    size_t uniqueId;
     
     ofCamera cam;
     ofRectangle viewport;

@@ -11,6 +11,16 @@
 
 
 ofx2DCanvas::ofx2DCanvas(){
+    
+    {
+        static size_t uidCount = 0;
+        uniqueId = uidCount;
+        uidCount ++;
+        
+    }
+    
+//    cout << "ofx2DCanvas. " << uniqueId << "\n";
+    
     cam.enableOrtho();
     cam.setPosition(0, 0, -100);
     cam.setNearClip(-1000000);
@@ -194,6 +204,7 @@ void ofx2DCanvas::updateMouse(ofMouseEventArgs& m, bool bMouseScroll){
         applyConstraints();
 
 		prevMouse = m;
+        ofNotifyEvent(onTransformUpdate, this);
 	}
 }
 //--------------------------------------------------------------
