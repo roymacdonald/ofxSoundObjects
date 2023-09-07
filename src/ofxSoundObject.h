@@ -9,6 +9,8 @@
 // (while allowing backwards compatibility with previous versions of openFrameworks)
 #define OF_SOUND_OBJECT_AVAILABLE
 
+
+
 //--------------------------------------------------------------
 //  ofxSoundObject
 //--------------------------------------------------------------
@@ -23,6 +25,7 @@ class ofxSoundInputMultiplexer;
 class ofxSoundObject: public ofBaseSoundOutput {
 public:
 	ofxSoundObject();
+    ofxSoundObject(const ofxSoundObject& );
 	ofxSoundObject(ofxSoundObjectsType);
     virtual ~ofxSoundObject() ;
 
@@ -78,10 +81,9 @@ public:
 	
 	ofxSoundObjectsType getType(){return type;}
 	
-	
-	
 	void setOutputStream(ofSoundStream& stream);
 	void setOutputStream(ofSoundStream* stream);
+    
 	ofSoundStream* getOutputStream();
 
 	/// Returns the device ID that is connected to this output
@@ -94,8 +96,15 @@ public:
 	const std::string& getName();
 	void setName(const std::string& name);
 	
+    
+    bool isBypassed();
+    void setBypassed(bool bypassed);
+    
 protected:
 
+    std::atomic<bool> _bBypass;
+    
+    
 	// this is the previous dsp object in the chain
 	// that feeds this one with input.
 	ofxSoundObject *inputObject = nullptr;
@@ -126,10 +135,6 @@ private:
 //		OFX_SOUND_OBJECT_OFFLINE
 	} signalFlowMode;
 
-
-    // listener to disconnect upon exit to avoid crash
-//    ofEventListener exitListener;
-//    void onExit(ofEventArgs&);
 };
 
 //--------------------------------------------------------------

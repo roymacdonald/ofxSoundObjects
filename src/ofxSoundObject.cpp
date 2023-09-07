@@ -12,18 +12,30 @@
 //--------------------------------------------------------------
 //  ofxSoundObject
 //--------------------------------------------------------------
-ofxSoundObject::ofxSoundObject() {
-	ofLogWarning("ofxSoundObject::ofxSoundObject()", "the ofxSoundObjects' no args constructor should not be called. ");
-//    ofAddListener(ofEvents().exit, this, &ofxSoundObject::onExit);
+ofxSoundObject::ofxSoundObject(const ofxSoundObject& a): _bBypass(a._bBypass.load())
+{
+    inputObject = a.inputObject;
+    outputObjectRef = a.outputObjectRef;
+    
+    type = a.type;
+    chanMod = a.chanMod;
+    objectName = a.objectName;
+    outputStream = a.outputStream;
+    signalFlowMode = a.signalFlowMode;
+    workingBuffer = a.workingBuffer;
+    
 }
-ofxSoundObject::ofxSoundObject(ofxSoundObjectsType t){
+ofxSoundObject::ofxSoundObject()
+:_bBypass(false)
+{
+	ofLogWarning("ofxSoundObject::ofxSoundObject()", "the ofxSoundObjects' no args constructor should not be called. ");
+}
+ofxSoundObject::ofxSoundObject(ofxSoundObjectsType t)
+:_bBypass(false)
+{
 	type = t;
-    
-//    ofAddListener(ofEvents().exit, this, &ofxSoundObject::onExit);
-    
 }
 ofxSoundObject::~ofxSoundObject() {
-//    ofRemoveListener(ofEvents().exit, this, &ofxSoundObject::onExit);
     disconnect();
 }
 //--------------------------------------------------------------
@@ -85,7 +97,7 @@ ofxSoundObject* ofxSoundObject::getSignalSourceObject(){
 	}else{
 		return inputObject->getSignalSourceObject();
 	}
-	ofLogWarning("ofxSoundObject::getSignalSourceObject", "There is no source on your signal chain so most probaly you will get no sound " + this->getName());
+	//ofLogWarning("ofxSoundObject::getSignalSourceObject", "There is no source on your signal chain so most probaly you will get no sound " + this->getName());
 	return nullptr;
 }
 //--------------------------------------------------------------
@@ -97,7 +109,7 @@ ofxSoundObject* ofxSoundObject::getSignalDestinationObject(){
 	return outputObjectRef->getSignalDestinationObject();
 	
 	
-	ofLogWarning("ofxSoundObject::getSignalDestinationObject", "There is no destination on your signal chain so most probaly you will get no sound");
+	//ofLogWarning("ofxSoundObject::getSignalDestinationObject", "There is no destination on your signal chain so most probaly you will get no sound");
 	return nullptr;
 }
 //--------------------------------------------------------------
@@ -105,9 +117,15 @@ ofxSoundObject* ofxSoundObject::getSignalDestinationObject(){
 void ofxSoundObject::audioOut(ofSoundBuffer &output) {
     ofxSoundUtils::checkBuffers(output, workingBuffer);
 	if(inputObject!=nullptr) {
-		inputObject->audioOut(workingBuffer);
+        if(isBypassed()){
+            inputObject->audioOut(output);
+        }else{
+            inputObject->audioOut(workingBuffer);
+        }
 	}
-	this->process(workingBuffer, output);
+    if(!isBypassed()){
+        this->process(workingBuffer, output);
+    }
 }
 //--------------------------------------------------------------
 size_t ofxSoundObject::getNumChannels(){
@@ -161,11 +179,18 @@ void ofxSoundObject::setName(const std::string& name){
 	objectName = name;
 }
 
-////--------------------------------------------------------------
-//void ofxSoundObject::onExit(ofEventArgs&){
-//    disconnect();
-//}
-
+//--------------------------------------------------------------
+bool ofxSoundObject::isBypassed(){
+//#ifdef OFX_SOUND_OBJECT_USE_ATOMICS
+//    return _bBypass.load();
+//#else
+    return _bBypass;
+    
+}
+//--------------------------------------------------------------
+void ofxSoundObject::setBypassed(bool bypassed){
+    _bBypass = bypassed;
+}
 
 //--------------------------------------------------------------
 //  ofxSoundInput
