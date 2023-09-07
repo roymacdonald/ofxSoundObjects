@@ -13,14 +13,16 @@
 #include "ofxSoundObject.h"
 #include "ofxSoundUtils.h"
 #include "ofx2DCanvas.h"
+#include <atomic>
 
 template<typename BufferType>
 class waveformDraw_: public ofRectangle, public ofxSoundObject{
 public:
-	
+    
 	waveformDraw_();
+#ifndef OFX_SOUND_OBJECT_USE_ATOMICS
 	waveformDraw_(const waveformDraw_& a): ofRectangle(a), ofxSoundObject(a){}
-
+#endif
 	void setup(const ofRectangle& r);
     void setup(float x, float y, float w, float h);
     virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
@@ -35,13 +37,15 @@ public:
 	void setGridSpacingByNumSamples(size_t spacing);
 	
 	void setWaveColor(const ofColor& color);
-//	void setBackgroundColor(const ofColor& color);
+	void setBackgroundColor(const ofColor& color);
     void setGridColor(const ofColor& color);
 	void setMarginColor(const ofColor& color);
 
 	const ofColor&  getWaveColor();
-
-	const ofColor&  getMarginColor();
+    const ofColor&  getBackgroundColor();
+    const ofColor&  getGridColor();
+    const ofColor&  getMarginColor();
+    
     
     ofx2DCanvas& getCanvas(){return canvas;}
     
@@ -60,7 +64,13 @@ public:
     void begin();
     void end();
     
+
+
+    bool isDrawingWaveformDots();
+    void setDrawWaveformDots(bool bDrawDots);
+
 protected:
+
     void drawWave();
     void initFbo();
     void updateFbo();
@@ -86,13 +96,15 @@ protected:
 	vector<ofVboMesh>waveforms;
 	
 	ofVboMesh gridMesh;
+    ofVboMesh gridMeshPerSample;
+    ofVboMesh gridMeshEvery8;
 	
 	size_t gridSpacing = 0;
 
 	
 	bool bCanvasIsSetup = false;
 	
-	
+    std::atomic<bool> _bDrawWaveformDots;
 	std::atomic<bool> bRenderWaveforms;
 	std::atomic<bool> bMakeGrid;
 	mutable ofMutex mutex1;
@@ -101,8 +113,12 @@ protected:
 
 	ofColor  waveColor;
     ofFloatColor  gridColor = {(80.0f/255.0f)};
+    ofFloatColor  gridColorPerSample = {(110.0f/255.0f)};
+    ofFloatColor  gridColorEvery8 = {(140.0f/255.0f)};
 	ofColor  marginColor;
-
+    ofColor backgroundColor;
+    
+    float sampleDistance;
 };
 
 typedef waveformDraw_<ofSoundBuffer> waveformDraw;
@@ -111,11 +127,12 @@ typedef waveformDraw_<ofSoundBuffer> waveformDraw;
 
 class circularBufferWaveformDraw : public waveformDraw_<ofxCircularSoundBuffer>{
 public:
-	
+    void allocate(size_t numFrames, size_t numChannels);
 	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
 	
 	
     void setNumBuffers(size_t numBuffers);
+    size_t getNumBuffers();
 
 protected:
 	virtual void updateWaveformMesh() override;

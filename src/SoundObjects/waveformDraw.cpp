@@ -2,12 +2,17 @@
 #include "waveformDraw.h"
 //--------------------------------------------------------------
 template<typename BufferType>
-waveformDraw_<BufferType>::waveformDraw_():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
+waveformDraw_<BufferType>::waveformDraw_():
+ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR),
+//bBypass(false),
+_bDrawWaveformDots(false)
+
+{
 	setName("waveForm");
 	bRenderWaveforms = false;
 	bMakeGrid = false;
 	waveColor = ofColor::white;
-	
+    
 	marginColor = ofColor::red;
 }
 //--------------------------------------------------------------
@@ -27,7 +32,9 @@ void waveformDraw_<BufferType>::setup(float x, float y, float w, float h){
 //--------------------------------------------------------------
 template<typename BufferType>
 void waveformDraw_<BufferType>::process(ofSoundBuffer &input, ofSoundBuffer &output){
-	makeMeshFromBuffer(input);
+    
+    makeMeshFromBuffer(input);
+    
 	output = input;
 	
 }
@@ -85,7 +92,18 @@ void waveformDraw_<BufferType>::drawWave(){
     ofPushMatrix();
     
     ofScale(this->width, this->height);
-    if(gridSpacing > 0) gridMesh.draw();
+    if(gridSpacing > 0) {
+        gridMesh.draw();
+        
+        sampleDistance = (this->width  / ((float)buffer.getNumFrames() * canvas.getCamera().getScale().x));
+        
+        if(sampleDistance > 4.0f ){
+            gridMeshPerSample.draw();
+        }
+        if(sampleDistance > 4.0f/8 ){
+            gridMeshEvery8.draw();
+        }
+    }
     
     //Draw center line
     auto chans = getNumChannels();
@@ -98,6 +116,9 @@ void waveformDraw_<BufferType>::drawWave(){
     
     
     ofSetColor(waveColor);
+    if(_bDrawWaveformDots.load()){
+        glPointSize(3);
+    }
     for(auto& w: waveforms){
         w.draw();
     }
@@ -124,13 +145,14 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
 			bRenderWaveforms = true;
 		}
 	
-		makeGrid();
-	
+		
 		if(bRenderWaveforms){
 			makeWaveformMesh();
 			updateWaveformMesh();
 			bRenderWaveforms = false;
 		}
+    makeGrid();
+
 	if(!bCanvasIsSetup){
 		bCanvasIsSetup = true;
 		canvas.enableMouse();
@@ -219,7 +241,8 @@ void waveformDraw_<BufferType>::makeWaveformMesh(){
 			waveforms.resize(chans);
 			for (int i = 0; i < chans; i++) {
 				waveforms[i].clear();
-				waveforms[i].setMode(OF_PRIMITIVE_LINE_STRIP);
+				waveforms[i].setMode(_bDrawWaveformDots.load()? OF_PRIMITIVE_POINTS:OF_PRIMITIVE_LINE_STRIP);
+//                waveforms[i].setMode(OF_PRIMITIVE_LINE_STRIP);
 				waveforms[i].setUsage(GL_DYNAMIC_DRAW);				
 			}
 			float h = 1.0f / float(chans);
@@ -247,38 +270,65 @@ void waveformDraw_<BufferType>::setGridColor(const ofColor& color){
         gridMesh.getColors() = newColors;
     }
 }
+
+void makeGridLines(ofVboMesh & mesh, const vector<glm::vec3>& verts, size_t stride, const ofFloatColor& color){
+    
+    mesh.setMode(OF_PRIMITIVE_LINES);
+    mesh.setUsage(GL_STATIC_DRAW);
+    
+//    float xSpace = 1.0f / (float)(numLines);
+    for(int i = 0; i < verts.size(); i+=stride){
+        const auto& v = verts[i];
+        mesh.addVertex({v.x , 0, 0});
+        mesh.addVertex({v.x , 1, 0});
+        mesh.addColor(color);
+        mesh.addColor(color);
+    }
+    
+}
 //--------------------------------------------------------------
 template<typename BufferType>
 void waveformDraw_<BufferType>::makeGrid(){
 	if(bMakeGrid){
 		gridMesh.clear();
+            
 		if(gridSpacing > 0){
 			if (buffer.size() >0) {
+                
 				bMakeGrid = false;
 				gridMesh.setMode(OF_PRIMITIVE_TRIANGLES);
 				gridMesh.setUsage(GL_STATIC_DRAW);
 
-				float xSpace = (float) gridSpacing / (float)(buffer.getNumFrames());
-				ofRectangle r(0,0, xSpace, 1);
+//				float xSpace = (float) gridSpacing / (float)(buffer.getNumFrames());
+//				ofRectangle r(0,0, xSpace, 1);
 				
 				vector<ofFloatColor> colors(6, gridColor);
-				
+                if(waveforms.size()){
+                    const auto&  verts = waveforms[0].getVertices();
 				for(int i = 0; i < buffer.getNumFrames(); i+= (gridSpacing *2)){
-					
-					gridMesh.addVertex(r.getTopLeft());
-					gridMesh.addVertex(r.getTopRight());
-					gridMesh.addVertex(r.getBottomLeft());
+                    if(i + gridSpacing < verts.size()){
+                    const auto& v0 = verts[i];
+                    const auto& v1 = verts[i + gridSpacing];
+                    gridMesh.addVertex({v0.x, 0.0f, 0.0f});
+                    gridMesh.addVertex({v1.x, 0.0f, 0.0f});
+                    gridMesh.addVertex({v0.x, 1.0f, 0.0f});
 										
 					
-					gridMesh.addVertex(r.getTopRight());
-					gridMesh.addVertex(r.getBottomRight());
-					gridMesh.addVertex(r.getBottomLeft());
+                    gridMesh.addVertex({v1.x, 0.0f, 0.0f});
+                    gridMesh.addVertex({v1.x, 1.0f, 0.0f});
+                    gridMesh.addVertex({v0.x, 1.0f, 0.0f});
 					
 					gridMesh.addColors(colors);
-					
-					r.x+= (xSpace*2);
+                    }
+//					r.x+= (xSpace*2);
 				}
-				
+                }
+                if(waveforms.size()){
+                    const auto&  verts = waveforms[0].getVertices();
+                    makeGridLines(gridMeshPerSample, verts, 1, gridColorPerSample);
+                    makeGridLines(gridMeshEvery8, verts, 8, gridColorEvery8);
+                }
+                
 			}
 		}
 	}
@@ -289,10 +339,10 @@ void waveformDraw_<BufferType>::setWaveColor(const ofColor& color){
 	waveColor = color;
 }
 //--------------------------------------------------------------
-//template<typename BufferType>
-//void waveformDraw_<BufferType>::setBackgroundColor(const ofColor& color){
-//	backgroundColor = color;
-//}
+template<typename BufferType>
+void waveformDraw_<BufferType>::setBackgroundColor(const ofColor& color){
+	backgroundColor = color;
+}
 //--------------------------------------------------------------
 template<typename BufferType>
 void waveformDraw_<BufferType>::setMarginColor(const ofColor& color){
@@ -304,32 +354,64 @@ const ofColor&  waveformDraw_<BufferType>::getWaveColor(){
 	return waveColor;
 }
 //--------------------------------------------------------------
-//template<typename BufferType>
-//const ofColor&  waveformDraw_<BufferType>::getBackgroundColor(){
-//	return backgroundColor;
-//}
+template<typename BufferType>
+const ofColor&  waveformDraw_<BufferType>::getBackgroundColor(){
+	return backgroundColor;
+}
 //--------------------------------------------------------------
 template<typename BufferType>
 const ofColor&  waveformDraw_<BufferType>::getMarginColor(){
 	return marginColor;
 }
+
+//--------------------------------------------------------------
+template<typename BufferType>
+bool waveformDraw_<BufferType>::isDrawingWaveformDots(){
+    return _bDrawWaveformDots.load();
+}
+//--------------------------------------------------------------
+template<typename BufferType>
+void waveformDraw_<BufferType>::setDrawWaveformDots(bool bDrawDots){
+    if(_bDrawWaveformDots.load() != bDrawDots){
+        _bDrawWaveformDots = bDrawDots;
+
+        for (auto & w : waveforms) {
+            w.setMode(_bDrawWaveformDots.load()? OF_PRIMITIVE_POINTS:OF_PRIMITIVE_LINE_STRIP);
+        }
+
+    }
+}
+
 //--------------------------------------------------------------
 //--------------------------------------------------------------
+//--------------------------------------------------------------
+void circularBufferWaveformDraw::allocate(size_t numFrames, size_t numChannels){
+    buffer.allocate(numFrames, numChannels);
+}
+
 //--------------------------------------------------------------
 void circularBufferWaveformDraw::process(ofSoundBuffer &input, ofSoundBuffer &output){
-	{
-		std::lock_guard<std::mutex> lck(mutex1);
-		buffer.push(input);
-	}
-	bRenderWaveforms = true;
+	
+    std::lock_guard<std::mutex> lck(mutex1);
+    buffer.push(input);
+    bRenderWaveforms = true;
+	
 	output = input;
 }
+
 //--------------------------------------------------------------
 void circularBufferWaveformDraw::setNumBuffers(size_t numBuffers){
     buffer.setNumBuffersToStore(numBuffers);
 }
+
+//--------------------------------------------------------------
+size_t circularBufferWaveformDraw::getNumBuffers(){
+   return buffer.getNumBuffersToStore();
+}
+
 //--------------------------------------------------------------
 void circularBufferWaveformDraw::updateWaveformMesh() {
+  
 	auto chans = buffer.getNumChannels();
 //	cout <<"circularBufferWaveformDraw::updateWaveformMesh()\n" <<" chans " << chans<< "  waveforms.size(): "<< waveforms.size() << endl;
 	if(chans > 0 && waveforms.size()){
@@ -342,21 +424,48 @@ void circularBufferWaveformDraw::updateWaveformMesh() {
 		
 		float h = 1.0f / float(chans);
 
-        size_t bIndex = buffer.getPushIndex() / buffer.getNumChannels();
-        
+//        size_t bIndex = buffer.getNumFrames()-1;
+//        if(!bDrawUnindexed.load()){
+            size_t bIndex = buffer.getPushIndex() / buffer.getNumChannels();
+//        }
 		for (int j = 0; j < chans; j++) {
 			
 			auto & wv = waveforms[j].getVertices();
 
-			
-			for(size_t i=0; i< wv.size(); i++){
-				wv[i].y = ofMap(buffer[(bIndex * chans) + j], -1, 1, h*(j+1), h*j );
-				if(bIndex > 0){
-					-- bIndex ;
-				}else{
-					bIndex = buffer.getNumFrames()-1;
-				}
-			}
+            if(buffer.size() != (wv.size() * chans)){
+                ofLogWarning("buffer.size() != (waveforms[j].getNumVertices() * chans)) " ) << buffer.size()  << " != " << (wv.size() * chans);
+            }
+            
+//            auto lastIndex = wv.size() - 1;
+            
+//            if(!bDrawUnindexed.load()){
+//                bIndex = buffer.getPushIndex() / buffer.getNumChannels();
+                
+            size_t a  = wv.size() - 1;
+                for(size_t i = bIndex; i< wv.size(); i++){
+                    wv[a].y = ofMap(buffer[(i * chans) + j], -1, 1, h*(j+1), h*j );
+                    a --;
+                }
+//            if(a != (bIndex -1)){
+//                cout << "ouch!@\n";
+//            }
+                for(size_t i = 0; i< bIndex; i++){
+                    wv[a].y = ofMap(buffer[(i * chans) + j], -1, 1, h*(j+1), h*j );
+                    a--;
+                }
+//			for(size_t i=0; i< wv.size(); i++){
+//				wv[i].y = ofMap(buffer[(bIndex * chans) + j], -1, 1, h*(j+1), h*j );
+//				if(bIndex > 0){
+//					-- bIndex ;
+//				}else{
+//					bIndex = buffer.getNumFrames()-1;
+//				}
+//			}
+//            }else{
+//                for(size_t i=0; i< wv.size(); i++){
+//                    wv[lastIndex - i].y = ofMap(buffer[(i * chans) + j], -1, 1, h*(j+1), h*j );
+//                }
+//            }
 		}
 	}
 }
