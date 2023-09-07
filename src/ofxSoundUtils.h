@@ -11,7 +11,7 @@
 #include "ofSoundBaseTypes.h"
 #include "ofMath.h"
 #include "ofLog.h"
-
+#include <atomic>
 namespace ofxSoundUtils{
     void getBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer, ofSoundBuffer & targetBuffer, std::vector<int> group);
     void setBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer, ofSoundBuffer & targetBuffer, const std::vector<int>& group);
@@ -39,11 +39,19 @@ namespace ofxSoundUtils{
 
 class ofxCircularSoundBuffer: public ofSoundBuffer{
 public:
-	
+    ofxCircularSoundBuffer():ofSoundBuffer(),
+    bNeedsAllocation(false),
+    newAllocSize(0)
+    {
+        
+    }
+    
 	void push(ofSoundBuffer& buffer){
-        if(size() == 0 || getNumChannels() == 0 || getNumFrames() != buffer.getNumFrames() * numBuffers){
+        if(size() == 0 || getNumChannels() == 0 || bNeedsAllocation.load()){//} || getNumFrames() != buffer.getNumFrames() * numBuffers){
             allocate(buffer.getNumFrames() * numBuffers, buffer.getNumChannels());
             setSampleRate(buffer.getSampleRate());
+            bNeedsAllocation = false;
+            pushIndex %= getBuffer().size();
         }
 		if(getBuffer().size() > 0){
             
@@ -51,9 +59,12 @@ public:
             if(pushIndex + lastPushSize < getBuffer().size()){
                 memcpy(&getBuffer()[pushIndex], &buffer.getBuffer()[0], sizeof(float) * lastPushSize);
             }else{
+               
                 size_t n = getBuffer().size() - pushIndex;
                 memcpy(&getBuffer()[pushIndex], &buffer.getBuffer()[0], sizeof(float) * n);
-                memcpy(&getBuffer()[0], &buffer.getBuffer()[n], sizeof(float) * (lastPushSize - n));
+                if(lastPushSize - n > 0){
+                    memcpy(&getBuffer()[0], &buffer.getBuffer()[n], sizeof(float) * (lastPushSize - n));
+                }
             }
             pushIndex += lastPushSize;
 
@@ -68,7 +79,12 @@ public:
     size_t getLastPushSize() const {return lastPushSize;}
     
     /// get/set the number of buffers stored by the circular buffer. this is the amount of times push can be called before starting to overrite the oldest data
-    void setNumBuffersToStore(size_t n){numBuffers = n;}
+    void setNumBuffersToStore(size_t n){
+        if(numBuffers != n){
+            bNeedsAllocation = true;
+            numBuffers = n;
+        }
+    }
     size_t getNumBuffersToStore(){return numBuffers;}
     
     
@@ -110,6 +126,8 @@ public:
     
 	
 private:
+    std::atomic<bool> bNeedsAllocation;
+    std::atomic<size_t> newAllocSize;
     size_t numBuffers = 100;
     
     size_t lastPushSize = 0;
