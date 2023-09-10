@@ -134,6 +134,10 @@ public:
     void setNumBuffers(size_t numBuffers);
     size_t getNumBuffers();
 
+    
+    ///\brief Push a buffer into the cicularbuffer and render it.
+    void pushBuffer(ofSoundBuffer& buffer);
+    
 protected:
 	virtual void updateWaveformMesh() override;
 

@@ -390,12 +390,20 @@ void circularBufferWaveformDraw::allocate(size_t numFrames, size_t numChannels){
 }
 
 //--------------------------------------------------------------
+void circularBufferWaveformDraw::pushBuffer(ofSoundBuffer& _buffer){
+    std::lock_guard<std::mutex> lck(mutex1);
+    buffer.push(_buffer);
+    bRenderWaveforms = true;
+    
+}
+//--------------------------------------------------------------
 void circularBufferWaveformDraw::process(ofSoundBuffer &input, ofSoundBuffer &output){
 	
-    std::lock_guard<std::mutex> lck(mutex1);
-    buffer.push(input);
-    bRenderWaveforms = true;
-	
+//    std::lock_guard<std::mutex> lck(mutex1);
+//    buffer.push(input);
+//    bRenderWaveforms = true;
+//
+    pushBuffer(input);
 	output = input;
 }
 
