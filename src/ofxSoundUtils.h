@@ -40,38 +40,66 @@ namespace ofxSoundUtils{
 class ofxCircularSoundBuffer: public ofSoundBuffer{
 public:
     ofxCircularSoundBuffer():ofSoundBuffer(),
-    bNeedsAllocation(false),
-    newAllocSize(0)
+    bNeedsAllocation(false)
+//    newAllocSize(0)
     {
         
     }
     
-	void push(ofSoundBuffer& buffer){
+    void push(const float* src, const size_t& srcSizePerChannel, int numChannels, int sampleRate){
         if(size() == 0 || getNumChannels() == 0 || bNeedsAllocation.load()){//} || getNumFrames() != buffer.getNumFrames() * numBuffers){
-            allocate(buffer.getNumFrames() * numBuffers, buffer.getNumChannels());
-            setSampleRate(buffer.getSampleRate());
+            allocate(srcSizePerChannel* numBuffers, numChannels);
+            setSampleRate(sampleRate);
+            
             bNeedsAllocation = false;
             pushIndex %= getBuffer().size();
         }
-		if(getBuffer().size() > 0){
+        if(getBuffer().size() > 0){
             
-            lastPushSize = buffer.getBuffer().size();
+            lastPushSize = srcSizePerChannel * numChannels;
             if(pushIndex + lastPushSize < getBuffer().size()){
-                memcpy(&getBuffer()[pushIndex], &buffer.getBuffer()[0], sizeof(float) * lastPushSize);
+                memcpy(&getBuffer()[pushIndex], src, sizeof(float) * lastPushSize);
             }else{
-               
                 size_t n = getBuffer().size() - pushIndex;
-                memcpy(&getBuffer()[pushIndex], &buffer.getBuffer()[0], sizeof(float) * n);
+                memcpy(&getBuffer()[pushIndex], src, sizeof(float) * n);
                 if(lastPushSize - n > 0){
-                    memcpy(&getBuffer()[0], &buffer.getBuffer()[n], sizeof(float) * (lastPushSize - n));
+                    memcpy(&getBuffer()[0], src, sizeof(float) * (lastPushSize - n));
                 }
             }
             pushIndex += lastPushSize;
 
             pushIndex %= getBuffer().size();
-
-
-		}
+        }
+        
+    }
+    
+	void push(const ofSoundBuffer& buffer){
+        push(buffer.getBuffer().data(), buffer.getNumFrames(), buffer.getNumChannels(), buffer.getSampleRate());
+//        if(size() == 0 || getNumChannels() == 0 || bNeedsAllocation.load()){//} || getNumFrames() != buffer.getNumFrames() * numBuffers){
+//            allocate(buffer.getNumFrames() * numBuffers, buffer.getNumChannels());
+//            setSampleRate(buffer.getSampleRate());
+//            bNeedsAllocation = false;
+//            pushIndex %= getBuffer().size();
+//        }
+//		if(getBuffer().size() > 0){
+//            
+//            lastPushSize = buffer.getBuffer().size();
+//            if(pushIndex + lastPushSize < getBuffer().size()){
+//                memcpy(&getBuffer()[pushIndex], &buffer.getBuffer()[0], sizeof(float) * lastPushSize);
+//            }else{
+//               
+//                size_t n = getBuffer().size() - pushIndex;
+//                memcpy(&getBuffer()[pushIndex], &buffer.getBuffer()[0], sizeof(float) * n);
+//                if(lastPushSize - n > 0){
+//                    memcpy(&getBuffer()[0], &buffer.getBuffer()[n], sizeof(float) * (lastPushSize - n));
+//                }
+//            }
+//            pushIndex += lastPushSize;
+//
+//            pushIndex %= getBuffer().size();
+//
+//
+//		}
 	}
 	// returns the index at which the last push was done. This means, the index of the newest data.
     size_t getPushIndex() const {return pushIndex; }
@@ -127,7 +155,7 @@ public:
 	
 private:
     std::atomic<bool> bNeedsAllocation;
-    std::atomic<size_t> newAllocSize;
+//    std::atomic<size_t> newAllocSize;
     size_t numBuffers = 100;
     
     size_t lastPushSize = 0;

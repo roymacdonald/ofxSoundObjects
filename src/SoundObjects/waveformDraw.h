@@ -136,7 +136,8 @@ public:
 
     
     ///\brief Push a buffer into the cicularbuffer and render it.
-    void pushBuffer(ofSoundBuffer& buffer);
+    void pushBuffer(const ofSoundBuffer& buffer);
+    void pushBuffer(const float* src, const size_t& srcSizePerChannel, int numChannels, int sampleRate);
     
 protected:
 	virtual void updateWaveformMesh() override;

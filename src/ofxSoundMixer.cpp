@@ -151,12 +151,25 @@ void ofxSoundMixer::audioOut(ofSoundBuffer &output) {
 		tempBuffer.setNumChannels(output.getNumChannels());
 		tempBuffer.setSampleRate(output.getSampleRate());
 		
-        for(int i = 0; i < connections.size(); i++){
-            if (connections[i] != nullptr && connectionVolume[i] > 0) {
+        
+        float v;
+        //create a temporary vector to avoid threading issues.
+        vector<ofxSoundObject*> tempConnections ;
+        {
+            std::lock_guard<std::mutex> lck(connectionMutex);
+            tempConnections = connections;
+        }
+        
+        for(int i = 0; i < tempConnections.size(); i++){
+            {
+                std::lock_guard<std::mutex> lck(connectionMutex);
+                v = connectionVolume[i];
+            }
+            
+            if (tempConnections[i] != nullptr && v > 0) {
 				tempBuffer.set(0);
-                connections[i]->audioOut(tempBuffer);
-                
-                float v = connectionVolume[i];
+                tempConnections[i]->audioOut(tempBuffer);
+
                 for (int j = 0; j < tempBuffer.size(); j++) {
                     output.getBuffer()[j] += tempBuffer.getBuffer()[j] * v;
                 }

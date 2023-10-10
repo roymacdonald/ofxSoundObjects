@@ -58,7 +58,8 @@ void VUMeter::process(ofSoundBuffer &input, ofSoundBuffer &output){
 }
 //--------------------------------------------------------------
 void VUMeter::calculate(ofSoundBuffer &input){
-	
+    if(isBypassed())return;
+    
 	size_t nc = input.getNumChannels();
 	
 	processData.resize(nc);
