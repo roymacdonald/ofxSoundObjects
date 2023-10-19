@@ -40,6 +40,19 @@ public:
     OF_DEPRECATED_MSG("Dont use this. use isSlidersEnabled instead",
     bool isNonSliderMode());
     
+    
+    
+    
+    ///\brief enable drawing playheads when a sound player is connected.
+    void enablePlayheadsDraw();
+    ///\brief disable drawing playheads when a sound player is connected.
+    void disablePlayheadsDraw();
+    
+    ///\brief get If drawing playheads is enabled.
+    /// disabled by default
+    ///\return true if enabled false otherwise
+    bool isPlayheadsDrawEnabled();
+    
 	
 	void setMinChannelHeight(const float& minHeight);
 	
@@ -56,8 +69,12 @@ public:
 
 	void drawStatus(float x = 20, float y =20);
 	
+    
+    
+    
+    
 protected:
-
+    
 	ofRectangle leftR;
 	ofRectangle bottomR;
 	ofRectangle gridR;
@@ -91,6 +108,8 @@ private:
 	
 	float minHeight = 1;
 	
+    bool bDrawPlayheads = false;
+    
 	float vuWidth = 20;
 };
 

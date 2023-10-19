@@ -45,6 +45,21 @@ void ofxSoundMatrixMixerRenderer::setNonSliderMode(bool b){
 bool ofxSoundMatrixMixerRenderer::isNonSliderMode(){
 	return bNonSliderMode;
 }
+
+//----------------------------------------------------
+void ofxSoundMatrixMixerRenderer::enablePlayheadsDraw(){
+    bDrawPlayheads = true;
+}
+
+//----------------------------------------------------
+void ofxSoundMatrixMixerRenderer::disablePlayheadsDraw(){
+    bDrawPlayheads = false;
+}
+
+//----------------------------------------------------
+bool ofxSoundMatrixMixerRenderer::isPlayheadsDrawEnabled(){
+    return bDrawPlayheads;
+}
 //----------------------------------------------------
 void vecToString(std::stringstream & ss, std::vector<size_t>& vec){
 	
@@ -53,6 +68,7 @@ void vecToString(std::stringstream & ss, std::vector<size_t>& vec){
 	}
 	ss << std::endl;
 }
+//----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::setMinChannelHeight(const float& minHeight){
 	this->minHeight = minHeight;
 }
@@ -64,6 +80,7 @@ void ofxSoundMatrixMixerRenderer::buildPlayheads(){
 		if(numChansIn > 0 && numChansOut > 0){
 			
 			float cellHeight = gridR.height/ numChansIn;
+            cellHeight = std::max(minHeight, cellHeight);
 			
 			auto p0 = leftR.getTopLeft();
 			auto p1 = leftR.getTopRight();
@@ -98,12 +115,12 @@ void ofxSoundMatrixMixerRenderer::buildPlayheads(){
 				auto player = dynamic_cast<ofxBaseSoundPlayer*>(sgnlSrc);
 				
 				if(player){
-//					playheadsIndices[idx] = player;
-//					y -= playheadHeight;
-//					addRectToMesh(playheadMesh,{p0.x, y,
-//						ofMap(player->getPositionMS(), 0, player->getDurationMS(), 0, leftR.width - vuWidth),
-//						playheadHeight
-//					},ofColor(0),false);
+					playheadsIndices[idx] = player;
+					y -= playheadHeight;
+					addRectToMesh(playheadMesh,{p0.x, y,
+						ofMap(player->getPositionMS(), 0, player->getDurationMS(), 0, leftR.width - vuWidth),
+						playheadHeight
+					},ofColor(0),false);
 					if(!bDisableTextRendering)	txt = "Player: " + ofFilePath::getFileName(player->getFilePath());
 				}else if(sgnlSrc){
 					if(!bDisableTextRendering) txt = sgnlSrc->getName();
@@ -204,23 +221,25 @@ void ofxSoundMatrixMixerRenderer::buildMeshes(){
 //----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::updatePlayheads(){
 	
-//	auto & v = playheadMesh.getVertices();
-//
-//	float mn = leftR.getMinX();
-//	float mx = leftR.getMaxX() - vuWidth;
-//	for(auto& p: playheadsIndices){
-//		if(p.second){
-//			if(p.second->isPlaying()){
-//			auto i = p.first *4;
-//			if(i < v.size() -3){
-//
-//				float pos = ofMap(p.second->getPositionMS(), 0, p.second->getDurationMS(), mn, mx);
-//				v[i+1].x = pos;
-//				v[i+2].x = pos;
-//			}
-//			}
-//		}
-//	}
+    if(bDrawPlayheads){
+        auto & v = playheadMesh.getVertices();
+        
+        float mn = leftR.getMinX();
+        float mx = leftR.getMaxX() - vuWidth;
+        for(auto& p: playheadsIndices){
+            if(p.second){
+                if(p.second->isPlaying()){
+                    auto i = p.first *4;
+                    if(i < v.size() -3){
+                        
+                        float pos = ofMap(p.second->getPosition(), 0, 1, mn, mx);
+                        v[i+1].x = pos;
+                        v[i+2].x = pos;
+                    }
+                }
+            }
+        }
+    }
 }
 //----------------------------------------------------
 void ofxSoundMatrixMixerRenderer::drawStatus(float x, float y){
@@ -262,10 +281,11 @@ void ofxSoundMatrixMixerRenderer::draw(const ofRectangle& mixerRect){
 			bf.getTexture().unbind();
 		}
 		
-//		updatePlayheads();
-
-//		playheadMesh.draw();
-		
+        if(bDrawPlayheads){
+            updatePlayheads();
+            
+            playheadMesh.draw();
+        }
 		
 		for(size_t idx =0 ; idx < obj->inObjects.size(); idx++ ){
 			obj->inObjects[idx]->vuMeter.draw();
