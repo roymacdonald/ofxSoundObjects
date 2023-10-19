@@ -16,13 +16,30 @@
 class ofxSoundMatrixMixerRenderer: public ofxSoundObjectBaseRenderer<ofxSoundMatrixMixer>{
 public:
 	virtual void draw(const ofRectangle& mixerRect) override;
-	void enableSliders();
+    ///\brief enable sliders. These will get drawn and you will be able to adjust with your mouse.
+    void enableSliders();
+    ///\brief disable sliders. You will no longer be able to adjust these with your mouse, yet still able to draw them
 	void disableSliders();
+    ///\brief toggle between enabled and disabled sliders
 	void toggleSliders();
-	bool isSlidersEnabled();
 	
-	void setNonSliderMode(bool b);
-	bool isNonSliderMode();
+    ///\brief get sliders enabled state
+    ///\return true if enabled false otherwise.
+    bool isSlidersEnabled();
+	
+    
+    ///\brief set nonSliderMode.
+    ///\param b pass true to set into non slider mode, which will disable sliders.
+	
+    OF_DEPRECATED_MSG("Use enableSliders() or disableSliders().", void setNonSliderMode(bool b));
+    
+    
+    
+    ///\ getNonSliderMode status
+    ///\return bool, true if non slider mode enabled.
+    OF_DEPRECATED_MSG("Dont use this. use isSlidersEnabled instead",
+    bool isNonSliderMode());
+    
 	
 	void setMinChannelHeight(const float& minHeight);
 	
