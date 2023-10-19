@@ -30,7 +30,7 @@ void ofApp::setup(){
 #endif
 	//Here we also connect the audio input to the mixer
 	//
-	input.connectTo(mixer);
+
 	
 	auto inDevices = ofxSoundUtils::getInputSoundDevices();
 	auto outDevices = ofxSoundUtils::getOutputSoundDevices();
@@ -43,38 +43,46 @@ void ofApp::setup(){
 	inDeviceIndex = 0;
 	outDeviceIndex = 0;
 	
-
-	cout << "========================" << endl;
-	cout << ofxSoundUtils::getSoundDeviceString(inDevices[inDeviceIndex], true, true) << endl;
-	
-	cout << "========================" << endl;
+    bHasInputs = inDeviceIndex< inDevices.size();
+    if(bHasInputs){
+        cout << "========================" << endl;
+        cout << ofxSoundUtils::getSoundDeviceString(inDevices[inDeviceIndex], true, true) << endl;
+        cout << "========================" << endl;
+    }
 	
 	// Setup the sound stream.
 	ofSoundStreamSettings settings;
 	settings.bufferSize = 256;
 	settings.numBuffers = 1;
-	settings.numInputChannels =  inDevices[inDeviceIndex].inputChannels;
+	settings.numInputChannels = (bHasInputs? inDevices[inDeviceIndex].inputChannels : 0);
 	settings.numOutputChannels = outDevices[outDeviceIndex].outputChannels;
-	auto  sr = inDevices[inDeviceIndex].sampleRates;
-	if(sr.size()){
-		settings.sampleRate  =sr[0];
-	}
-	
-	
-	settings.setInDevice(inDevices[inDeviceIndex]);
+    
+    if(bHasInputs){
+        auto  sr = inDevices[inDeviceIndex].sampleRates;
+        if(sr.size()){
+            settings.sampleRate  =sr[0];
+        }
+        settings.setInDevice(inDevices[inDeviceIndex]);
+    }
+    
 	settings.setOutDevice(outDevices[outDeviceIndex]);
 	
 	
 	stream.setup(settings);
 	
-	input.setInputStream(stream);
+    if(bHasInputs){
+        input.setInputStream(stream);
+        
+        input.connectTo(mixer);
+    }
+    
+    
 	mixer.setOutputStream(stream);
 	
 
-	
-//		mixerRenderer.setObject(&mixer);
 	mixerRenderer.obj = &mixer;
 	mixerRenderer.enableSliders();
+    
 	mixerSettingsXmlPath = "mixerSettings.xml";
 	
 	
@@ -148,7 +156,7 @@ void ofApp::draw(){
 	ss << "Press l key to load mixer settings." << endl;
 	ss << "Press s key to save mixer settings." << endl;
 	ss << "Press e key to toggle slider's mouse interaction." << endl;
-	ss << "Press n key to toggle non-slider mode." << endl;
+	
 	ss << "Press up or down arrow keys to inc/dec selected connection"<< endl;
 	ss << "Press left or right arrow keys to inc/dec selected Channel";
 #ifdef OFX_SOUND_ENABLE_MULTITHREADING 
@@ -161,7 +169,7 @@ void ofApp::draw(){
 	
 	stringstream ss2;
 	ss2 << "Sliders enabled: " << (mixerRenderer.isSlidersEnabled()?"YES":"NO") << endl;
-	ss2 << "Non Slider Mode: " << (mixerRenderer.isNonSliderMode()?"YES":"NO");
+	
 	
 	
 	auto r2 = bf.getBoundingBox(ss2.str(), 0, 0);
@@ -244,8 +252,6 @@ void ofApp::keyReleased(int key){
 		mixer.load(mixerSettingsXmlPath);
 	}else if(key == 'e'){
 		mixerRenderer.toggleSliders();
-	}else if(key == 'n'){
-		mixerRenderer.setNonSliderMode(!mixerRenderer.isNonSliderMode());
 	}else if(key == ' '){
 		loadFolder(loadPath, false);
 	}else if(key == 'r'){

@@ -47,4 +47,6 @@ public:
 	int selectedConnection = 0;
 	int selectedChannel = 0;
 	
+    bool bHasInputs = false;
+    
 };
