@@ -41,14 +41,14 @@ bool ofxMultiSoundPlayer::loadAsync(std::filesystem::path filePath, bool bAutopl
 	setNumInstances(1);
 	
     bool ret =  instances[0]->loadAsync(filePath, bAutoplay);
-    ofLogVerbose("ofxMultiSoundPlayer::loadAsync" ) << filePath << " success: " << boolalpha << ret;
+    ofLogVerbose("ofxMultiSoundPlayer::loadAsync" ) << filePath << " success: " << std::boolalpha << ret;
     return ret;
 }
 //--------------------------------------------------------------
 bool ofxMultiSoundPlayer::load(std::filesystem::path filePath, bool _stream){
 	setNumInstances(1);
     bool ret = instances[0]->load(filePath, _stream);
-    ofLogVerbose("ofxMultiSoundPlayer::load" ) << filePath << " success: " << boolalpha << ret;
+    ofLogVerbose("ofxMultiSoundPlayer::load" ) << filePath << " success: " << std::boolalpha << ret;
     return ret;
 }
 //--------------------------------------------------------------
@@ -206,7 +206,7 @@ void ofxMultiSoundPlayer::setNumInstances(const size_t & num){
 	/// the instances will get automatically disconnected from the mixer upon their destruction.
 	instances.resize(num);
 	for(size_t i = prevSize; i < instances.size(); i++){
-		instances[i] = make_unique<ofxSingleSoundPlayer>();
+		instances[i] = std::make_unique<ofxSingleSoundPlayer>();
 		instances[i]->setId(i);
 		instances[i]->setLoop(bDefaultlLooping);
 		instances[i]->connectTo(_mixer);

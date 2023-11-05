@@ -191,8 +191,8 @@ private:
 
 	size_t id = 0;
 	
-	atomic<bool> bNeedsFade = {false};
-	atomic<bool> bFadeIn = {true};
+    std::atomic<bool> bNeedsFade = {false};
+    std::atomic<bool> bFadeIn = {true};
 	
 	enum State{
 		UNLOADED = 0,
@@ -219,11 +219,11 @@ private:
 
 	
 	
-	atomic<size_t> sourceSampleRate;
-	atomic<size_t> sourceNumFrames;
-	atomic<size_t> sourceNumChannels;
+    std::atomic<size_t> sourceSampleRate;
+    std::atomic<size_t> sourceNumFrames;
+    std::atomic<size_t> sourceNumChannels;
 	size_t sourceDuration;
-	atomic<size_t> outputSampleRate;
+    std::atomic<size_t> outputSampleRate;
 	
 	
 	std::atomic<bool> bIsPlaying;
@@ -235,14 +235,14 @@ private:
 	std::atomic<float> volumeLeft, volumeRight;
 	
 	void updateRelativeSpeed();
-	atomic<bool> bNeedsRelativeSpeedUpdate;
+    std::atomic<bool> bNeedsRelativeSpeedUpdate;
 	
 	void volumeChanged(float&);
 	
 	
-	unique_ptr<ofSoundBuffer> buffer = nullptr;
-	unique_ptr<ofSoundBuffer> preprocessedBuffer = nullptr;
-	shared_ptr<ofxSoundFile> soundFile = nullptr;
+    std::unique_ptr<ofSoundBuffer> buffer = nullptr;
+    std::unique_ptr<ofSoundBuffer> preprocessedBuffer = nullptr;
+    std::shared_ptr<ofxSoundFile> soundFile = nullptr;
 	
 	std::atomic<bool> bStreaming;
 	
@@ -272,7 +272,7 @@ private:
 	
 	size_t _id = 0;
 #ifdef USE_OFX_SAMPLE_RATE
-	unique_ptr<ofxSamplerate> sampleRateConverter = nullptr;
+	std::unique_ptr<ofxSamplerate> sampleRateConverter = nullptr;
 #endif
 };
 

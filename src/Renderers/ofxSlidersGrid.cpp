@@ -209,7 +209,7 @@ void ofxSlidersGrid::setGridSize(size_t _x, size_t _y){
 			parameters[y].clear();
 			parameters[y].resize(xSize);
 			for(size_t x = 0; x < parameters[y].size(); x++){
-				parameters[y][x] = make_unique<ofxSlidersGrid::GridParameter>();
+				parameters[y][x] = std::make_unique<ofxSlidersGrid::GridParameter>();
 			}
 		}
 		buildMeshes();

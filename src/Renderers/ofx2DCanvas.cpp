@@ -51,7 +51,7 @@ string ofx2DCanvas::getDebugInfo(){
     ss << "pressPos" << pressPos << "\n";
     ss << "cam pos: " << cam.getPosition() << "\n";
     ss << "cam scale: " << cam.getScale() << "\n";
-    ss << "bTranslate: " << boolalpha << bTranslate << "\n";
+    ss << "bTranslate: " << std::boolalpha << bTranslate << "\n";
     ss << "viewport: " << viewport << "\n";
     ss << "canvasConstraint: " << canvasConstraint << "\n";
     

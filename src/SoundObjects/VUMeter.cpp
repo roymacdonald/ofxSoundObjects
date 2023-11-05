@@ -245,41 +245,41 @@ float VUMeter::getPeakForChannel(size_t channel) const{
 }
 //--------------------------------------------------------------
 ofColor& VUMeter::getRmsColor(){
-	static std::unique_ptr<ofColor> i =  make_unique<ofColor>(150);
+	static std::unique_ptr<ofColor> i =  std::make_unique<ofColor>(150);
 	return *i;
 }
 //--------------------------------------------------------------
 ofColor& VUMeter::getPeakColor(){
-	static std::unique_ptr<ofColor> i =  make_unique<ofColor>(ofColor::yellow);
+	static std::unique_ptr<ofColor> i =  std::make_unique<ofColor>(ofColor::yellow);
 	return *i;
 }
 //--------------------------------------------------------------
 ofColor& VUMeter::getPeakHoldColor(){
-	static std::unique_ptr<ofColor> i =  make_unique<ofColor>(ofColor::white);
+	static std::unique_ptr<ofColor> i =  std::make_unique<ofColor>(ofColor::white);
 	return *i;
 }
 //--------------------------------------------------------------
 ofColor& VUMeter::getBorderColor(){
-	static std::unique_ptr<ofColor> i =  make_unique<ofColor>(70);
+	static std::unique_ptr<ofColor> i = std:: make_unique<ofColor>(70);
 	return *i;
 }
 //--------------------------------------------------------------
 ofColor& VUMeter::getClippingColor(){
-	static std::unique_ptr<ofColor> i =  make_unique<ofColor>(ofColor::red);
+	static std::unique_ptr<ofColor> i =  std::make_unique<ofColor>(ofColor::red);
 	return *i;
 }
 //--------------------------------------------------------------
 uint64_t& VUMeter::getPeakHoldTime(){
-	static std::unique_ptr<uint64_t> i =  make_unique<uint64_t>(5000);
+	static std::unique_ptr<uint64_t> i =  std::make_unique<uint64_t>(5000);
 	return *i;
 }
 //--------------------------------------------------------------
 uint64_t& VUMeter::getPeakReleaseTime(){
-	static std::unique_ptr<uint64_t> i =  make_unique<uint64_t>(1000);
+	static std::unique_ptr<uint64_t> i =  std::make_unique<uint64_t>(1000);
 	return *i;
 }
 //--------------------------------------------------------------
 bool& VUMeter::getForceRebuild(){
-	static std::unique_ptr<bool> i =  make_unique<bool>(false);
+	static std::unique_ptr<bool> i =  std::make_unique<bool>(false);
 	return *i;
 }

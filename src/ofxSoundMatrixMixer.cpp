@@ -100,7 +100,7 @@ ofxSoundMatrixMixer::ofxSoundMatrixMixer():ofxSoundObject(OFX_SOUND_OBJECT_PROCE
 ofParameter<bool>& ofxSoundMatrixMixer::getComputeRMSandPeak(){
 	static std::unique_ptr<ofParameter<bool>> i;
 	if(!i){
-		i = make_unique<ofParameter<bool>>();
+		i = std::make_unique<ofParameter<bool>>();
 		i->set("Compute RMS / Peak", true);
 	}
 	return *i;

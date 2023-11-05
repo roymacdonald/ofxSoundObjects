@@ -213,7 +213,7 @@ protected:
 	
 #endif
 
-	atomic<float> defaultOutputVol = {0.0f};
+    std::atomic<float> defaultOutputVol = {0.0f};
 	
 	
 private:

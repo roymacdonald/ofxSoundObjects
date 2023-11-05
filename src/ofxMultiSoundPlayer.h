@@ -101,7 +101,7 @@ public:
     
 private:
 	
-	vector<unique_ptr<ofxSingleSoundPlayer>> instances;
+	vector<std::unique_ptr<ofxSingleSoundPlayer>> instances;
 	
 	
 	

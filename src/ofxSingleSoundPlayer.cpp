@@ -17,9 +17,9 @@ ofSoundBuffer ofxSingleSoundPlayer::_dummyBuffer = ofSoundBuffer();
 ofxSoundFile ofxSingleSoundPlayer::_dummySoundFile = {};
 
 size_t makeUniqueId(){
-	static unique_ptr<size_t> count;
+	static std::unique_ptr<size_t> count;
 	if(!count){
-		count = make_unique<size_t>(0);
+		count = std::make_unique<size_t>(0);
 	}
 	(*count.get())++;
 	return *count.get();
@@ -329,7 +329,7 @@ void ofxSingleSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
 				else {
 #ifdef USE_OFX_SAMPLE_RATE
 					if(sampleRateConverter == nullptr){
-						sampleRateConverter = make_unique<ofxSamplerate>() ;
+						sampleRateConverter = std::make_unique<ofxSamplerate>() ;
 					}
 					auto resamplingResults = sampleRateConverter->changeSpeed(sourceBuffer, outputBuffer, relativeSpeed.load(), position,loop);
                     nFrames = resamplingResults.inputFramesUsed;
@@ -452,7 +452,7 @@ bool ofxSingleSoundPlayer::preprocessBuffer(){
 	bNeedsPreprocessBuffer = true;
 	if(isLoaded() && !bNeedsRelativeSpeedUpdate && outputSampleRate != 0 && sourceSampleRate != 0){
 		setState(RESAMPLING);
-		preprocessedBuffer = make_unique<ofSoundBuffer>();
+		preprocessedBuffer = std::make_unique<ofSoundBuffer>();
 		
 		if(buffer != nullptr){
 			(*preprocessedBuffer) = (*buffer);
@@ -678,7 +678,7 @@ void ofxSingleSoundPlayer::_makeSoundFile(){
 //--------------------------------------------------------------
 void ofxSingleSoundPlayer::_makeSoundBuffer(){
 	if(!buffer){
-		buffer = make_unique<ofSoundBuffer>();
+		buffer = std::make_unique<ofSoundBuffer>();
 	}
 }
 
@@ -699,12 +699,12 @@ std::string  ofxSingleSoundPlayer::getPlaybackInfo() const {
 	stringstream ss;
 	ss << "Position: " << getPosition() << endl;
 	ss << "PositionMS: " << getPositionMS() << endl;
-	ss << "Playing: " << boolalpha << isPlaying() << endl;
+	ss << "Playing: " << std::boolalpha << isPlaying() << endl;
 	ss << "Speed: " << getSpeed() << endl;
 	ss << "Rel. Speed: " << getRelativeSpeed() << endl;
 	ss << "Pan: " << getPan() << endl;
 	ss << "Volume: " << getVolume() << endl;
-	ss << "IsLooping: " << boolalpha << isLooping() << endl;
+	ss << "IsLooping: " << std::boolalpha << isLooping() << endl;
 	
 	return ss.str();
 	
