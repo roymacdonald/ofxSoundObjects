@@ -28,7 +28,7 @@ ofxSoundObject::ofxSoundObject(const ofxSoundObject& a): _bBypass(a._bBypass.loa
 ofxSoundObject::ofxSoundObject()
 :_bBypass(false)
 {
-	ofLogWarning("ofxSoundObject::ofxSoundObject()", "the ofxSoundObjects' no args constructor should not be called. ");
+	ofLogWarning("ofxSoundObject::ofxSoundObject()") << "the ofxSoundObjects' no args constructor should not be called. ";
 }
 ofxSoundObject::ofxSoundObject(ofxSoundObjectsType t)
 :_bBypass(false)

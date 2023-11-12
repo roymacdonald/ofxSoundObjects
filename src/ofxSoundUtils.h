@@ -50,9 +50,10 @@ public:
         if(size() == 0 || getNumChannels() == 0 || bNeedsAllocation.load()){//} || getNumFrames() != buffer.getNumFrames() * numBuffers){
             allocate(srcSizePerChannel* numBuffers, numChannels);
             setSampleRate(sampleRate);
-            
+            if(  getBuffer().size()){
             bNeedsAllocation = false;
             pushIndex %= getBuffer().size();
+            }
         }
         if(getBuffer().size() > 0){
             
