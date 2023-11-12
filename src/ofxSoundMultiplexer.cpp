@@ -31,6 +31,13 @@ ofxSoundObject& ofxSoundBaseMultiplexer::getOrCreateChannelGroup(const std::vect
 	channelsMap.emplace(group, ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR));
 	return channelsMap[group];
 }
+
+//--------------------------------------------------------------
+void ofxSoundBaseMultiplexer::clear(){
+    channelsMap.clear();
+    channelsSet.clear();
+}
+
 //--------------------------------------------------------------
 bool ofxSoundBaseMultiplexer::deleteChannelGroup(const std::vector<int>& group){
 	for(auto& g: group){

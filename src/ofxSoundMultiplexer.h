@@ -27,7 +27,10 @@ public:
     
     bool deleteChannelGroup(const std::vector<int>& group);
     bool deleteChannel(int chan);
-	
+    
+    ///\brief will clear all channels
+    void clear();
+    
     std::map < std::vector<int>, ofxSoundObject>& getChannelGroups();
     
     const std::map < std::vector<int>, ofxSoundObject>& getChannelGroups() const ;
