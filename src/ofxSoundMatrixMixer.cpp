@@ -15,7 +15,7 @@
 //--------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------
-bool ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
+bool ofxSoundMatrixMixer::MatrixInputObject::pullChannel(uint64_t tickCount, int deviceId){
 	bBufferProcessed = false;
 	if (obj != nullptr ) {
 		ofxSoundObject * source = obj->getSignalSourceObject();
@@ -27,6 +27,8 @@ bool ofxSoundMatrixMixer::MatrixInputObject::pullChannel(){
 			//This is done to make better use of resources
 			if((player && (player->isPlaying() || player->isReplaying())) || !player){
 				buffer.setSampleRate(sampleRate);
+                buffer.setTickCount(tickCount);
+                buffer.setDeviceID(deviceId);
 				buffer.allocate(this->numFramesToProcess, nc);
 				obj->audioOut(buffer);
 				bBufferProcessed = true;
@@ -458,7 +460,7 @@ void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 			mixChannelBufferIntoOutput(i, output);
 		}
 #else
-			if(inObjects[i] && inObjects[i]->pullChannel()){
+        if(inObjects[i] && inObjects[i]->pullChannel(output.getTickCount(), output.getDeviceID())){
 				mixChannelBufferIntoOutput(i, output);
 			}
 		}

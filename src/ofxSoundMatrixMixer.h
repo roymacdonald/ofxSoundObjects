@@ -122,7 +122,7 @@ protected:
 		bool bBufferProcessed = false;
 		
 		
-		bool pullChannel();
+		bool pullChannel(uint64_t tickCount, int deviceId);
 		
 		bool addIntoOutputChannel(const size_t& outputChannelIndex, ofSoundBuffer& output);
 		
