@@ -25,10 +25,14 @@ ofxSoundObject& ofxSoundBaseMultiplexer::getOrCreateChannelGroup(const std::vect
         ofLogNotice("ofxSoundInput::makeChannelGroup") << "channel group already present.";
         return it->second;
     }
+    std::stringstream groupName;
 	for(auto& g: group){
 		channelsSet.insert(g);
+        groupName << "_" << g;
 	}
 	channelsMap.emplace(group, ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR));
+    
+    channelsMap[group].setName(  groupName.str() );
 	return channelsMap[group];
 }
 
@@ -93,6 +97,10 @@ void ofxSoundOutputMultiplexer::audioOut(ofSoundBuffer &output){
         ofSoundBuffer temp;
         temp.allocate(output.getNumFrames(), m.first.size());
         temp.setSampleRate(output.getSampleRate());
+        
+        temp.setTickCount(output.getTickCount());
+        temp.setDeviceID(output.getDeviceID());
+
         m.second.audioOut(temp);
     }
     //muxing all groups
