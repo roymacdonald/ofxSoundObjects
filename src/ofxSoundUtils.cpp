@@ -23,21 +23,25 @@ void ofxSoundUtils::getBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer
 		ofLogWarning("ofxSoundBaseMultiplexer") << "no valid group indices";
 		return;
 	}
-	if (group.size() >= channels){
-		ofLogNotice("ofxSoundBaseMultiplexer") << "getChannels requested more channels than available ";
+	if (group.size() > channels){
+        ofLogNotice("ofxSoundBaseMultiplexer") << "getChannels requested more channels than available ";
 	}
 	
 	//	targetBuffer.setNumChannels(group.size());
 	targetBuffer.setSampleRate(sourceBuffer.getSampleRate());
+    targetBuffer.setTickCount(sourceBuffer.getTickCount());
+    targetBuffer.setDeviceID(sourceBuffer.getDeviceID());
+    
 	auto nFrames = sourceBuffer.getNumFrames();
 	//	if(channels == 1){
 	//		sourceBuffer.copyTo(targetBuffer, nFrames, 0, 0);
 	//	}else{
 	auto & buffer = sourceBuffer.getBuffer();
-	targetBuffer.allocate(nFrames, group.size());
-	for (std::size_t k = 0; k < group.size(); k++) {
+    auto gs = group.size();
+	targetBuffer.allocate(nFrames, gs);
+	for (std::size_t k = 0; k < gs; k++) {
 		for(std::size_t i = 0; i < nFrames; i++){
-			targetBuffer[k + i * group.size()] = buffer[group[k] + i * channels];
+			targetBuffer[k + i * gs] = buffer[group[k] + i * channels];
 		}
 	}
 	//	}
@@ -52,9 +56,10 @@ void ofxSoundUtils::setBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer
 	}
 	auto nFrames = targetBuffer.getNumFrames();
 	auto & buffer = targetBuffer.getBuffer();
+    auto nc = targetBuffer.getNumChannels();
 	for (std::size_t k = 0; k < group.size(); k++) {
 		for(std::size_t i = 0; i < nFrames; i++){
-			buffer[group[k]+ i * targetBuffer.getNumChannels()] = sourceBuffer[k + i * group.size()];
+			buffer[group[k]+ i * nc] = sourceBuffer[k + i * group.size()];
 		}
 	}
 }
