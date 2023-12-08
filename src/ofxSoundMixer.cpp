@@ -5,6 +5,7 @@
  */
 
 #include "ofxSoundMixer.h"
+#include "ofxSoundUtils.h"
 //----------------------------------------------------
 ofxSoundMixer::ofxSoundMixer():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
 	chanMod = OFX_SOUND_OBJECT_CHAN_MIXER;
@@ -147,10 +148,7 @@ void ofxSoundMixer::audioOut(ofSoundBuffer &output) {
     if(connections.size()>0) {
 		output.set(0);//clears the output buffer as its memory might come with junk
 		ofSoundBuffer tempBuffer;
-		tempBuffer.resize(output.size());
-		tempBuffer.setNumChannels(output.getNumChannels());
-		tempBuffer.setSampleRate(output.getSampleRate());
-		
+        ofxSoundUtils::checkBuffers(output, tempBuffer,true);
         
         float v;
         //create a temporary vector to avoid threading issues.
