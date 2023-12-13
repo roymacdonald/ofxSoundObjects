@@ -196,6 +196,7 @@ void ofxSoundObject::setBypassed(bool bypassed){
 //  ofxSoundInput
 //--------------------------------------------------------------
 ofxSoundInput::ofxSoundInput():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE) {
+    setName("Sound Input");
 }
 //--------------------------------------------------------------
 size_t ofxSoundInput::getNumChannels(){
@@ -246,6 +247,7 @@ ofSoundStream* ofxSoundInput::getInputStream(){
 //  ofxSoundOutput
 //--------------------------------------------------------------
 ofxSoundOutput::ofxSoundOutput():ofxSoundObject(OFX_SOUND_OBJECT_DESTINATION) {
+    setName("Sound Output");
 }
 
 //--------------------------------------------------------------
