@@ -84,14 +84,28 @@ void ofxSoundRecorderObject::threadedFunction(){
 #endif
 //--------------------------------------------------------------
 void ofxSoundRecorderObject::audioOut(ofSoundBuffer &output){
-    if(ofxSoundUtils::checkBuffers(output, getBuffer(), false))
+    ofxSoundObject* obj = getSignalSourceObject();
+    bool is_sound_input = false;
+    if(obj->getType() == OFX_SOUND_OBJECT_SOURCE)
     {
-        auto& buffer = getBuffer();
-        ofxSoundInput* obj = (ofxSoundInput*)getSignalSourceObject();
-        int buffer_size = obj->getInputStream()->getBufferSize() * obj->getInputStream()->getNumInputChannels();
-        buffer.resize(buffer_size);
-        buffer.setNumChannels(obj->getInputStream()->getNumInputChannels());
-        buffer.setSampleRate(obj->getInputStream()->getSampleRate());
+        if(obj->getName() == "Sound Input")
+        {
+            if(ofxSoundUtils::checkBuffers(output, getBuffer(), false))
+            {
+                is_sound_input = true;
+                auto& buffer = getBuffer();
+                ofxSoundInput* input = (ofxSoundInput*)obj;
+                ofSoundStream* ss  = input->getInputStream();
+                int buffer_size = ss->getBufferSize() * ss->getNumInputChannels();
+                buffer.resize(buffer_size);
+                buffer.setNumChannels(ss->getNumInputChannels());
+                buffer.setSampleRate(ss->getSampleRate());
+            }
+        }
+    }
+    if(!is_sound_input)
+    {
+        ofxSoundUtils::checkBuffers(output, getBuffer());
     }
     if(inputObject != NULL)
     {
