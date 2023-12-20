@@ -196,6 +196,7 @@ void ofxSoundObject::setBypassed(bool bypassed){
 //  ofxSoundInput
 //--------------------------------------------------------------
 ofxSoundInput::ofxSoundInput():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE) {
+    setName("Sound Input");
 }
 //--------------------------------------------------------------
 size_t ofxSoundInput::getNumChannels(){
@@ -208,12 +209,15 @@ size_t ofxSoundInput::getNumChannels(){
 //--------------------------------------------------------------
 // copy audio in to internal buffer
 void ofxSoundInput::audioIn(ofSoundBuffer &input) {
-    ofxSoundUtils::checkBuffers(input, inputBuffer);
-	input.copyTo(inputBuffer);
+//    ofxSoundUtils::checkBuffers(input, inputBuffer);
+//	input.copyTo(inputBuffer);
+    inputBuffer = input;
 }
 //--------------------------------------------------------------
 void ofxSoundInput::audioOut(ofSoundBuffer &output) {
-    ofxSoundUtils::checkBuffers(output, inputBuffer);
+//    ofxSoundUtils::checkBuffers(output, inputBuffer);
+    //the copyTo function will adapt the number of channels of inputBuffer into output's channel count.
+    //If inputBuffer has more channels than output, it will only copy the amount from output. If output has more channels than inputBuffer then chnnels will be duplicated/
 	inputBuffer.copyTo(output);
 }
 //--------------------------------------------------------------
@@ -246,6 +250,7 @@ ofSoundStream* ofxSoundInput::getInputStream(){
 //  ofxSoundOutput
 //--------------------------------------------------------------
 ofxSoundOutput::ofxSoundOutput():ofxSoundObject(OFX_SOUND_OBJECT_DESTINATION) {
+    setName("Sound Output");
 }
 
 //--------------------------------------------------------------
