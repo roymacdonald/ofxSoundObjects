@@ -145,6 +145,7 @@ float ofxSoundMixer::getConnectionVolume(size_t connectionIndex){
 //----------------------------------------------------
 // this pulls the audio through from earlier links in the chain and sums up the total output
 void ofxSoundMixer::audioOut(ofSoundBuffer &output) {
+    _tickCount = output.getTickCount();
     if(connections.size()>0) {
 		output.set(0);//clears the output buffer as its memory might come with junk
 		ofSoundBuffer tempBuffer;

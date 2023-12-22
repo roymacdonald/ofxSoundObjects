@@ -297,7 +297,7 @@ void ofxSingleSoundPlayer::checkBuffer(const ofSoundBuffer& outputBuffer){
 
 //--------------------------------------------------------------
 void ofxSingleSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
-		
+    _tickCount = outputBuffer.getTickCount();
 	if(isLoaded()) {
 		
 		checkReplay();

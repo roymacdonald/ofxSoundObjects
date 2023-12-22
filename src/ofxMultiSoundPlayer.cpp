@@ -131,6 +131,7 @@ void ofxMultiSoundPlayer::drawDebug(float x, float y){
 
 //--------------------------------------------------------------
 void ofxMultiSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
+    _tickCount = outputBuffer.getTickCount();
 	if(isLoaded() && bIsPlayingAny){
 		_mixer.audioOut(outputBuffer);
 	}else{

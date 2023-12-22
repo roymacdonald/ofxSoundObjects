@@ -115,6 +115,8 @@ ofxSoundObject* ofxSoundObject::getSignalDestinationObject(){
 //--------------------------------------------------------------
 // this pulls the audio through from earlier links in the chain
 void ofxSoundObject::audioOut(ofSoundBuffer &output) {
+    _tickCount = output.getTickCount();
+    printAudioOut();
     ofxSoundUtils::checkBuffers(output, workingBuffer);
 	if(inputObject!=nullptr) {
         if(isBypassed()){
@@ -215,6 +217,7 @@ void ofxSoundInput::audioIn(ofSoundBuffer &input) {
 }
 //--------------------------------------------------------------
 void ofxSoundInput::audioOut(ofSoundBuffer &output) {
+    _tickCount = output.getTickCount();
 //    ofxSoundUtils::checkBuffers(output, inputBuffer);
     //the copyTo function will adapt the number of channels of inputBuffer into output's channel count.
     //If inputBuffer has more channels than output, it will only copy the amount from output. If output has more channels than inputBuffer then chnnels will be duplicated/

@@ -438,7 +438,7 @@ void ofxSoundMatrixMixer::mixChannelBufferIntoOutput(const size_t& idx, ofSoundB
 //----------------------------------------------------
 void ofxSoundMatrixMixer::audioOut(ofSoundBuffer &output) {
 	updateNumOutputChannels(output.getNumChannels());
-	
+    _tickCount = output.getTickCount();
 	if(inObjects.size()>0) {
 		output.set(0);
 		size_t numFrames = output.getNumFrames();
