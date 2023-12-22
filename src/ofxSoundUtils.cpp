@@ -18,9 +18,16 @@ void ofxSoundUtils::getBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer
 		ofLogWarning("ofxSoundBaseMultiplexer") << "getChannels requested on empty buffer";
 		return;
 	}
+    std::stringstream ss;
+    for(auto&g: group){
+        ss << g << ", ";
+    }
+    
+    
 	ofRemove(group, [&](int & i){return i >= channels;});
 	if(group.size() == 0){
-		ofLogWarning("ofxSoundBaseMultiplexer") << "no valid group indices";
+        
+		ofLogWarning("ofxSoundBaseMultiplexer") << "no valid group indices " << channels << " group: " << ss.str();
 		return;
 	}
 	if (group.size() > channels){

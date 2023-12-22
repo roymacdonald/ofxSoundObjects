@@ -24,17 +24,20 @@ class ofxSoundInputMultiplexer;
 
 class ofxSoundObject: public ofBaseSoundOutput {
 public:
+    static bool bPrintAudioOut;
+    void printAudioOut();
+    
 	ofxSoundObject();
     ofxSoundObject(const ofxSoundObject& );
 	ofxSoundObject(ofxSoundObjectsType);
     virtual ~ofxSoundObject() ;
 
 	friend class ofxSoundInputMultiplexer; 
-	
+    friend class ofxSoundDemultiplexer;
 	
 	/// Connects the output of this ofxSoundObject to the input of the parameter ofxSoundObject
-	ofxSoundObject &connectTo(ofxSoundObject &soundObject);
-    void disconnect();
+	virtual ofxSoundObject &connectTo(ofxSoundObject &soundObject);
+    virtual void disconnect();
 	virtual void disconnectInput(ofxSoundObject * input);
 
 	/// This is the method you implement to process the signal from inputs to outputs.
