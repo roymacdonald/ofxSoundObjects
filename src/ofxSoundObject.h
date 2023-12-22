@@ -100,11 +100,13 @@ public:
     bool isBypassed();
     void setBypassed(bool bypassed);
     
+    uint64_t getTickCount(){return _tickCount.load();}
+    
 protected:
 
     std::atomic<bool> _bBypass;
     
-    
+    std::atomic<uint64_t> _tickCount;
 	// this is the previous dsp object in the chain
 	// that feeds this one with input.
 	ofxSoundObject *inputObject = nullptr;
