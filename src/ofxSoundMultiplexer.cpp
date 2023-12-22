@@ -32,7 +32,20 @@ ofxSoundObject& ofxSoundBaseMultiplexer::getOrCreateChannelGroup(const std::vect
 	}
 	channelsMap.emplace(group, ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR));
     
+    
+    
+    if(muxType == OFX_SOUND_OBJECT_CHAN_DEMUX){
+        this->setObjectsInput(channelsMap[group]);
+        groupName << "_DEMUX";
+    }else if(muxType == OFX_SOUND_OBJECT_CHAN_MUX){
+        this->connectToThis(channelsMap[group]);
+        groupName << "_MUX";
+    }else{
+        ofLogError("ofxSoundBaseMultiplexer::getOrCreateChannelGroup") << "muxType is set wrong!.";
+    }
+    
     channelsMap[group].setName(  groupName.str() );
+    
 	return channelsMap[group];
 }
 
@@ -61,18 +74,58 @@ std::map < std::vector<int>, ofxSoundObject>& ofxSoundBaseMultiplexer::getChanne
 const std::map < std::vector<int>, ofxSoundObject>& ofxSoundBaseMultiplexer::getChannelGroups() const {
     return channelsMap;
 }
+//--------------------------------------------------------------
+void ofxSoundBaseMultiplexer::pullAndMuxBuffer(ofSoundBuffer& buffer){
+    for(auto & m: channelsMap){
+        ofSoundBuffer temp;
+        temp.allocate(buffer.getNumFrames(), m.first.size());
+        temp.setSampleRate(buffer.getSampleRate());
+        
+        temp.setTickCount(buffer.getTickCount());
+        temp.setDeviceID(buffer.getDeviceID());
 
+        m.second.audioOut(temp);
+    }
+    //muxing all groups
+    for(auto & m: channelsMap){
+        ofxSoundUtils::setBufferFromChannelGroup(m.second.getBuffer(), buffer, m.first);
+    }
+}
+
+//--------------------------------------------------------------
+void ofxSoundBaseMultiplexer::demuxBuffer(ofSoundBuffer& buffer){
+    for(auto & m: channelsMap){
+        ofxSoundUtils::getBufferFromChannelGroup(buffer, m.second.getBuffer(), m.first);
+    }
+}
+
+
+//--------------------------------------------------------------
+//  ofxSoundDemultiplexer
+//--------------------------------------------------------------
+void ofxSoundDemultiplexer::audioOut(ofSoundBuffer &output) {
+    //this might get called several times by each connected object
+    _tickCount = output.getTickCount();
+    if(lastTick < output.getTickCount()){
+        lastTick = output.getTickCount();
+        if(workingBuffer.size() != output.getNumFrames() * getNumChannels() || workingBuffer.getNumChannels() != getNumChannels()){
+            workingBuffer.allocate(output.getNumFrames(), getNumChannels());
+        }
+        workingBuffer.setSampleRate(output.getSampleRate());
+        workingBuffer.setTickCount(output.getTickCount());
+        workingBuffer.setDeviceID(output.getDeviceID());
+        
+        ofxSoundObject::audioOut(workingBuffer);
+        demuxBuffer(workingBuffer);
+    }
+}
 //--------------------------------------------------------------
 //  ofxSoundInputMultiplexer
 //--------------------------------------------------------------
 
 void ofxSoundInputMultiplexer::audioIn(ofSoundBuffer &input) {
-    ofxSoundUtils::checkBuffers(input, inputBuffer);
-	input.copyTo(inputBuffer);
-    
-    for(auto & m: channelsMap){
-        ofxSoundUtils::getBufferFromChannelGroup(inputBuffer, m.second.getBuffer(), m.first);
-    }
+    inputBuffer = input;
+    demuxBuffer(inputBuffer);
 }
 //--------------------------------------------------------------
 ofxSoundObject & ofxSoundInputMultiplexer::connectChannelTo(int channel,ofxSoundObject &soundObject){
@@ -93,19 +146,9 @@ size_t ofxSoundOutputMultiplexer::getNumChannels(){
 void ofxSoundOutputMultiplexer::audioOut(ofSoundBuffer &output){
 	// this could be multithreaded as in the matrix mixer
     //pull the audio from each channel group
-    for(auto & m: channelsMap){
-        ofSoundBuffer temp;
-        temp.allocate(output.getNumFrames(), m.first.size());
-        temp.setSampleRate(output.getSampleRate());
-        
-        temp.setTickCount(output.getTickCount());
-        temp.setDeviceID(output.getDeviceID());
-
-        m.second.audioOut(temp);
-    }
-    //muxing all groups
-    for(auto & m: channelsMap){
-        ofxSoundUtils::setBufferFromChannelGroup(m.second.getBuffer(), output, m.first);
-    }
+//    printAudioOut();
+    
+    _tickCount = output.getTickCount();
+    pullAndMuxBuffer(output);
 }
 
