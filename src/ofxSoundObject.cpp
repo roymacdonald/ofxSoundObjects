@@ -9,6 +9,8 @@
 #include "ofSoundStream.h"
 #include "ofLog.h"
 #include "ofEvents.h"
+
+bool ofxSoundObject::bPrintAudioOut = false;
 //--------------------------------------------------------------
 //  ofxSoundObject
 //--------------------------------------------------------------
@@ -111,6 +113,11 @@ ofxSoundObject* ofxSoundObject::getSignalDestinationObject(){
 	
 	//ofLogWarning("ofxSoundObject::getSignalDestinationObject", "There is no destination on your signal chain so most probaly you will get no sound");
 	return nullptr;
+}
+void ofxSoundObject::printAudioOut(){
+    if(bPrintAudioOut){
+        std::cout << "ofxSoundObject::audioOut " << getName()  << "  <---- " << ((inputObject == nullptr)?"NULL":inputObject->getName()) << "\n";// << "  bypassed: " << std::boolalpha << isBypassed() << "\n";
+    }
 }
 //--------------------------------------------------------------
 // this pulls the audio through from earlier links in the chain
