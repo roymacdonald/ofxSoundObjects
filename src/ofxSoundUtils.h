@@ -36,7 +36,6 @@ namespace ofxSoundUtils{
 
 };
 //--------------------------------------------------------------
-
 class ofxCircularSoundBuffer: public ofSoundBuffer{
 public:
     ofxCircularSoundBuffer():ofSoundBuffer(),
@@ -76,31 +75,6 @@ public:
     
 	void push(const ofSoundBuffer& buffer){
         push(buffer.getBuffer().data(), buffer.getNumFrames(), buffer.getNumChannels(), buffer.getSampleRate());
-//        if(size() == 0 || getNumChannels() == 0 || bNeedsAllocation.load()){//} || getNumFrames() != buffer.getNumFrames() * numBuffers){
-//            allocate(buffer.getNumFrames() * numBuffers, buffer.getNumChannels());
-//            setSampleRate(buffer.getSampleRate());
-//            bNeedsAllocation = false;
-//            pushIndex %= getBuffer().size();
-//        }
-//		if(getBuffer().size() > 0){
-//            
-//            lastPushSize = buffer.getBuffer().size();
-//            if(pushIndex + lastPushSize < getBuffer().size()){
-//                memcpy(&getBuffer()[pushIndex], &buffer.getBuffer()[0], sizeof(float) * lastPushSize);
-//            }else{
-//               
-//                size_t n = getBuffer().size() - pushIndex;
-//                memcpy(&getBuffer()[pushIndex], &buffer.getBuffer()[0], sizeof(float) * n);
-//                if(lastPushSize - n > 0){
-//                    memcpy(&getBuffer()[0], &buffer.getBuffer()[n], sizeof(float) * (lastPushSize - n));
-//                }
-//            }
-//            pushIndex += lastPushSize;
-//
-//            pushIndex %= getBuffer().size();
-//
-//
-//		}
 	}
 	// returns the index at which the last push was done. This means, the index of the newest data.
     size_t getPushIndex() const {return pushIndex; }
@@ -117,10 +91,10 @@ public:
     size_t getNumBuffersToStore(){return numBuffers;}
     
     
-    // extract a part of the circular buffer into an ofSoundBuffer.
+    // extract part of a channel from the circular buffer into an ofSoundBuffer.
     void copyIntoBuffer( std::shared_ptr<ofSoundBuffer>& dest, size_t samplesToCopy, size_t channel, size_t startFrame, bool bAppend){
         if(!dest){
-            ofLogError("ofxWebRTC_VAD::copyFromCircularBuffer") << "Destination buffer is null";
+            ofLogError("ofxCircularSoundBuffer::copyIntoBuffer") << "Destination buffer is null";
             return;
         }
         
@@ -152,6 +126,43 @@ public:
             }
         }
     }
+    
+    /// copy part of the circularBuffer into an ofSoundBuffer
+    void copyIntoBuffer( ofSoundBuffer& dest, size_t startFrame){
+//        auto samplesToCopy = dest.size();
+        
+//        if(samplesToCopy > this->size()){
+//            ofLogWarning("ofxCircularSoundBuffer::copyIntoBuffer") << "samples to copy is larger than the circular buffersize. will only copy whole circular buffer";
+//            samplesToCopy = this->size();
+//        }
+        auto nc = this->getNumChannels();
+        if(nc != dest.getNumChannels()){
+            dest.allocate(dest.getNumFrames(), nc);
+        }
+        
+//        size_t startDestIndex = 0;
+//        if(dest.size() != samplesToCopy){
+//            dest.resize(samplesToCopy);
+//        }
+        
+//        auto nc = this->getNumChannels();
+        ///TODO: optimize this with a memcpy
+        size_t j = 0;
+        for(size_t i = startFrame * nc ; i < this->size() && j < dest.size(); i++){
+            dest.getBuffer()[j] = buffer[i];
+            j++;
+        }
+        
+        if(j < dest.size()){
+            for(size_t i = 0; i < this->size() && j < dest.size(); i++){
+                dest.getBuffer()[j] = buffer[i];
+                j++;
+            }
+        }
+    }
+    
+    
+    
     
 	
 private:
