@@ -142,6 +142,10 @@ public:
     void pushBuffer(const ofSoundBuffer& buffer);
     void pushBuffer(const float* src, const size_t& srcSizePerChannel, int numChannels, int sampleRate);
     
+    
+    ofxCircularSoundBuffer& getCircularBuffer(){return buffer;}
+    const ofxCircularSoundBuffer& getCircularBuffer() const {return buffer;}
+    
 protected:
 	virtual void updateWaveformMesh() override;
 
