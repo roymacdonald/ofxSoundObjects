@@ -11,33 +11,18 @@
 #include "ofxSoundObject.h"
 /**
  * This class represents a simple splitter which connects and sends the same audio buffer to many different objects connected to it.
+ * It is the opposite to an ofSoundMixer
  */
-class ofxSoundSplitter: public ofxSoundObject {
+class ofxSoundSpliter: public ofxSoundObject {
 public:
-    ofxSoundMixer();
-    virtual ~ofxSoundMixer();
+    ofxSoundSpliter();
+    virtual ~ofxSoundSpliter();
 
-    OF_DEPRECATED_MSG("Use getConnectionSource instead",ofxSoundObject* getChannelSource(int channelIndex));
-    
     /// returns the connected object at the specified index
     ofxSoundObject* getConnectionSource(size_t connectionIndex);
+
     /// get the number of connected objects.
-    OF_DEPRECATED_MSG("Use getNumConnections() instead", size_t getNumChannels() override);
-
     size_t getNumConnections();
-    
-    
-    
-    /// sets output volume multiplier.
-    /// a volume of 1 means "full volume", 0 is muted.
-    void  setMasterVolume(float vol);
-    float getMasterVolume();
-
-    /// sets output stereo panning.
-    /// 0.5 is center panned, 0 is full left and 1 is full right.
-    /// panning is disabled for non-stereo sound.
-    void  setMasterPan(float pan);
-    float getMasterPan();
 
     void audioOut(ofSoundBuffer &output) override;
     bool isConnectedTo(ofxSoundObject& obj);
@@ -48,22 +33,21 @@ public:
     ///\returns true if there is a connection for the passed object, false otherwise.
     bool getObjectConnectionIndex(ofxSoundObject& obj, size_t& index);
 
-    OF_DEPRECATED_MSG("Use setConnectionVolume", void  setChannelVolume(int channelNumber, float vol));
-    OF_DEPRECATED_MSG("Use getConnectionVolume", float getChannelVolume(int channelNumber));
+    virtual ofxSoundObject &connectTo(ofxSoundObject &soundObject) override;
+    virtual void disconnect() override;
+    bool disconnectOutput(ofxSoundObject &soundObject);
     
-    void  setConnectionVolume(size_t connectionIndex, float vol);
-    float getConnectionVolume(size_t connectionIndex);
-    
-    ofParameter<float> masterVol;
 protected:
-    void masterVolChanged(float& f);
-    void disconnectInput(ofxSoundObject * input) override;
+
+    /// This is the method you implement to process the signal from inputs to outputs.
+    
+
+    /// this pulls the audio through from earlier links in the chain.
+    /// you can override this to add more interesting functionality
+    /// like signal splitters, sidechains etc.
+    
     vector<ofxSoundObject*> connections;
-    vector<float> connectionVolume;
-    float masterPan;
-    float masterVolume;
-    void setInput(ofxSoundObject *obj) override;
-    ofMutex mutex, connectionMutex;
+    std::mutex connectionMutex;
     
 };
 

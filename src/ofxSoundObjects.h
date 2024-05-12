@@ -8,3 +8,4 @@
 #include "ofxSoundUtils.h"
 #include "ofxSoundMultiplexer.h"
 #include "ofxSoundRecorderObject.h"
+#include "ofxSoundSpliter.h"
