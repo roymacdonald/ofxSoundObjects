@@ -69,6 +69,9 @@ public:
     bool isDrawingWaveformDots();
     void setDrawWaveformDots(bool bDrawDots);
 
+    ofFbo& getFbo() {return fbo;}
+    const ofFbo& getFbo() const {return fbo;}
+    
 protected:
 
     void drawWave();
