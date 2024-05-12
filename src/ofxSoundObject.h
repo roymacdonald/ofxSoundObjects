@@ -21,7 +21,7 @@
  */
 class ofSoundBuffer;
 class ofxSoundInputMultiplexer;
-
+class ofxSoundSpliter;
 class ofxSoundObject: public ofBaseSoundOutput {
 public:
     static bool bPrintAudioOut;
@@ -34,6 +34,7 @@ public:
 
 	friend class ofxSoundInputMultiplexer; 
     friend class ofxSoundDemultiplexer;
+    friend class ofxSoundSpliter;
 	
 	/// Connects the output of this ofxSoundObject to the input of the parameter ofxSoundObject
 	virtual ofxSoundObject &connectTo(ofxSoundObject &soundObject);
