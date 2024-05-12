@@ -150,6 +150,7 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
 			makeWaveformMesh();
 			updateWaveformMesh();
 			bRenderWaveforms = false;
+            if(bUseFbo) bUpdateFbo = true;
 		}
     makeGrid();
 
