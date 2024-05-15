@@ -143,15 +143,15 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
 	if(!viewport.isZero() && viewport != (ofRectangle)*this){
 			this->set(viewport);
 			bRenderWaveforms = true;
-		}
+    }
 	
 		
-		if(bRenderWaveforms){
-			makeWaveformMesh();
-			updateWaveformMesh();
-			bRenderWaveforms = false;
-            if(bUseFbo) bUpdateFbo = true;
-		}
+    if(bRenderWaveforms){
+        makeWaveformMesh();
+        updateWaveformMesh();
+        bRenderWaveforms = false;
+        if(bUseFbo) bUpdateFbo = true;
+    }
     makeGrid();
 
 	if(!bCanvasIsSetup){
@@ -426,6 +426,15 @@ void circularBufferWaveformDraw::setNumBuffers(size_t numBuffers){
 //--------------------------------------------------------------
 size_t circularBufferWaveformDraw::getNumBuffers(){
    return buffer.getNumBuffersToStore();
+}
+
+//--------------------------------------------------------------
+size_t circularBufferWaveformDraw::getBufferLengthInMs(){
+    return buffer.getBufferLengthInMs();
+}
+//--------------------------------------------------------------
+void circularBufferWaveformDraw::setBufferLengthInMs(size_t lengthMs){
+    buffer.setBufferLengthInMs(lengthMs);
 }
 
 //--------------------------------------------------------------

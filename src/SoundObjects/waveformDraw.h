@@ -137,7 +137,9 @@ public:
     void setNumBuffers(size_t numBuffers);
     size_t getNumBuffers();
 
-    
+    size_t getBufferLengthInMs();
+    void setBufferLengthInMs(size_t lengthMs);
+        
     ///\brief Push a buffer into the cicularbuffer and render it.
     void pushBuffer(const ofSoundBuffer& buffer);
     void pushBuffer(const float* src, const size_t& srcSizePerChannel, int numChannels, int sampleRate);

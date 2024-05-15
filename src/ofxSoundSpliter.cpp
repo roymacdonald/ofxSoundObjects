@@ -79,7 +79,14 @@ bool ofxSoundSpliter::getObjectConnectionIndex(ofxSoundObject& obj, size_t& inde
 bool ofxSoundSpliter::disconnectOutput(ofxSoundObject &soundObject){
     if(isConnectedTo(soundObject)){
         std::lock_guard<std::mutex> lck(connectionMutex);
-        ofRemove(connections, [&](ofxSoundObject * o){ return o == &soundObject; });
+//        ofRemove(connections, [&](ofxSoundObject * o){ return o == &soundObject; });
+        
+        for (size_t i =0; i<connections.size(); i++) {
+            if (&soundObject == connections[i]) {
+                connections.erase(connections.begin() + i);
+                return true;
+            }
+        }
     }
     return false;
 }

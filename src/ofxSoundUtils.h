@@ -47,7 +47,25 @@ public:
     
     void push(const float* src, const size_t& srcSizePerChannel, int numChannels, int sampleRate){
         if(size() == 0 || getNumChannels() == 0 || bNeedsAllocation.load()){//} || getNumFrames() != buffer.getNumFrames() * numBuffers){
-            allocate(srcSizePerChannel* numBuffers, numChannels);
+//            if(bufferLengthInMs != 0){
+            if(!bSetNumBuffers && bufferLengthInMs == 0){
+                numBuffers = 100;
+                bSetNumBuffers = true;
+            }
+            if(bSetNumBuffers){
+                bufferLengthInMs = (srcSizePerChannel *numBuffers)/(sampleRate/1000);
+                bSetNumBuffers = false;
+            }
+            
+                size_t allocSize = (sampleRate/1000)* bufferLengthInMs;
+                allocate(allocSize, numChannels);
+                numBuffers = allocSize/srcSizePerChannel;
+                
+//            }else{
+//                if(numBuffers == 0) numBuffers = 100;
+//                size_t allocSize = srcSizePerChannel* numBuffers;
+//                allocate(allocSize, numChannels);
+//            }
             setSampleRate(sampleRate);
             if(  getBuffer().size()){
             bNeedsAllocation = false;
@@ -85,10 +103,23 @@ public:
     void setNumBuffersToStore(size_t n){
         if(numBuffers != n){
             bNeedsAllocation = true;
+            bSetNumBuffers = true;
             numBuffers = n;
         }
     }
-    size_t getNumBuffersToStore(){return numBuffers;}
+    
+    size_t getNumBuffersToStore(){
+        return numBuffers;
+    }
+    
+    size_t getBufferLengthInMs(){return bufferLengthInMs; }
+    void setBufferLengthInMs(size_t lengthMs){
+        if(bufferLengthInMs != lengthMs){
+            bNeedsAllocation = true;
+            bSetNumBuffers = false;
+            bufferLengthInMs = lengthMs;
+        }
+    }
     
     
     // extract part of a channel from the circular buffer into an ofSoundBuffer.
@@ -167,8 +198,10 @@ public:
 	
 private:
     std::atomic<bool> bNeedsAllocation;
+    bool bSetNumBuffers = false;
 //    std::atomic<size_t> newAllocSize;
-    size_t numBuffers = 100;
+    size_t numBuffers = 0;
+    size_t bufferLengthInMs = 0;
     
     size_t lastPushSize = 0;
     
