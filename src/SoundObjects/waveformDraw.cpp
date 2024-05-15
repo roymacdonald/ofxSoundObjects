@@ -138,6 +138,16 @@ void waveformDraw_<BufferType>::end(){
 
 //--------------------------------------------------------------
 template<typename BufferType>
+void waveformDraw_<BufferType>::renderWaveforms(){
+    if(bRenderWaveforms){
+        makeWaveformMesh();
+        updateWaveformMesh();
+        bRenderWaveforms = false;
+        if(bUseFbo) bUpdateFbo = true;
+    }
+}
+//--------------------------------------------------------------
+template<typename BufferType>
 void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
 
 	if(!viewport.isZero() && viewport != (ofRectangle)*this){
@@ -146,12 +156,7 @@ void waveformDraw_<BufferType>::draw(const ofRectangle& viewport){
     }
 	
 		
-    if(bRenderWaveforms){
-        makeWaveformMesh();
-        updateWaveformMesh();
-        bRenderWaveforms = false;
-        if(bUseFbo) bUpdateFbo = true;
-    }
+    renderWaveforms();
     makeGrid();
 
 	if(!bCanvasIsSetup){

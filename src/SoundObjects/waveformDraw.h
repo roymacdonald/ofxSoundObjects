@@ -72,6 +72,15 @@ public:
     ofFbo& getFbo() {return fbo;}
     const ofFbo& getFbo() const {return fbo;}
     
+    
+    //if you dont want to draw in the default way you can get the waveform's meshes and draw how ever you like.
+    // this meshes are normalized. the whole mesh has a height and width of 1.
+    // you need to call renderWaveforms() before trying to call this function
+    const vector<ofVboMesh>& getWaveformMeshes(){return waveforms;};
+    
+    //Render only the waveforms without any extra stuff
+    void renderWaveforms();
+    
 protected:
 
     void drawWave();
