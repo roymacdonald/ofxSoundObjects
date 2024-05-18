@@ -34,6 +34,13 @@ namespace ofxSoundUtils{
 	
 	void fadeBuffer(ofSoundBuffer& buffer, bool bFadeOut);
 
+    static size_t millisToSamples(float millis, float sampleRate){
+        return (millis*sampleRate/1000.0);
+    }
+
+    static float samplesToMillis(size_t samples, float sampleRate){
+        return (samples*1000.0/sampleRate);
+    }
 };
 //--------------------------------------------------------------
 class ofxCircularSoundBuffer: public ofSoundBuffer{
