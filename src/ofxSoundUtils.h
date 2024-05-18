@@ -53,11 +53,11 @@ public:
                 bSetNumBuffers = true;
             }
             if(bSetNumBuffers){
-                bufferLengthInMs = (srcSizePerChannel *numBuffers)/(sampleRate/1000);
+                bufferLengthInMs = (srcSizePerChannel *numBuffers)/(sampleRate/1000.0f);
                 bSetNumBuffers = false;
             }
             
-                size_t allocSize = (sampleRate/1000)* bufferLengthInMs;
+                size_t allocSize = (sampleRate/1000.0f)* bufferLengthInMs;
                 allocate(allocSize, numChannels);
                 numBuffers = allocSize/srcSizePerChannel;
                 
@@ -75,13 +75,13 @@ public:
         if(getBuffer().size() > 0){
             
             lastPushSize = srcSizePerChannel * numChannels;
-            if(pushIndex + lastPushSize < getBuffer().size()){
+            if(pushIndex + lastPushSize <= getBuffer().size()){
                 memcpy(&getBuffer()[pushIndex], src, sizeof(float) * lastPushSize);
             }else{
                 size_t n = getBuffer().size() - pushIndex;
                 memcpy(&getBuffer()[pushIndex], src, sizeof(float) * n);
                 if(lastPushSize - n > 0){
-                    memcpy(&getBuffer()[0], src, sizeof(float) * (lastPushSize - n));
+                    memcpy(&getBuffer()[0], &(src[n]), sizeof(float) * (lastPushSize - n));
                 }
             }
             pushIndex += lastPushSize;
