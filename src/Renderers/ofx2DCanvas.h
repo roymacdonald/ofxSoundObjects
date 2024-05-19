@@ -9,6 +9,23 @@
 #pragma once
 #include "ofMain.h"
 
+class ofx2DCanvas;
+
+class ofx2DCanvasTransformSync{
+public:
+    ofx2DCanvasTransformSync(ofx2DCanvas* _owner, ofx2DCanvas* _other );
+    
+    void onTransformUpdate();
+
+    
+    
+    ofEventListeners listeners;
+    
+    ofx2DCanvas* owner = nullptr;
+    ofx2DCanvas* other = nullptr;
+    
+};
+
 
 class ofx2DCanvas{
 public:

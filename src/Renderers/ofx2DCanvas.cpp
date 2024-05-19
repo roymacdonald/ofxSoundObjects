@@ -10,6 +10,23 @@
 #include "glm/mat4x4.hpp"
 
 
+ofx2DCanvasTransformSync::ofx2DCanvasTransformSync(ofx2DCanvas* _owner , ofx2DCanvas* _other ):owner(_owner), other(_other)
+{
+    if(owner && other && owner != other){
+        listeners.push(owner->onTransformBegin.newListener(this, &ofx2DCanvasTransformSync::onTransformUpdate) );
+        listeners.push(owner->onTransformUpdate.newListener(this, &ofx2DCanvasTransformSync::onTransformUpdate) );
+    }
+}
+
+void ofx2DCanvasTransformSync::onTransformUpdate(){
+            auto & oc = owner->getCamera();
+            auto & c = other->getCamera();
+            c.setPosition(oc.getPosition());
+            c.setScale(oc.getScale());
+
+}
+
+
 ofx2DCanvas::ofx2DCanvas(){
     
     {
