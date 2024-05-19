@@ -446,66 +446,45 @@ void circularBufferWaveformDraw::setBufferLengthInMs(size_t lengthMs){
 
 //--------------------------------------------------------------
 void circularBufferWaveformDraw::updateWaveformMesh() {
-  
-	auto chans = buffer.getNumChannels();
-//	cout <<"circularBufferWaveformDraw::updateWaveformMesh()\n" <<" chans " << chans<< "  waveforms.size(): "<< waveforms.size() << endl;
-	if(chans > 0 && waveforms.size()){
-	
-		
-		if(waveforms[0].getNumVertices() != buffer.getNumFrames()) {
-			cout << "waveformDraw<CircularSoundBuffer>::updateWaveformMesh : waveform num vertices != buffer numFrames" << endl;
-			return;
-		}
-		
-		float h = 1.0f / float(chans);
-
-//        size_t bIndex = buffer.getNumFrames()-1;
-//        if(!bDrawUnindexed.load()){
-            size_t bIndex = buffer.getPushIndex() / buffer.getNumChannels();
-//        }
-		for (int j = 0; j < chans; j++) {
-			
-			auto & wv = waveforms[j].getVertices();
-
+    
+    auto chans = buffer.getNumChannels();
+    if(chans > 0 && waveforms.size()){
+        
+        
+        if(waveforms[0].getNumVertices() != buffer.getNumFrames()) {
+            cout << "waveformDraw<CircularSoundBuffer>::updateWaveformMesh : waveform num vertices != buffer numFrames" << endl;
+            return;
+        }
+        
+        float h = 1.0f / float(chans);
+        
+        
+        size_t bIndex = buffer.getPushIndex() / buffer.getNumChannels();
+        
+        for (int j = 0; j < chans; j++) {
+            
+            auto & wv = waveforms[j].getVertices();
+            
             if(buffer.size() != (wv.size() * chans)){
                 ofLogWarning("buffer.size() != (waveforms[j].getNumVertices() * chans)) " ) << buffer.size()  << " != " << (wv.size() * chans);
             }
             
-//            auto lastIndex = wv.size() - 1;
-            
-//            if(!bDrawUnindexed.load()){
-//                bIndex = buffer.getPushIndex() / buffer.getNumChannels();
-                
-            size_t a  = wv.size() - 1;
+            if(wv.size()){
+                size_t a  = wv.size() - 1;
                 for(size_t i = bIndex; i< wv.size(); i++){
                     wv[a].y = ofMap(buffer[(i * chans) + j], -1, 1, h*(j+1), h*j );
                     a --;
                 }
-//            if(a != (bIndex -1)){
-//                cout << "ouch!@\n";
-//            }
+                
                 for(size_t i = 0; i< bIndex; i++){
                     wv[a].y = ofMap(buffer[(i * chans) + j], -1, 1, h*(j+1), h*j );
                     a--;
                 }
-//			for(size_t i=0; i< wv.size(); i++){
-//				wv[i].y = ofMap(buffer[(bIndex * chans) + j], -1, 1, h*(j+1), h*j );
-//				if(bIndex > 0){
-//					-- bIndex ;
-//				}else{
-//					bIndex = buffer.getNumFrames()-1;
-//				}
-//			}
-//            }else{
-//                for(size_t i=0; i< wv.size(); i++){
-//                    wv[lastIndex - i].y = ofMap(buffer[(i * chans) + j], -1, 1, h*(j+1), h*j );
-//                }
-//            }
-		}
+            }
+        }
     }else{
         cout <<"circularBufferWaveformDraw::updateWaveformMesh()\n" <<" chans " << chans<< "  waveforms.size(): "<< waveforms.size() << endl;
     }
-    
 }
 
 template class waveformDraw_<ofSoundBuffer>;
