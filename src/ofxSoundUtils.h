@@ -53,8 +53,11 @@ public:
     }
     
     void push(const float* src, const size_t& srcSizePerChannel, int numChannels, int sampleRate){
-        if(size() == 0 || getNumChannels() == 0 || bNeedsAllocation.load()){//} || getNumFrames() != buffer.getNumFrames() * numBuffers){
+        if(size() == 0 || getNumChannels() == 0  || getNumChannels() != numChannels || bNeedsAllocation.load()){//} || getNumFrames() != buffer.getNumFrames() * numBuffers){
 //            if(bufferLengthInMs != 0){
+            
+            
+            
             if(!bSetNumBuffers && bufferLengthInMs == 0){
                 numBuffers = 100;
                 bSetNumBuffers = true;
@@ -75,8 +78,8 @@ public:
 //            }
             setSampleRate(sampleRate);
             if(  getBuffer().size()){
-            bNeedsAllocation = false;
-            pushIndex %= getBuffer().size();
+                bNeedsAllocation = false;
+                pushIndex %= getBuffer().size();
             }
         }
         if(getBuffer().size() > 0){

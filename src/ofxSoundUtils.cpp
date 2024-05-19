@@ -74,7 +74,9 @@ void ofxSoundUtils::setBufferFromChannelGroup(const ofSoundBuffer & sourceBuffer
 bool ofxSoundUtils::checkBuffers(const ofSoundBuffer& src, ofSoundBuffer& dst, bool bSetDst){
 	dst.setTickCount(src.getTickCount());
 	dst.setDeviceID(src.getDeviceID());
-	if(dst.size()!=src.size()) {
+	if(dst.size()!=src.size() ||
+       dst.getNumChannels() != src.getNumChannels() ||
+       dst.getSampleRate() != src.getSampleRate() ) {
 		if(bSetDst){
 			dst.resize(src.size());
 			dst.setNumChannels(src.getNumChannels());
