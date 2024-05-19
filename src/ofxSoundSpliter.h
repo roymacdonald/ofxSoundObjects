@@ -48,6 +48,8 @@ protected:
     
     vector<ofxSoundObject*> connections;
     std::mutex connectionMutex;
+
+    int outputNumChannels = 0;
     
 };
 

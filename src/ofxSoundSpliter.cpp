@@ -9,7 +9,7 @@
 #include "ofxSoundUtils.h"
 
 ofxSoundSpliter::ofxSoundSpliter():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
-    
+    setName("Splitter");
 }
 
 //------------------------------------------------------------------------------------------
@@ -36,6 +36,11 @@ size_t ofxSoundSpliter::getNumConnections(){
 void ofxSoundSpliter::audioOut(ofSoundBuffer &output) {
     if(_tickCount < output.getTickCount()){
         _tickCount = output.getTickCount();
+        if(outputNumChannels != output.getNumChannels()){
+            
+            ofLogNotice("ofxSoundSpliter::audioOut") << "output num channels changed from " << outputNumChannels << " to " << output.getNumChannels();
+            outputNumChannels = output.getNumChannels();
+        }
         ofxSoundUtils::checkBuffers(output, workingBuffer);
         if(inputObject!=nullptr) {
             if(isBypassed()){
@@ -94,6 +99,7 @@ bool ofxSoundSpliter::disconnectOutput(ofxSoundObject &soundObject){
 //------------------------------------------------------------------------------------------
 ofxSoundObject & ofxSoundSpliter::connectTo(ofxSoundObject &soundObject) {
     if(isConnectedTo(soundObject)){
+        ofLogWarning("ofxSoundSpliter::connectTo") << "Already connected to " << soundObject.getName();
         return soundObject;
     }
 //    outputObjectRef = &soundObject;
