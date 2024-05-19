@@ -264,7 +264,9 @@ void waveformDraw_<BufferType>::makeWaveformMesh(){
 				v.x += xInc;
 			}
 		}
-	}
+    }else{
+        ofLogNotice("waveformDraw_<BufferType>::makeWaveformMesh") << "buffer size: " << buffer.size();
+    }
 }
 //--------------------------------------------------------------
 template<typename BufferType>
@@ -500,7 +502,10 @@ void circularBufferWaveformDraw::updateWaveformMesh() {
 //                }
 //            }
 		}
-	}
+    }else{
+        cout <<"circularBufferWaveformDraw::updateWaveformMesh()\n" <<" chans " << chans<< "  waveforms.size(): "<< waveforms.size() << endl;
+    }
+    
 }
 
 template class waveformDraw_<ofSoundBuffer>;
