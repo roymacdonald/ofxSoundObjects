@@ -172,6 +172,8 @@ public:
 	/// Force rebuilding the VUMeter.
 	/// in case that you've modified the colors using any of the above static functions you must call VUMeter::getForceRebuild() = true; for these changes to take effect.
 	static bool& getForceRebuild();
+    /// \brief get number of channes procccesed by this sound Object;
+    virtual size_t getNumChannels() override{ return drawData.rms.size();}
 protected:
 
 	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
@@ -184,7 +186,7 @@ protected:
 	DrawMode drawMode = VU_DRAW_VERTICAL;
 	StackMode stackMode = VU_STACK_HORIZONTAL;
 
-	
+
 	
 	ofRectangle drawRect;
 	std::vector <ofRectangle> vuRects;
@@ -212,6 +214,9 @@ private:
 		
 	}processData, drawData;
 	
+    
+
+    
 	uint64_t lastPeakTime;
 	mutable ofMutex mutex;
 	
