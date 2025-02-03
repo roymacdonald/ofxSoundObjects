@@ -21,6 +21,7 @@ ofxMultiSoundPlayer::ofxMultiSoundPlayer() {
 	setNumInstances(0);
 
 	volume.set("Volume", 1, 0, 1);
+    volListener = volume.newListener(this, &ofxMultiSoundPlayer::volumeChanged);
 }
 //--------------------------------------------------------------
 bool ofxMultiSoundPlayer::canPlayInstance(){
@@ -143,13 +144,13 @@ void ofxMultiSoundPlayer::audioOut(ofSoundBuffer& outputBuffer){
 //========================END RUNNING ON AUDIO THREAD===============================
 //========================SETTERS===============================
 void ofxMultiSoundPlayer::setVolume(float vol, int index){
-	if(index <= -1){
+//	if(index <= -1){
 		volume = vol;
-	}else{
+//	}else{
 		updateInstance([&](ofxSingleSoundPlayer* inst){
 			inst->volume = vol;
 		},index, "ofxMultiSoundPlayer::setVolume");
-	}
+//	}
 }
 //--------------------------------------------------------------
 void ofxMultiSoundPlayer::setPan(float _pan, int index){
@@ -426,3 +427,13 @@ size_t ofxMultiSoundPlayer::getNumFrames() const {
 	}
 	return 0;
 }
+
+
+void ofxMultiSoundPlayer::volumeChanged(float&){
+    if(bVolumeChangedByParameter)return;
+    bVolumeChangedByParameter = true;
+    setVolume(volume.get());
+    
+    bVolumeChangedByParameter = false;
+}
+

@@ -260,7 +260,7 @@ ofColor& VUMeter::getPeakHoldColor(){
 }
 //--------------------------------------------------------------
 ofColor& VUMeter::getBorderColor(){
-	static std::unique_ptr<ofColor> i = std:: make_unique<ofColor>(70);
+	static std::unique_ptr<ofColor> i = std::make_unique<ofColor>(70);
 	return *i;
 }
 //--------------------------------------------------------------

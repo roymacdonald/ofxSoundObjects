@@ -122,6 +122,9 @@ private:
 	ofxSoundMixer _mixer;
 
 	ofEventListeners endEventListeners;
+    ofEventListener volListener;
+    void volumeChanged(float&);
+    bool bVolumeChangedByParameter = false;
 	
 	void onInstanceEnd(size_t&);
 };
