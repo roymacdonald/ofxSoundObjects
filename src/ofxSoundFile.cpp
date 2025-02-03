@@ -156,7 +156,7 @@ bool ofxSoundFile::openFileStream(std::string filepath){
 	
 	reset();
 	
-	dr_wav_ptr = make_unique<drwav>();
+	dr_wav_ptr = std::make_unique<drwav>();
 	if (!drwav_init_file_ex(dr_wav_ptr.get(), ofToDataPath(filepath, true).c_str(), NULL, NULL, DRWAV_SEQUENTIAL)) {
 		closeDrWavPtr();
 		ofLogVerbose("ofxSoundFile::openFileStream") << "failed opening file for streaming.";
