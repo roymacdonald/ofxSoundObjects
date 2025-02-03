@@ -116,14 +116,14 @@ ofxSoundObject* ofxSoundObject::getSignalDestinationObject(){
 }
 void ofxSoundObject::printAudioOut(){
     if(bPrintAudioOut){
-        std::cout << "ofxSoundObject::audioOut " << getName()  << "  <---- " << ((inputObject == nullptr)?"NULL":inputObject->getName()) << "\n";// << "  bypassed: " << std::boolalpha << isBypassed() << "\n";
+        std::cout << "ofxSoundObject::audioOut " << getName()  << "  <---- " << ((inputObject == nullptr)?"NULL":inputObject->getName()) << " numChannels: " << getBuffer().getNumChannels() << "\n";// << "  bypassed: " << std::boolalpha << isBypassed() << "\n";
     }
 }
 //--------------------------------------------------------------
 // this pulls the audio through from earlier links in the chain
 void ofxSoundObject::audioOut(ofSoundBuffer &output) {
     _tickCount = output.getTickCount();
-    printAudioOut();
+//    printAudioOut();
     ofxSoundUtils::checkBuffers(output, workingBuffer);
 	if(inputObject!=nullptr) {
         if(isBypassed()){
