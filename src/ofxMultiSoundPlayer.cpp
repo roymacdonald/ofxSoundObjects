@@ -167,7 +167,7 @@ void ofxMultiSoundPlayer::setSpeed(float spd, int index){
 //--------------------------------------------------------------
 void ofxMultiSoundPlayer::setPaused(bool bP, int index){
 	updateInstance([&](ofxSingleSoundPlayer* inst){
-		instances[index]->setPaused(bP);
+		inst->setPaused(bP);
 	},index, "ofxMultiSoundPlayer::setPaused");
 	checkPaused();
 }
