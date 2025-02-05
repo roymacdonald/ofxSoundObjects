@@ -151,7 +151,13 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){}
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key){}
+void ofApp::keyPressed(int key){
+    if (key == 'p') {
+        player.setPaused(true);
+    } else if (key == 'c') {
+        player.setPaused(false);
+    }	
+}
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){}
 //--------------------------------------------------------------
