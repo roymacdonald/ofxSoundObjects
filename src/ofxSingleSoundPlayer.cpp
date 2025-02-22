@@ -92,7 +92,7 @@ bool ofxSingleSoundPlayer::loadAsync(std::filesystem::path filePath, bool bAutop
 	
 	setState(bAutoplay?LOADING_ASYNC_AUTOPLAY:LOADING_ASYNC);
 	bStreaming = false;
-	ofAddListener(soundFile->loadAsyncEndEvent, this, &ofxSingleSoundPlayer::initFromSoundFile);
+	ofAddListener(soundFile->loadAsyncEndEvent, this, &ofxSingleSoundPlayer::initFromSoundFile, std::numeric_limits<int>().min());
 	soundFile->loadAsync(filePath.string());
 	
 	return true;
@@ -191,8 +191,9 @@ void ofxSingleSoundPlayer::initFromSoundFile(){
 				ss << "Not streaming; Reading whole file into memory!\n";
 			}
 		}
-		//			load(soundFile->getBuffer(), name);
-		//		}else{
+		
+        bool bIsAsyncAutoplay = isState(LOADING_ASYNC_AUTOPLAY);
+        
 		volume.setName(name);
 		
 		initFromSoundBuffer(soundFile->getBuffer());
@@ -203,7 +204,7 @@ void ofxSingleSoundPlayer::initFromSoundFile(){
 		}
 		
 		
-		if(isState(LOADING_ASYNC_AUTOPLAY)){
+		if(bIsAsyncAutoplay){
 			setState(LOADED);
 			play();
 		}else{
