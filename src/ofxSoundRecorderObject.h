@@ -22,6 +22,7 @@ public:
 #ifdef OFX_SOUND_ENABLE_THREADED_RECORDER
 	virtual ~ofxSoundRecorderObject();
 #endif
+    virtual void audioOut(ofSoundBuffer &output) override;
 	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
 	
 	

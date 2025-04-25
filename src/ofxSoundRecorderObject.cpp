@@ -83,14 +83,56 @@ void ofxSoundRecorderObject::threadedFunction(){
 }
 #endif
 //--------------------------------------------------------------
+void ofxSoundRecorderObject::audioOut(ofSoundBuffer &output){
+    ofxSoundObject* obj = getSignalSourceObject();
+    bool is_sound_input = false;
+    if(obj->getType() == OFX_SOUND_OBJECT_SOURCE)
+    {
+        if(obj->getName() == "Sound Input")
+        {
+            if(ofxSoundUtils::checkBuffers(output, getBuffer(), false))
+            {
+                is_sound_input = true;
+                auto& buffer = getBuffer();
+                ofxSoundInput* input = (ofxSoundInput*)obj;
+                ofSoundStream* ss  = input->getInputStream();
+                int buffer_size = ss->getBufferSize() * ss->getNumInputChannels();
+                buffer.resize(buffer_size);
+                buffer.setNumChannels(ss->getNumInputChannels());
+                buffer.setSampleRate(ss->getSampleRate());
+            }
+        }
+    }
+    if(!is_sound_input)
+    {
+        ofxSoundUtils::checkBuffers(output, getBuffer());
+    }
+    if(inputObject != NULL)
+    {
+        if(isBypassed())
+        {
+            inputObject->audioOut(output);
+        }
+        else
+        {
+            inputObject->audioOut(getBuffer());
+        }
+    }
+    if(!isBypassed())
+    {
+        process(getBuffer(), output);
+    }
+}
+
+//--------------------------------------------------------------
 void ofxSoundRecorderObject::process(ofSoundBuffer &input, ofSoundBuffer &output){
-	input.copyTo(output);
+    input.copyTo(output, output.getNumFrames(), output.getNumChannels(), 0);
 #ifdef OFX_SOUND_ENABLE_THREADED_RECORDER
-	if(recState != IDLE){
-		writeChannel.send(input);
-	}
+    if(recState != IDLE){
+        writeChannel.send(input);
+    }
 #else
-	write(input);
+    write(input);
 #endif
 }
 //--------------------------------------------------------------
